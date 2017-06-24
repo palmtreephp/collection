@@ -1,5 +1,5 @@
 {
-  "name": "palmtree/curl",
+  "name": "palmtree/collection",
   "description": "Curl component for Palmtree PHP",
   "type": "library",
   "license": "MIT",
