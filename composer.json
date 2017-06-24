@@ -1,0 +1,21 @@
+{
+  "name": "palmtree/curl",
+  "description": "Curl component for Palmtree PHP",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andy Palmer",
+      "email": "andy@andypalmer.me",
+      "homepage": "https://andypalmer.me"
+    }
+  ],
+  "require": {
+    "palmtree/argparser": "~1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Palmtree\\Collection\\": "src"
+    }
+  }
+}
