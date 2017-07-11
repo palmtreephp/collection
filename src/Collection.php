@@ -7,17 +7,44 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     protected $items;
     protected $type;
 
+    public static $typeMap = [
+        'boolean'  => ['boolean', 'bool'],
+        'integer'  => ['integer', 'int'],
+        'double'   => ['double', 'float'],
+        'string'   => ['string'],
+        'array'    => ['array'],
+        'object'   => ['object'],
+        'resource' => ['resource'],
+    ];
+
     public function __construct($items = [], $type = null)
     {
         $this
-            ->set($items)
+            ->add($items)
             ->setType($type);
     }
 
-    public function add($key, $item)
+    public function set($key, $item)
     {
-        if ($this->type && class_exists($this->type) && !$item instanceof $this->type) {
-            throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->type));
+        $valid = true;
+        if ($this->getType()) {
+            if (class_exists($this->getType())) {
+                if (!is_a($item, $this->getType())) {
+                    $valid = false;
+                }
+            } else {
+                if (is_string($this->getType())) {
+                    $type = gettype($item);
+
+                    if (!(isset(static::$typeMap[$type]) && in_array($this->getType(), static::$typeMap[$type]))) {
+                        $valid = false;
+                    }
+                }
+            }
+        }
+
+        if (!$valid) {
+            throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->getType()));
         }
 
         $this->items[$key] = $item;
@@ -25,10 +52,19 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this;
     }
 
-    public function addMany(array $items)
+    public function get($key)
+    {
+        if (!isset($this->items[$key])) {
+            throw new \InvalidArgumentException(sprintf("Item '%s' does not exist.", $key));
+        }
+
+        return $this->items[$key];
+    }
+
+    public function add(array $items)
     {
         foreach ($items as $key => $item) {
-            $this->add($key, $item);
+            $this->set($key, $item);
         }
 
         return $this;
@@ -41,39 +77,25 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this;
     }
 
-    public function set($items)
-    {
-        $this->items = [];
-
-        return $this->addMany($items);
-    }
-
     public function all()
     {
         return $this->items;
     }
 
-    public function get($key)
-    {
-        if (!isset($this->items[$key])) {
-            throw new \InvalidArgumentException(sprintf("Item '%s' does not exist.", $key));
-        }
-
-        return $this->items[$key];
-    }
-
     public function first()
     {
-        $items = $this->all();
+        foreach ($this->all() as $item) {
+            return $item;
+        }
 
-        return reset($items);
+        return null;
     }
 
     public function last()
     {
         $items = $this->all();
 
-        return end($items);
+        return ($items) ? array_slice($items, -1)[0] : null;
     }
 
     /**
@@ -97,7 +119,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function offsetSet($offset, $value)
     {
-        $this->add($offset, $value);
+        $this->set($offset, $value);
     }
 
     /**
@@ -157,6 +179,6 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function unserialize($serialized)
     {
-        $this->set(unserialize($serialized));
+        $this->add(unserialize($serialized));
     }
 }
