@@ -4,9 +4,18 @@ namespace Palmtree\Collection;
 
 class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
+    /** @var mixed */
     protected $items;
+    /** @var mixed */
     protected $type;
 
+    /**
+     * An array of primitive types which $this->type can be set to.
+     * The keys are values returned by gettype() and the values are arrays
+     * of aliases for that type which can be passed to $this->setType().
+     *
+     * @var array
+     */
     public static $typeMap = [
         'boolean'  => ['boolean', 'bool'],
         'integer'  => ['integer', 'int'],
@@ -24,26 +33,17 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
             ->setType($type);
     }
 
+    /**
+     * Adds a single item with the given key to the collection.
+     *
+     * @param mixed $key
+     * @param mixed $item
+     *
+     * @return $this
+     */
     public function set($key, $item)
     {
-        $valid = true;
-        if ($this->getType()) {
-            if (class_exists($this->getType())) {
-                if (!is_a($item, $this->getType())) {
-                    $valid = false;
-                }
-            } else {
-                if (is_string($this->getType())) {
-                    $type = gettype($item);
-
-                    if (!(isset(static::$typeMap[$type]) && in_array($this->getType(), static::$typeMap[$type]))) {
-                        $valid = false;
-                    }
-                }
-            }
-        }
-
-        if (!$valid) {
+        if (!$this->validateType($item)) {
             throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->getType()));
         }
 
@@ -52,6 +52,31 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this;
     }
 
+    /**
+     * Pushes a single item on to the end of the collection.
+     *
+     * @param mixed $item
+     *
+     * @return $this
+     */
+    public function push($item)
+    {
+        if (!$this->validateType($item)) {
+            throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->getType()));
+        }
+
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Returns a single item with the given key from the collection.
+     *
+     * @param mixed $key
+     *
+     * @return mixed
+     */
     public function get($key)
     {
         if (!isset($this->items[$key])) {
@@ -61,6 +86,13 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this->items[$key];
     }
 
+    /**
+     * Adds a set of items to the collection.
+     *
+     * @param array|\Traversable $items
+     *
+     * @return $this
+     */
     public function add(array $items)
     {
         foreach ($items as $key => $item) {
@@ -70,6 +102,13 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this;
     }
 
+    /**
+     * Removes an item with the given key from the collection.
+     *
+     * @param mixed $key
+     *
+     * @return $this
+     */
     public function remove($key)
     {
         unset($this->items[$key]);
@@ -77,11 +116,21 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return $this;
     }
 
+    /**
+     * Returns the entire collection.
+     *
+     * @return array|\Traversable|\ArrayAccess
+     */
     public function all()
     {
         return $this->items;
     }
 
+    /**
+     * Returns the first item in the collection.
+     *
+     * @return mixed
+     */
     public function first()
     {
         foreach ($this->all() as $item) {
@@ -91,6 +140,11 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return null;
     }
 
+    /**
+     * Returns the last item in the collection.
+     *
+     * @return mixed
+     */
     public function last()
     {
         $items = $this->all();
@@ -135,11 +189,17 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->items);
+        return new \ArrayIterator($this->all());
     }
 
     /**
-     * @param null $type
+     * Sets the type all items in the collection must be.
+     *
+     * Can be a primitive type or class name.
+     *
+     * @see $typeMap for valid primitive types.
+     *
+     * @param mixed $type
      *
      * @return Collection
      */
@@ -151,7 +211,9 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     }
 
     /**
-     * @return null
+     * Returns the type for this collection.
+     *
+     * @return mixed
      */
     public function getType()
     {
@@ -180,5 +242,33 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     public function unserialize($serialized)
     {
         $this->add(unserialize($serialized));
+    }
+
+    /**
+     * Returns whether the given item is a valid type.
+     *
+     * @param mixed $item
+     *
+     * @return bool
+     */
+    protected function validateType($item)
+    {
+        if (!$this->getType()) {
+            return true;
+        }
+
+        if (class_exists($this->getType()) || interface_exists($this->getType())) {
+            if (!is_a($item, $this->getType())) {
+                return false;
+            }
+        } elseif (is_string($this->getType())) {
+            $type = gettype($item);
+
+            if (!(isset(static::$typeMap[$type]) && in_array($this->getType(), static::$typeMap[$type]))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

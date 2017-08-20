@@ -37,13 +37,21 @@ $arrays->add($items);
 //$arrays->set('wont_work', 'Noop');
 //$arrays->set('wont_work', 1);
 
-$files = new Collection();
+/*$files = new Collection();
 $files->setType(\SplFileObject::class);
 
 $files->add([
-    new SplFileObject('/path/to/some/file.ext'),
-    new SplFileObject('/path/to/some/file2.ext'),
-]);
+    new SplFileObject(),
+    new SplFileObject(),
+])*/;
+
+$closures = new Collection();
+
+$closures->setType(\Closure::class);
+
+$closures->push(function ($test) {
+    echo $test;
+});
 
 $strings = new Collection();
 $strings->setType('string');
