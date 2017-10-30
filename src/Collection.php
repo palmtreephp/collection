@@ -2,11 +2,13 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidTypeException;
+
 class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
-    /** @var mixed */
+    /** @var array */
     protected $items;
-    /** @var mixed */
+    /** @var string */
     protected $type;
 
     /**
@@ -26,11 +28,17 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         'resource' => ['resource'],
     ];
 
+    /**
+     * Collection constructor.
+     *
+     * @param array|\Traversable $items
+     * @param string             $type
+     */
     public function __construct($items = [], $type = null)
     {
         $this
-            ->add($items)
-            ->setType($type);
+            ->setType($type)
+            ->add($items);
     }
 
     /**
@@ -43,29 +51,16 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function set($key, $item)
     {
-        if (!$this->validateType($item)) {
-            throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->getType()));
+        try {
+            $this->validateType($item);
+
+            if (is_null($key)) {
+                $this->items[] = $item;
+            } else {
+                $this->items[$key] = $item;
+            }
+        } catch (\InvalidArgumentException $e) {
         }
-
-        $this->items[$key] = $item;
-
-        return $this;
-    }
-
-    /**
-     * Pushes a single item on to the end of the collection.
-     *
-     * @param mixed $item
-     *
-     * @return $this
-     */
-    public function push($item)
-    {
-        if (!$this->validateType($item)) {
-            throw new \InvalidArgumentException(sprintf('Item must be of type %s', $this->getType()));
-        }
-
-        $this->items[] = $item;
 
         return $this;
     }
@@ -79,11 +74,19 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function get($key)
     {
-        if (!isset($this->items[$key])) {
-            throw new \InvalidArgumentException(sprintf("Item '%s' does not exist.", $key));
-        }
-
         return $this->items[$key];
+    }
+
+    /**
+     * Pushes a single item on to the end of the collection.
+     *
+     * @param mixed $item
+     *
+     * @return $this
+     */
+    public function push($item)
+    {
+        return $this->set(null, $item);
     }
 
     /**
@@ -117,9 +120,37 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     }
 
     /**
+     * Removes the given item from the collection if it is found.
+     *
+     * @param mixed $item
+     *
+     * @return $this
+     */
+    public function removeItem($item)
+    {
+        $key = array_search($item, $this->all());
+
+        if ($key !== false) {
+            $this->remove($key);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears all items from the collection.
+     */
+    public function clear()
+    {
+        $this->items = [];
+
+        return $this;
+    }
+
+    /**
      * Returns the entire collection.
      *
-     * @return array|\Traversable|\ArrayAccess
+     * @return array
      */
     public function all()
     {
@@ -133,11 +164,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function first()
     {
-        foreach ($this->all() as $item) {
-            return $item;
-        }
-
-        return null;
+        return reset($this->items);
     }
 
     /**
@@ -147,55 +174,47 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function last()
     {
-        $items = $this->all();
-
-        return ($items) ? array_slice($items, -1)[0] : null;
+        return end($this->items);
     }
 
     /**
-     * @inheritDoc
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->items[$offset]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetGet($offset)
-    {
-        return $this->get($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->set($offset, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetUnset($offset)
-    {
-        $this->remove($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->all());
-    }
-
-    /**
-     * Sets the type all items in the collection must be.
+     * Returns whether the given item is in the collection.
      *
-     * Can be a primitive type or class name.
+     * @param mixed $item
+     *
+     * @return bool
+     */
+    public function contains($item)
+    {
+        return in_array($item, $this->items, true);
+    }
+
+    /**
+     * Returns whether the given key exists in the collection.
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    public function containsKey($key)
+    {
+        return isset($this->items[$key]) || array_key_exists($key, $this->items);
+    }
+
+    /**
+     * Returns a new instance containing items in the collection filtered by a predicate.
+     *
+     * @param \Closure $filter
+     *
+     * @return Collection
+     */
+    public function filter(\Closure $filter)
+    {
+        return new static(array_filter($this->items, $filter), $this->getType());
+    }
+
+    /**
+     * Sets the type all items in the collection must be. Can be a primitive type or class name.
      *
      * @see $typeMap for valid primitive types.
      *
@@ -205,6 +224,10 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function setType($type)
     {
+        if (!is_null($type) && !is_string($type)) {
+            throw new \InvalidArgumentException('Type must be a string');
+        }
+
         $this->type = $type;
 
         return $this;
@@ -221,11 +244,63 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists($offset)
+    {
+        return $this->containsKey($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (!isset($offset)) {
+            return $this->push($value);
+        }
+
+        return $this->set($offset, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->items);
+    }
+
+    /**
      * @inheritDoc
      */
     public function count()
     {
-        return count($this->all());
+        return count($this->items);
     }
 
     /**
@@ -233,7 +308,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function serialize()
     {
-        return serialize($this->all());
+        return serialize($this->items);
     }
 
     /**
@@ -249,26 +324,26 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      *
      * @param mixed $item
      *
-     * @return bool
+     * @throws InvalidTypeException
      */
     protected function validateType($item)
     {
-        if (!$this->getType()) {
-            return true;
+        $expected = $this->getType();
+        if (!$expected || !is_string($expected)) {
+            return;
         }
 
-        if (class_exists($this->getType()) || interface_exists($this->getType())) {
-            if (!is_a($item, $this->getType())) {
-                return false;
-            }
-        } elseif (is_string($this->getType())) {
-            $type = gettype($item);
+        $actual = (is_object($item)) ? get_class($item) : gettype($item);
 
-            if (!(isset(static::$typeMap[$type]) && in_array($this->getType(), static::$typeMap[$type]))) {
-                return false;
-            }
+        $valid = false;
+        if ((class_exists($expected) || interface_exists($expected)) && $item instanceof $expected) {
+            $valid = true;
+        } elseif (isset(static::$typeMap[$actual]) && in_array($expected, static::$typeMap[$actual])) {
+            $valid = true;
         }
 
-        return true;
+        if (!$valid) {
+            throw new InvalidTypeException($expected, $actual);
+        }
     }
 }

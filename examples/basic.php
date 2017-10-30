@@ -33,7 +33,7 @@ $items['key2'] = [false, 'Another value', 8];
 
 $arrays->add($items);
 
-// Throws an InvalidArgumentException
+// Throws an InvalidTypeException
 //$arrays->set('wont_work', 'Noop');
 //$arrays->set('wont_work', 1);
 
@@ -58,13 +58,12 @@ $strings->setType('string');
 // ...
 
 $ints = new Collection();
-$ints->setType('integer');
+$ints->setType('int');
 // ...
 
 $booleans = new Collection();
-$booleans->setType('boolean');
+$booleans->setType('bool');
 // ...
 
-$floats = new Collection();
-$floats->setType('float');
+$floats = new Collection([1.2, 43.9], 'float');
 // ...

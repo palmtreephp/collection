@@ -14,5 +14,8 @@
     "psr-4": {
       "Palmtree\\Collection\\": "src"
     }
+  },
+  "require": {
+    "doctrine/collections": "^1.4"
   }
 }
