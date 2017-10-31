@@ -39,6 +39,9 @@ $map = new Collection();
 
 $map->set('foo', 'Bar');
 $map->set('baz', true);
+
+// Create instance from an array of integers
+$collection = Collection::fromArray([1,2,3,4], 'int');
 ```
 
 #### Instances of the same class
