@@ -22,10 +22,6 @@ composer require palmtree/collection
 #### Basic Usage
 ```php
 <?php
-use Palmtree\Collection\Collection;
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
 // Sequence
 $sequence = new Collection();
 
@@ -48,10 +44,6 @@ $collection = Collection::fromArray([1,2,3,4], 'int');
 
 ```php
 <?php
-use Palmtree\Collection\Collection;
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
 $objects = new Collection();
 
 $objects->setType(\stdClass::class);
@@ -64,7 +56,7 @@ $objects->set('key1', $item);
 
 #### Single type
 
-Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function or `float`, `int`, and `bool` for convenience.
+Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function as well as `float`, `int`, and `bool` for convenience.
 ```php
 <?php
 // Arrays
