@@ -2,43 +2,21 @@
 
 namespace Palmtree\Collection;
 
-use Palmtree\Collection\Exception\InvalidTypeException;
-
 class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
     /** @var array */
     protected $items;
-    /** @var string */
-    protected $type;
-
-    /**
-     * An array of primitive types which are valid values for $this->type.
-     * The keys are values returned by gettype() and the values are arrays
-     * of aliases for that type which can be passed to $this->setType().
-     *
-     * @var array
-     */
-    public static $typeMap = [
-        'boolean'  => ['boolean', 'bool'],
-        'integer'  => ['integer', 'int'],
-        'double'   => ['double', 'float'],
-        'string'   => ['string'],
-        'array'    => ['array'],
-        'object'   => ['object'],
-        'resource' => ['resource'],
-    ];
+    /** @var TypeValidator */
+    protected $validator;
 
     /**
      * Collection constructor.
      *
-     * @param array|\Traversable $items
-     * @param string             $type
+     * @param string $type
      */
-    public function __construct($items = [], $type = null)
+    public function __construct($type = null)
     {
-        $this
-            ->setType($type)
-            ->add($items);
+        $this->validator = new TypeValidator($type);
     }
 
     /**
@@ -51,7 +29,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function set($key, $item)
     {
-        $this->validateType($item);
+        $this->validator->validate($item);
 
         if (is_null($key)) {
             $this->items[] = $item;
@@ -125,7 +103,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function removeItem($item)
     {
-        $key = array_search($item, $this->all());
+        $key = array_search($item, $this->items);
 
         if ($key !== false) {
             $this->remove($key);
@@ -224,37 +202,21 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function filter(\Closure $filter = null, $flags = 0)
     {
-        return new static(array_filter($this->items, $filter, $flags), $this->getType());
+        return static::fromArray(array_filter($this->items, $filter, $flags), $this->validator->getType());
     }
 
     /**
-     * Sets the type all items in the collection must be. Can be a primitive type or class name.
-     *
-     * @see $typeMap for valid primitive types.
-     *
-     * @param mixed $type
+     * @param array|\Traversable $items
+     * @param string             $type
      *
      * @return Collection
      */
-    public function setType($type)
+    public static function fromArray($items, $type = null)
     {
-        if (!is_null($type) && !is_string($type)) {
-            throw new \InvalidArgumentException('Type must be a string');
-        }
+        $collection = new Collection($type);
+        $collection->add($items);
 
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Returns the type for this collection.
-     *
-     * @return mixed
-     */
-    public function getType()
-    {
-        return $this->type;
+        return $collection;
     }
 
     /**
@@ -263,6 +225,14 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     public function toArray()
     {
         return $this->items;
+    }
+
+    /**
+     * @return TypeValidator
+     */
+    public function getValidator()
+    {
+        return $this->validator;
     }
 
     /**
@@ -334,34 +304,6 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
             if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
-        }
-    }
-
-    /**
-     * Returns whether the given item is a valid type.
-     *
-     * @param mixed $item
-     *
-     * @throws InvalidTypeException
-     */
-    protected function validateType($item)
-    {
-        $expected = $this->getType();
-        if (!$expected || !is_string($expected)) {
-            return;
-        }
-
-        $actual = (is_object($item)) ? get_class($item) : gettype($item);
-
-        $valid = false;
-        if ((class_exists($expected) || interface_exists($expected)) && $item instanceof $expected) {
-            $valid = true;
-        } elseif (isset(static::$typeMap[$actual]) && in_array($expected, static::$typeMap[$actual])) {
-            $valid = true;
-        }
-
-        if (!$valid) {
-            throw new InvalidTypeException($expected, $actual);
         }
     }
 }

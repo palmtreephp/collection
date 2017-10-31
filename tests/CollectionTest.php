@@ -147,8 +147,7 @@ class CollectionTest extends TestCase
 
     public function testSerialization()
     {
-        $collection = new Collection();
-        $collection->setType('int');
+        $collection = new Collection('int');
 
         $collection
             ->set('foo', 1)
@@ -160,7 +159,7 @@ class CollectionTest extends TestCase
         /** @var Collection $newCollection */
         $newCollection = unserialize($serialized);
 
-        $this->assertEquals('int', $newCollection->getType());
+        $this->assertEquals('int', $newCollection->getValidator()->getType());
 
         $expected = [
             'foo' => 1,
@@ -173,8 +172,7 @@ class CollectionTest extends TestCase
 
     public function testFilter()
     {
-        $collection = new Collection();
-        $collection->setType('int');
+        $collection = new Collection('int');
 
         $collection
             ->set('foo', 1)
