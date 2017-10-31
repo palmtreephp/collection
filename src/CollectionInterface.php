@@ -97,12 +97,12 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function containsKey($key);
 
     /**
-     * @return array
+     * @return CollectionInterface
      */
     public function getKeys();
 
     /**
-     * @return array
+     * @return CollectionInterface
      */
     public function getValues();
 
