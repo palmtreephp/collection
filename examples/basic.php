@@ -5,9 +5,7 @@ use Palmtree\Collection\Collection;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Objects of the same class
-$objects = new Collection();
-
-$objects->setType(\stdClass::class);
+$objects = new Collection(\stdClass::class);
 
 $item       = new \stdClass();
 $item->data = 'Hello, World!';
@@ -23,8 +21,7 @@ $item->data = 'Hello, again!';
 $objects->set('key2', $item2);
 
 // Arrays
-$arrays = new Collection();
-$arrays->setType('array');
+$arrays = new Collection('array');
 
 $items = [];
 
@@ -45,25 +42,20 @@ $files->add([
     new SplFileObject(),
 ])*/;
 
-$closures = new Collection();
-
-$closures->setType(\Closure::class);
+$closures = new Collection(\Closure::class);
 
 $closures->push(function ($test) {
     echo $test;
 });
 
-$strings = new Collection();
-$strings->setType('string');
+$strings = new Collection('string');
 // ...
 
-$ints = new Collection();
-$ints->setType('int');
+$ints = new Collection('int');
 // ...
 
-$booleans = new Collection();
-$booleans->setType('bool');
+$booleans = new Collection('bool');
 // ...
 
-$floats = new Collection([1.2, 43.9], 'float');
+$floats = Collection::fromArray([1.2, 43.9], 'float');
 // ...

@@ -5,20 +5,22 @@ namespace Palmtree\Collection;
 interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
     /**
+     * Adds a single item with the given key to the collection.
+     *
+     * @param string|int $key
+     * @param mixed      $value
+     * @return CollectionInterface
+     */
+    public function set($key, $value);
+
+    /**
      * Returns a single item with the given key from the collection.
      *
-     * @param mixed $key
+     * @param string|int $key
      *
      * @return mixed
      */
     public function get($key);
-
-    /**
-     * @param $key
-     * @param mixed $value
-     * @return CollectionInterface
-     */
-    public function set($key, $value);
 
     /**
      * Adds a set of items to the collection.
@@ -32,7 +34,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Removes an item with the given key from the collection.
      *
-     * @param mixed $key
+     * @param string|int $key
      *
      * @return CollectionInterface
      */
@@ -49,6 +51,8 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Clears all items from the collection.
+     *
+     * @return CollectionInterface
      */
     public function clear();
 
@@ -77,6 +81,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given item is in the collection.
      *
      * @param mixed $item
+     * @param bool  $strict
      *
      * @return bool
      */
@@ -85,7 +90,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns whether the given key exists in the collection.
      *
-     * @param $key
+     * @param string|int $key
      *
      * @return bool
      */
@@ -102,20 +107,28 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function getValues();
 
     /**
+     * Returns a new instance containing items mapped from the given callback.
+     *
+     * @param callable $callback
+     *
+     * @return CollectionInterface
+     */
+    public function map(callable $callback);
+
+    /**
      * Returns a new instance containing items in the collection filtered by a predicate.
      *
-     * @param callable $filter
-     * @param int      $flags
+     * @param callable $predicate
      *
-     * @return Collection
+     * @return CollectionInterface
      */
-    public function filter(callable $filter = null, $flags = 0);
+    public function filter(callable $predicate = null);
 
     /**
      * @param array|\Traversable $items
      * @param string             $type
      *
-     * @return Collection
+     * @return CollectionInterface
      */
     public static function fromArray($items, $type = null);
 
@@ -123,9 +136,4 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * @return array
      */
     public function toArray();
-
-    /**
-     * @return TypeValidator
-     */
-    public function getValidator();
 }

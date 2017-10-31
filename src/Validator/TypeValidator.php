@@ -1,6 +1,6 @@
 <?php
 
-namespace Palmtree\Collection;
+namespace Palmtree\Collection\Validator;
 
 use Palmtree\Collection\Exception\InvalidTypeException;
 

@@ -2,6 +2,8 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Validator\TypeValidator;
+
 class Collection implements CollectionInterface
 {
     /** @var array */
@@ -20,12 +22,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Adds a single item with the given key to the collection.
-     *
-     * @param mixed $key
-     * @param mixed $item
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function set($key, $item)
     {
@@ -41,11 +38,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns a single item with the given key from the collection.
-     *
-     * @param mixed $key
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function get($key)
     {
@@ -65,11 +58,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Adds a set of items to the collection.
-     *
-     * @param array|\Traversable $items
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function add($items)
     {
@@ -81,11 +70,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Removes an item with the given key from the collection.
-     *
-     * @param mixed $key
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function remove($key)
     {
@@ -95,11 +80,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Removes the given item from the collection if it is found.
-     *
-     * @param mixed $item
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function removeItem($item)
     {
@@ -113,7 +94,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Clears all items from the collection.
+     * @inheritDoc
      */
     public function clear()
     {
@@ -123,9 +104,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns the entire collection.
-     *
-     * @return array
+     * @inheritDoc
      */
     public function all()
     {
@@ -133,9 +112,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns the first item in the collection.
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function first()
     {
@@ -143,9 +120,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns the last item in the collection.
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function last()
     {
@@ -153,12 +128,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns whether the given item is in the collection.
-     *
-     * @param mixed $item
-     * @param bool  $strict
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function contains($item, $strict = true)
     {
@@ -166,11 +136,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Returns whether the given key exists in the collection.
-     *
-     * @param $key
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function containsKey($key)
     {
@@ -178,44 +144,67 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getKeys()
     {
-        return array_keys($this->items);
+        $keys = [];
+        foreach ($this->items as $key => $value) {
+            $keys[] = $key;
+        }
+
+        return self::fromArray($keys);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getValues()
     {
-        return array_values($this->items);
+        $values = [];
+        foreach ($this->items as $value) {
+            $values[] = $value;
+        }
+
+        return self::fromArray($values);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function map(callable $callback)
     {
-        return self::fromArray(array_map($callback, $this->items), $this->getValidator()->getType());
+        $map = [];
+        foreach ($this->items as $key => $value) {
+            $map[$key] = $callback($value, $key);
+        }
+
+        return self::fromArray($map, $this->getValidator()->getType());
     }
 
     /**
-     * Returns a new instance containing items in the collection filtered by a predicate.
-     *
-     * @param callable $filter
-     * @param int      $flags
-     *
-     * @return Collection
+     * @inheritDoc
      */
-    public function filter(callable $filter = null, $flags = 0)
+    public function filter(callable $predicate = null)
     {
-        return self::fromArray(array_filter($this->items, $filter, $flags), $this->validator->getType());
+        if (is_null($predicate)) {
+            $predicate = function ($value) {
+                return (bool)$value;
+            };
+        }
+
+        $filtered = [];
+        foreach ($this->items as $key => $value) {
+            if ($predicate($value, $key)) {
+                $filtered[$key] = $value;
+            }
+        }
+
+        return self::fromArray($filtered, $this->validator->getType());
     }
 
     /**
-     * @param array|\Traversable $items
-     * @param string             $type
-     *
-     * @return Collection
+     * @inheritDoc
      */
     public static function fromArray($items, $type = null)
     {
@@ -226,7 +215,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function toArray()
     {

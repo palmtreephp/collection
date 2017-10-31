@@ -116,7 +116,7 @@ class CollectionTest extends TestCase
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertSame(['foo', 'baz'], $collection->getKeys());
+        $this->assertSame(['foo', 'baz'], $collection->getKeys()->toArray());
     }
 
     public function testValues()
@@ -130,7 +130,7 @@ class CollectionTest extends TestCase
             ->set('foo', $objectOne)
             ->set('baz', $objectTwo);
 
-        $this->assertSame([$objectOne, $objectTwo], $collection->getValues());
+        $this->assertSame([$objectOne, $objectTwo], $collection->getValues()->toArray());
     }
 
     public function testIterator()
