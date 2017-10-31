@@ -10,20 +10,16 @@ class TypeValidator
     protected $type;
 
     /**
-     * An array of primitive types which are valid values for $this->type.
-     * The keys are values returned by gettype() and the values are arrays
-     * of aliases for that type which can be passed to $this->setType().
+     * Array of short-hand types which can be used as the value of $this->type
+     * as well as all values returned by gettype(). Keys are the short-hand value
+     * and values are those returned by gettype().
      *
      * @var array
      */
     protected $typeMap = [
-        'boolean'  => ['boolean', 'bool'],
-        'integer'  => ['integer', 'int'],
-        'double'   => ['double', 'float'],
-        'string'   => ['string'],
-        'array'    => ['array'],
-        'object'   => ['object'],
-        'resource' => ['resource'],
+        'bool'  => 'boolean',
+        'int'   => 'integer',
+        'float' => 'double',
     ];
 
     public function __construct($type = null)
@@ -108,12 +104,31 @@ class TypeValidator
      */
     public function isValid($item, $expected, $actual)
     {
-        if ((class_exists($expected) || interface_exists($expected)) && $item instanceof $expected) {
-            return true;
-        } elseif (isset($this->typeMap[$actual]) && in_array($expected, $this->typeMap[$actual])) {
+        if ($this->isInstanceOf($item, $expected) || $this->getMappedType($expected) === $actual) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Returns whether an object is an instance of the given class or interface
+     *
+     * @param object $thing
+     * @param string $class Fully qualified class or interface name.
+     * @return bool
+     */
+    protected function isInstanceOf($thing, $class)
+    {
+        return (class_exists($class) || interface_exists($class)) && $thing instanceof $class;
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    protected function getMappedType($type)
+    {
+        return isset($this->typeMap[$type]) ? $this->typeMap[$type] : $type;
     }
 }
