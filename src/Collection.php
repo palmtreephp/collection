@@ -2,7 +2,7 @@
 
 namespace Palmtree\Collection;
 
-class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
+class Collection implements CollectionInterface
 {
     /** @var array */
     protected $items;
