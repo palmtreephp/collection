@@ -10,8 +10,8 @@ class TypeValidator
     protected $type;
 
     /**
-     * Array of short-hand types which can be used as the value of $this->type
-     * as well as all values returned by gettype(). Keys are the short-hand value
+     * Array of short-hand types which can be used as the value of $this->type as well as any value returned
+     * by {@link http://php.net/manual/en/function.gettype.php gettype()}. Keys are the short-hand value
      * and values are those returned by gettype().
      *
      * @var array
@@ -99,7 +99,7 @@ class TypeValidator
     /**
      * @param mixed  $item     The item to check.
      * @param string $expected The expected type $item should be.
-     * @param string $actual   The actual type of $item.F
+     * @param string $actual   The actual type of $item.
      * @return bool
      */
     public function isValid($item, $expected, $actual)
