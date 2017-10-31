@@ -12,7 +12,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     protected $type;
 
     /**
-     * An array of primitive types which $this->type can be set to.
+     * An array of primitive types which are valid values for $this->type.
      * The keys are values returned by gettype() and the values are arrays
      * of aliases for that type which can be passed to $this->setType().
      *
@@ -184,9 +184,9 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      *
      * @return bool
      */
-    public function contains($item)
+    public function contains($item, $strict = true)
     {
-        return in_array($item, $this->items, true);
+        return in_array($item, $this->items, $strict);
     }
 
     /**
@@ -202,15 +202,32 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getKeys()
+    {
+        return array_keys($this->items);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValues()
+    {
+        return array_values($this->items);
+    }
+
+    /**
      * Returns a new instance containing items in the collection filtered by a predicate.
      *
      * @param \Closure $filter
+     * @param int      $flags
      *
      * @return Collection
      */
-    public function filter(\Closure $filter)
+    public function filter(\Closure $filter = null, $flags = 0)
     {
-        return new static(array_filter($this->items, $filter), $this->getType());
+        return new static(array_filter($this->items, $filter, $flags), $this->getType());
     }
 
     /**
@@ -308,7 +325,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function serialize()
     {
-        return serialize($this->items);
+        return serialize(get_object_vars($this));
     }
 
     /**
@@ -316,7 +333,11 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function unserialize($serialized)
     {
-        $this->add(unserialize($serialized));
+        foreach (unserialize($serialized) as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 
     /**
