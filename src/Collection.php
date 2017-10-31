@@ -31,8 +31,8 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     /**
      * Collection constructor.
      *
-     * @param array|\Traversable  $items
-     * @param string $type
+     * @param array|\Traversable $items
+     * @param string             $type
      */
     public function __construct($items = [], $type = null)
     {
@@ -51,15 +51,12 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      */
     public function set($key, $item)
     {
-        try {
-            $this->validateType($item);
+        $this->validateType($item);
 
-            if (is_null($key)) {
-                $this->items[] = $item;
-            } else {
-                $this->items[$key] = $item;
-            }
-        } catch (\InvalidArgumentException $e) {
+        if (is_null($key)) {
+            $this->items[] = $item;
+        } else {
+            $this->items[$key] = $item;
         }
 
         return $this;
