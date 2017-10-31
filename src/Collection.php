@@ -31,8 +31,8 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     /**
      * Collection constructor.
      *
-     * @param array|\Traversable $items
-     * @param string             $type
+     * @param array|\Traversable  $items
+     * @param string $type
      */
     public function __construct($items = [], $type = null)
     {
@@ -96,7 +96,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      *
      * @return $this
      */
-    public function add(array $items)
+    public function add($items)
     {
         foreach ($items as $key => $item) {
             $this->set($key, $item);
