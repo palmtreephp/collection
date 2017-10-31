@@ -290,10 +290,10 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
     public function offsetSet($offset, $value)
     {
         if (!isset($offset)) {
-            return $this->push($value);
+            $this->push($value);
+        } else {
+            $this->set($offset, $value);
         }
-
-        return $this->set($offset, $value);
     }
 
     /**
