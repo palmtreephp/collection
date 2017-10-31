@@ -156,6 +156,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
      * Returns whether the given item is in the collection.
      *
      * @param mixed $item
+     * @param bool  $strict
      *
      * @return bool
      */
@@ -192,17 +193,22 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Countable, \Seria
         return array_values($this->items);
     }
 
+    public function map(callable $callback)
+    {
+        return self::fromArray(array_map($callback, $this->items), $this->getValidator()->getType());
+    }
+
     /**
      * Returns a new instance containing items in the collection filtered by a predicate.
      *
-     * @param \Closure $filter
+     * @param callable $filter
      * @param int      $flags
      *
      * @return Collection
      */
-    public function filter(\Closure $filter = null, $flags = 0)
+    public function filter(callable $filter = null, $flags = 0)
     {
-        return static::fromArray(array_filter($this->items, $filter, $flags), $this->validator->getType());
+        return self::fromArray(array_filter($this->items, $filter, $flags), $this->validator->getType());
     }
 
     /**
