@@ -14,6 +14,28 @@ composer require palmtree/collection
 
 ## Usage
 
+#### Basic Usage
+```php
+<?php
+use Palmtree\Collection\Collection;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Sequence
+$sequence = new Collection();
+
+$sequence
+    ->push('Foo')
+    ->push('Bar')
+    ->push('Baz');
+
+// Map
+$map = new Collection();
+
+$map->set('foo', 'Bar');
+$map->set('baz', true);
+```
+
 #### Instances of the same class
 
 ```php
