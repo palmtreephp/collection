@@ -89,12 +89,25 @@ class TypeValidator
     public function validate($item)
     {
         $expected = $this->getType();
-        if (!$expected || !is_string($expected)) {
+        if (!$expected) {
             return;
         }
 
         $actual = (is_object($item)) ? get_class($item) : gettype($item);
 
+        if (!$this->isValid($item, $expected, $actual)) {
+            throw new InvalidTypeException($expected, $actual);
+        }
+    }
+
+    /**
+     * @param mixed  $item
+     * @param string $expected
+     * @param string $actual
+     * @return bool
+     */
+    public function isValid($item, $expected, $actual)
+    {
         $valid = false;
         if ((class_exists($expected) || interface_exists($expected)) && $item instanceof $expected) {
             $valid = true;
@@ -102,8 +115,6 @@ class TypeValidator
             $valid = true;
         }
 
-        if (!$valid) {
-            throw new InvalidTypeException($expected, $actual);
-        }
+        return $valid;
     }
 }
