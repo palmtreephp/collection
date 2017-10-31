@@ -1,5 +1,10 @@
 # Palmtree Collection
 
+[![License](http://img.shields.io/packagist/l/palmtree/collection.svg)](LICENSE)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/palmtreephp/collection.svg)](https://scrutinizer-ci.com/g/palmtreephp/csv/)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/palmtreephp/collection.svg)](https://scrutinizer-ci.com/g/palmtreephp/csv/)
+[![Build Status](https://scrutinizer-ci.com/g/palmtreephp/collection/badges/build.png?b=master)](https://scrutinizer-ci.com/g/palmtreephp/collection/build-status/master)
+
 Collection class with optional type validation.
 
 ## Requirements
