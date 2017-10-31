@@ -101,20 +101,19 @@ class TypeValidator
     }
 
     /**
-     * @param mixed  $item
-     * @param string $expected
-     * @param string $actual
+     * @param mixed  $item     The item to check.
+     * @param string $expected The expected type $item should be.
+     * @param string $actual   The actual type of $item.F
      * @return bool
      */
     public function isValid($item, $expected, $actual)
     {
-        $valid = false;
         if ((class_exists($expected) || interface_exists($expected)) && $item instanceof $expected) {
-            $valid = true;
+            return true;
         } elseif (isset($this->typeMap[$actual]) && in_array($expected, $this->typeMap[$actual])) {
-            $valid = true;
+            return true;
         }
 
-        return $valid;
+        return false;
     }
 }
