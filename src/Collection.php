@@ -153,7 +153,7 @@ class Collection implements CollectionInterface
             $keys[] = $key;
         }
 
-        return self::fromArray($keys);
+        return static::fromArray($keys);
     }
 
     /**
@@ -166,7 +166,7 @@ class Collection implements CollectionInterface
             $values[] = $value;
         }
 
-        return self::fromArray($values);
+        return static::fromArray($values);
     }
 
     /**
@@ -208,7 +208,7 @@ class Collection implements CollectionInterface
      */
     public static function fromArray($items, $type = null)
     {
-        $collection = new Collection($type);
+        $collection = new static($type);
         $collection->add($items);
 
         return $collection;
