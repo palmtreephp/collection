@@ -25,8 +25,10 @@ composer require palmtree/collection
 // Sequence
 $sequence = new Collection();
 
+$sequence->push('Foo');
+
+// Supports chaining
 $sequence
-    ->push('Foo')
     ->push('Bar')
     ->push('Baz');
 
@@ -44,9 +46,7 @@ $collection = Collection::fromArray([1,2,3,4], 'int');
 
 ```php
 <?php
-$objects = new Collection();
-
-$objects->setType(\stdClass::class);
+$objects = new Collection(\stdClass::class);
 
 $item       = new \stdClass();
 $item->data = 'Hello, World!';
@@ -59,16 +59,12 @@ $objects->set('key1', $item);
 Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function as well as `float`, `int`, and `bool` for convenience.
 ```php
 <?php
-// Arrays
-$arrays = new Collection();
-$arrays->setType('array');
+$floats = new Collection('float');
 
-$items = [];
+$floats->push(3.4);
+$floats->push(789.83);
 
-$items['key1'] = [true, 'Some value', 7];
-$items['key2'] = [false, 'Another value', 8];
-
-$arrays->add($items);
+$arrays->add($floats);
 ```
 
 ## License

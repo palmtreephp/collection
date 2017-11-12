@@ -89,7 +89,7 @@ class TypeValidator
             return;
         }
 
-        $actual = (is_object($item)) ? get_class($item) : gettype($item);
+        $actual = is_object($item) ? get_class($item) : gettype($item);
 
         if (!$this->isValid($item, $expected, $actual)) {
             throw new InvalidTypeException($expected, $actual);
