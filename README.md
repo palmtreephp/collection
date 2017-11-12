@@ -63,8 +63,6 @@ $floats = new Collection('float');
 
 $floats->push(3.4);
 $floats->push(789.83);
-
-$arrays->add($floats);
 ```
 
 ## License
