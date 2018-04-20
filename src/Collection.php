@@ -7,7 +7,7 @@ use Palmtree\Collection\Validator\TypeValidator;
 class Collection implements CollectionInterface
 {
     /** @var array */
-    protected $items;
+    protected $items = [];
     /** @var TypeValidator */
     protected $validator;
 
@@ -42,6 +42,10 @@ class Collection implements CollectionInterface
      */
     public function get($key)
     {
+        if (!$this->containsKey($key)) {
+            return null;
+        }
+
         return $this->items[$key];
     }
 
