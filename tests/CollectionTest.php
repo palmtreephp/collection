@@ -67,7 +67,7 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \PHPUnit\Framework\Error\Deprecated
      */
     public function testContains()
     {
@@ -77,7 +77,7 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \PHPUnit\Framework\Error\Deprecated
      */
     public function testContainsKey()
     {

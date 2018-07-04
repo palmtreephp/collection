@@ -80,13 +80,14 @@ class TypeValidator
      *
      * @param mixed $item
      *
+     * @return bool
      * @throws InvalidTypeException
      */
     public function validate($item)
     {
         $expected = $this->getType();
         if (!$expected) {
-            return;
+            return true;
         }
 
         $actual = is_object($item) ? get_class($item) : gettype($item);
@@ -94,6 +95,8 @@ class TypeValidator
         if (!$this->isValid($item, $expected, $actual)) {
             throw new InvalidTypeException($expected, $actual);
         }
+
+        return true;
     }
 
     /**
