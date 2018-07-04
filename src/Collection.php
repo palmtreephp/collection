@@ -134,16 +134,6 @@ class Collection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function contains($item, $strict = true)
-    {
-        trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
-
-        return $this->has($item, $strict);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function has($item, $strict = true)
     {
         return in_array($item, $this->items, $strict);
@@ -152,19 +142,29 @@ class Collection implements CollectionInterface
     /**
      * @inheritDoc
      */
+    public function hasKey($key)
+    {
+        return isset($this->items[$key]) || array_key_exists($key, $this->items);
+    }
+
+    /**
+     * @deprecated Use has instead
+     */
+    public function contains($item, $strict = true)
+    {
+        trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
+
+        return $this->has($item, $strict);
+    }
+
+    /**
+     * @deprecated Use hasKey instead
+     */
     public function containsKey($key)
     {
         trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
 
         return $this->hasKey($key);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasKey($key)
-    {
-        return isset($this->items[$key]) || array_key_exists($key, $this->items);
     }
 
     /**
