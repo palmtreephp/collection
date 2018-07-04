@@ -1,4 +1,4 @@
-# Palmtree Collection
+# :palm_tree: Palmtree Collection
 
 [![License](http://img.shields.io/packagist/l/palmtree/collection.svg)](LICENSE)
 [![Build Status](https://scrutinizer-ci.com/g/palmtreephp/collection/badges/build.png?b=master)](https://scrutinizer-ci.com/g/palmtreephp/collection/build-status/master)
