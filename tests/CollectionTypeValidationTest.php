@@ -36,6 +36,6 @@ class CollectionTypeValidationTest extends TestCase
     /** @expectedException \InvalidArgumentException */
     public function testInvalidTypeValue()
     {
-        $collection = new Collection(1);
+        new Collection(1);
     }
 }

@@ -48,6 +48,6 @@ class CollectionArrayAccessTest extends TestCase
 
         unset($collection['foo']);
 
-        $this->assertFalse($collection->containsKey('foo'));
+        $this->assertFalse($collection->hasKey('foo'));
     }
 }

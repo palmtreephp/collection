@@ -50,23 +50,43 @@ class CollectionTest extends TestCase
         $object = new \stdClass();
         $collection->push($object);
 
-        $this->assertTrue($collection->contains($object));
+        $this->assertTrue($collection->has($object));
 
         $collection->removeItem($object);
 
-        $this->assertFalse($collection->contains($object));
+        $this->assertFalse($collection->has($object));
     }
 
-    public function testContains()
+    public function testHas()
     {
         $collection = new Collection();
 
         $collection->add([1, 2, 3]);
 
-        $this->assertTrue($collection->contains(2));
+        $this->assertTrue($collection->has(2));
     }
 
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function testContains()
+    {
+        $collection = new Collection();
+
+        $collection->contains(2);
+    }
+
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     */
     public function testContainsKey()
+    {
+        $collection = new Collection();
+
+        $collection->containsKey('foo');
+    }
+
+    public function testHasKey()
     {
         $collection = new Collection();
 
@@ -74,8 +94,23 @@ class CollectionTest extends TestCase
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertTrue($collection->containsKey('foo'));
-        $this->assertTrue($collection->containsKey('baz'));
+        $this->assertTrue($collection->hasKey('foo'));
+        $this->assertTrue($collection->hasKey('baz'));
+    }
+
+    public function testIsEmpty()
+    {
+        $collection = new Collection();
+
+        $collection
+            ->set('foo', 'Bar')
+            ->set('baz', null);
+
+        $this->assertFalse($collection->isEmpty());
+
+        $collection->clear();
+
+        $this->assertTrue($collection->isEmpty());
     }
 
     public function testFirstLast()
@@ -184,6 +219,6 @@ class CollectionTest extends TestCase
         });
 
         $this->assertNotSame($collection, $filtered);
-        $this->assertFalse($filtered->containsKey('foo'));
+        $this->assertFalse($filtered->hasKey('foo'));
     }
 }

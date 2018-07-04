@@ -78,6 +78,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function last();
 
     /**
+     * @deprecated Use has() instead
      * Returns whether the given item is in the collection.
      *
      * @param mixed $item
@@ -88,6 +89,18 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function contains($item, $strict = true);
 
     /**
+     * Returns whether the given item is in the collection.
+     *
+     * @param mixed $item
+     * @param bool  $strict
+     *
+     * @return bool
+     */
+    public function has($item, $strict = true);
+
+    /**
+     * @deprecated Use hasKey instead
+     *
      * Returns whether the given key exists in the collection.
      *
      * @param string|int $key
@@ -95,6 +108,22 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * @return bool
      */
     public function containsKey($key);
+
+    /**
+     * Returns whether the given key exists in the collection.
+     *
+     * @param string|int $key
+     *
+     * @return bool
+     */
+    public function hasKey($key);
+
+    /**
+     * Returns whether the collection is empty.
+     *
+     * @return bool
+     */
+    public function isEmpty();
 
     /**
      * @return CollectionInterface
