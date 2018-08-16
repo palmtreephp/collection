@@ -313,24 +313,4 @@ class Collection implements CollectionInterface
     {
         return count($this->items);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function serialize()
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function unserialize($serialized)
-    {
-        foreach (unserialize($serialized) as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
-    }
 }

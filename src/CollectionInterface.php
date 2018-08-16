@@ -2,7 +2,7 @@
 
 namespace Palmtree\Collection;
 
-interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
+interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable
 {
     /**
      * Adds a single item with the given key to the collection.
