@@ -221,4 +221,21 @@ class CollectionTest extends TestCase
         $this->assertNotSame($collection, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
     }
+
+    public function testFilterWithKeys()
+    {
+        $collection = new Collection('int');
+
+        $collection
+            ->set('foo', 1)
+            ->set('bar', 2)
+            ->set('baz', 3);
+
+        $filtered = $collection->filter(function ($item, $key) {
+            return $key !== 'foo';
+        }, true);
+
+        $this->assertNotSame($collection, $filtered);
+        $this->assertFalse($filtered->hasKey('foo'));
+    }
 }

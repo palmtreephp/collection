@@ -126,10 +126,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a new instance containing items in the collection filtered by a predicate.
      *
      * @param callable $predicate
+     * @param bool     $keys Whether to pass keys as a second argument to the predicate
      *
      * @return CollectionInterface
      */
-    public function filter(callable $predicate = null);
+    public function filter(callable $predicate = null, $keys = false);
 
     /**
      * @param array|\Traversable $items

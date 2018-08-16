@@ -217,7 +217,7 @@ class Collection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function filter(callable $predicate = null)
+    public function filter(callable $predicate = null, $keys = false)
     {
         if (is_null($predicate)) {
             $predicate = function ($value) {
@@ -227,7 +227,11 @@ class Collection implements CollectionInterface
 
         $filtered = [];
         foreach ($this->items as $key => $value) {
-            if ($predicate($value, $key)) {
+            $args = [$value];
+            if ($keys) {
+                $args[] = $key;
+            }
+            if ($predicate(...$args)) {
                 $filtered[$key] = $value;
             }
         }
