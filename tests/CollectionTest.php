@@ -238,4 +238,22 @@ class CollectionTest extends TestCase
         $this->assertNotSame($collection, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
     }
+
+    public function testJsonSerialize()
+    {
+        $collection = new Collection('int');
+
+        $collection
+            ->set('foo', 1)
+            ->set('bar', 2)
+            ->set('baz', 3);
+
+        $json = json_encode($collection);
+
+        $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
+
+        $collectionFromJson = Collection::fromJson($json, $collection->getValidator()->getType());
+
+        $this->assertEquals($collection, $collectionFromJson);
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace Palmtree\Collection;
 
-interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable
+interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
      * Adds a single item with the given key to the collection.
@@ -144,4 +144,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * @return array
      */
     public function toArray();
+
+    /**
+     * @param string $json
+     * @param string $type
+     * @return CollectionInterface
+     */
+    public static function fromJson($json, $type = null);
 }

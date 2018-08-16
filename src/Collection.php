@@ -317,4 +317,20 @@ class Collection implements CollectionInterface
     {
         return count($this->items);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fromJson($json, $type = null)
+    {
+        return static::fromArray(json_decode($json, true), $type);
+    }
 }
