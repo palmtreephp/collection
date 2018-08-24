@@ -1,11 +1,12 @@
 <?php
 
-use Palmtree\Collection\Collection;
+use Palmtree\Collection\Map;
+use Palmtree\Collection\Sequence;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Objects of the same class
-$objects = new Collection(\stdClass::class);
+$objects = new Map(\stdClass::class);
 
 $item       = new \stdClass();
 $item->data = 'Hello, World!';
@@ -21,7 +22,7 @@ $item->data = 'Hello, again!';
 $objects->set('key2', $item2);
 
 // Arrays
-$arrays = new Collection('array');
+$arrays = new Map('array');
 
 $items = [];
 
@@ -42,20 +43,20 @@ $files->add([
     new SplFileObject(),
 ])*/;
 
-$closures = new Collection(\Closure::class);
+$closures = new Sequence(\Closure::class);
 
 $closures->push(function ($test) {
     echo $test;
 });
 
-$strings = new Collection('string');
+$strings = new Map('string');
 // ...
 
-$ints = new Collection('int');
+$ints = new Map('int');
 // ...
 
-$booleans = new Collection('bool');
+$booleans = new Map('bool');
 // ...
 
-$floats = Collection::fromArray([1.2, 43.9], 'float');
+$floats = Sequence::fromArray([1.2, 43.9], 'float');
 // ...

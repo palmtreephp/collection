@@ -2,7 +2,8 @@
 
 namespace Palmtree\Collection\Test;
 
-use Palmtree\Collection\Collection;
+use Palmtree\Collection\Map;
+use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class CollectionTypeValidationTest extends TestCase
@@ -10,28 +11,28 @@ class CollectionTypeValidationTest extends TestCase
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidObjectType()
     {
-        $collection = new Collection(\stdClass::class);
+        $collection = new Sequence(\stdClass::class);
         $collection->push(1);
     }
 
     public function testValidObjectType()
     {
-        $collection = new Collection(\stdClass::class);
+        $collection = new Map(\stdClass::class);
 
         $this->assertTrue($collection->getValidator()->validate(new \stdClass()));
     }
 
     public function testValidScalarTypes()
     {
-        $collection = new Collection('string');
+        $collection = new Map('string');
 
         $this->assertTrue($collection->getValidator()->validate('Foo'));
 
-        $collection = new Collection('float');
+        $collection = new Map('float');
 
         $this->assertTrue($collection->getValidator()->validate(0.1));
 
-        $collection = new Collection('bool');
+        $collection = new Map('bool');
 
         $this->assertTrue($collection->getValidator()->validate(true));
     }
@@ -39,13 +40,13 @@ class CollectionTypeValidationTest extends TestCase
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidScalarType()
     {
-        $collection = new Collection('string');
+        $collection = new Sequence('string');
         $collection->push(1);
     }
 
     /** @expectedException \InvalidArgumentException */
     public function testInvalidTypeValue()
     {
-        new Collection(1);
+        new Map(1);
     }
 }

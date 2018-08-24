@@ -2,35 +2,23 @@
 
 namespace Palmtree\Collection\Test;
 
-use Palmtree\Collection\Collection;
+use Palmtree\Collection\Map;
 use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class MapTest extends TestCase
 {
     public function testSetGet()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->set('foo', 'Bar');
 
         $this->assertSame('Bar', $collection->get('foo'));
     }
 
-    public function testPushArray()
-    {
-        $collection = new Collection();
-
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
-
-        $this->assertSame([1, 2, 3], $collection->toArray());
-    }
-
     public function testAdd()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $data = [
             'foo'  => 'Bar',
@@ -45,10 +33,10 @@ class CollectionTest extends TestCase
 
     public function testRemove()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $object = new \stdClass();
-        $collection->push($object);
+        $collection->set('foo', $object);
 
         $this->assertTrue($collection->has($object));
 
@@ -59,7 +47,7 @@ class CollectionTest extends TestCase
 
     public function testHas()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->add([1, 2, 3]);
 
@@ -71,7 +59,7 @@ class CollectionTest extends TestCase
      */
     public function testContains()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->contains(2);
     }
@@ -81,14 +69,14 @@ class CollectionTest extends TestCase
      */
     public function testContainsKey()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->containsKey('foo');
     }
 
     public function testHasKey()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection
             ->set('foo', 'Bar')
@@ -100,7 +88,7 @@ class CollectionTest extends TestCase
 
     public function testIsEmpty()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection
             ->set('foo', 'Bar')
@@ -115,16 +103,16 @@ class CollectionTest extends TestCase
 
     public function testFirstLast()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $objectOne   = new \stdClass();
         $objectTwo   = new \stdClass();
         $objectThree = new \stdClass();
 
         $collection
-            ->push($objectOne)
-            ->push($objectTwo)
-            ->push($objectThree);
+            ->set('one', $objectOne)
+            ->set('two', $objectTwo)
+            ->set('three', $objectThree);
 
         $this->assertSame($objectOne, $collection->first());
         $this->assertNotSame($objectTwo, $collection->first());
@@ -135,17 +123,17 @@ class CollectionTest extends TestCase
 
     public function testClear()
     {
-        $collection = new Collection();
-        $collection->push('Foo');
+        $collection = new Map();
+        $collection->set('foo', 'Foo');
 
         $collection->clear();
 
-        $this->assertEmpty($collection, 'Derp');
+        $this->assertEmpty($collection);
     }
 
     public function testKeys()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection
             ->set('foo', 'Bar')
@@ -156,7 +144,7 @@ class CollectionTest extends TestCase
 
     public function testValues()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $objectOne = new \stdClass();
         $objectTwo = new \stdClass();
@@ -170,19 +158,25 @@ class CollectionTest extends TestCase
 
     public function testIterator()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
+            ->set('one', 1)
+            ->set('two', 2)
+            ->set('three', 3);
 
-        $this->assertSame([1, 2, 3], iterator_to_array($collection));
+        $expected = [
+            'one'   => 1,
+            'two'   => 2,
+            'three' => 3,
+        ];
+
+        $this->assertSame($expected, iterator_to_array($collection));
     }
 
     public function testSerialization()
     {
-        $collection = new Collection('int');
+        $collection = new Map('int');
 
         $collection
             ->set('foo', 1)
@@ -191,7 +185,7 @@ class CollectionTest extends TestCase
 
         $serialized = serialize($collection);
 
-        /** @var Collection $newCollection */
+        /** @var Map $newCollection */
         $newCollection = unserialize($serialized);
 
         $this->assertEquals('int', $newCollection->getValidator()->getType());
@@ -207,7 +201,7 @@ class CollectionTest extends TestCase
 
     public function testFilter()
     {
-        $collection = new Collection('int');
+        $collection = new Map('int');
 
         $collection
             ->set('foo', 1)
@@ -224,7 +218,7 @@ class CollectionTest extends TestCase
 
     public function testFilterWithKeys()
     {
-        $collection = new Collection('int');
+        $collection = new Map('int');
 
         $collection
             ->set('foo', 1)
@@ -241,7 +235,7 @@ class CollectionTest extends TestCase
 
     public function testJsonSerialize()
     {
-        $collection = new Collection('int');
+        $collection = new Map('int');
 
         $collection
             ->set('foo', 1)
@@ -252,7 +246,7 @@ class CollectionTest extends TestCase
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 
-        $collectionFromJson = Collection::fromJson($json, $collection->getValidator()->getType());
+        $collectionFromJson = Map::fromJson($json, $collection->getValidator()->getType());
 
         $this->assertEquals($collection, $collectionFromJson);
     }

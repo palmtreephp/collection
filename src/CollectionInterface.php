@@ -5,15 +5,6 @@ namespace Palmtree\Collection;
 interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
-     * Adds a single item with the given key to the collection.
-     *
-     * @param string|int $key
-     * @param mixed      $value
-     * @return CollectionInterface
-     */
-    public function set($key, $value);
-
-    /**
      * Returns a single item with the given key from the collection.
      *
      * @param string|int $key
@@ -38,16 +29,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public function remove($key);
-
-    /**
-     * Removes the given item from the collection if it is found.
-     *
-     * @param mixed $item
-     *
-     * @return CollectionInterface
-     */
-    public function removeItem($item);
+    public function removeItem($key);
 
     /**
      * Clears all items from the collection.
@@ -88,15 +70,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function has($item, $strict = true);
 
     /**
-     * Returns whether the given key exists in the collection.
-     *
-     * @param string|int $key
-     *
-     * @return bool
-     */
-    public function hasKey($key);
-
-    /**
      * Returns whether the collection is empty.
      *
      * @return bool
@@ -109,18 +82,14 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function getKeys();
 
     /**
-     * @return CollectionInterface
-     */
-    public function getValues();
-
-    /**
      * Returns a new instance containing items mapped from the given callback.
      *
      * @param callable $callback
+     * @param bool     $keys Whether to pass keys as a second argument to the callback.
      *
      * @return CollectionInterface
      */
-    public function map(callable $callback);
+    public function map(callable $callback, $keys);
 
     /**
      * Returns a new instance containing items in the collection filtered by a predicate.

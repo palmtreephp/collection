@@ -2,14 +2,14 @@
 
 namespace Palmtree\Collection\Test;
 
-use Palmtree\Collection\Collection;
+use Palmtree\Collection\Map;
 use PHPUnit\Framework\TestCase;
 
 class CollectionArrayAccessTest extends TestCase
 {
     public function testOffsetExists()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->set('foo', 'Bar');
 
@@ -18,7 +18,7 @@ class CollectionArrayAccessTest extends TestCase
 
     public function testOffsetGet()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->set('foo', 'Bar');
 
@@ -27,13 +27,13 @@ class CollectionArrayAccessTest extends TestCase
 
     public function testOffsetSet()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection['foo'] = 'Bar';
 
         $this->assertEquals('Bar', $collection->get('foo'));
 
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection[] = 'Bar';
 
@@ -42,7 +42,7 @@ class CollectionArrayAccessTest extends TestCase
 
     public function testOffsetUnset()
     {
-        $collection = new Collection();
+        $collection = new Map();
 
         $collection->set('foo', 'Bar');
 

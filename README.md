@@ -19,11 +19,13 @@ composer require palmtree/collection
 
 ## Usage
 
-#### Basic Usage
+### Basic Usage
+
+#### Sequence
+
 ```php
 <?php
-// Sequence
-$sequence = new Collection();
+$sequence = new Sequence();
 
 $sequence->push('Foo');
 
@@ -32,21 +34,26 @@ $sequence
     ->push('Bar')
     ->push('Baz');
 
-// Map
-$map = new Collection();
+```
+
+#### Map
+
+```php
+<?php
+$map = new Map();
 
 $map->set('foo', 'Bar');
 $map->set('baz', true);
 
 // Create instance from an array of integers
-$collection = Collection::fromArray([1,2,3,4], 'int');
+$sequence = Sequence::fromArray([1,2,3,4], 'int');
 ```
 
 #### Instances of the same class
 
 ```php
 <?php
-$objects = new Collection(\stdClass::class);
+$objects = new Map(\stdClass::class);
 
 $item       = new \stdClass();
 $item->data = 'Hello, World!';
@@ -59,7 +66,7 @@ $objects->set('key1', $item);
 Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function as well as `float`, `int`, and `bool` for convenience.
 ```php
 <?php
-$floats = new Collection('float');
+$floats = new Sequence('float');
 
 $floats->push(3.4);
 $floats->push(789.83);
