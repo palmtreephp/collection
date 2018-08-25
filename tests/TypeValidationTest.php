@@ -49,4 +49,13 @@ class TypeValidationTest extends TestCase
     {
         new Map(1);
     }
+
+    public function testTypeMap()
+    {
+        $map = new Map();
+
+        $map->getValidator()->setTypeMap(['bool' => 'boolean']);
+
+        $this->assertSame(['bool' => 'boolean'], $map->getValidator()->getTypeMap());
+    }
 }
