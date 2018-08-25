@@ -7,7 +7,7 @@ class Map extends AbstractCollection
     /**
      * @inheritDoc
      */
-    public function add($elements)
+    public function add(iterable $elements): CollectionInterface
     {
         foreach ($elements as $key => $element) {
             $this->set($key, $element);
@@ -19,7 +19,7 @@ class Map extends AbstractCollection
     /**
      * @inheritDoc
      */
-    public function getValues()
+    public function getValues(): CollectionInterface
     {
         return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
     }
@@ -31,7 +31,7 @@ class Map extends AbstractCollection
      * @param mixed      $element
      * @return Map
      */
-    public function set($key, $element)
+    public function set($key, $element): CollectionInterface
     {
         $this->validate($element);
 

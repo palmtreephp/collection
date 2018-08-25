@@ -10,7 +10,7 @@ class InvalidTypeException extends \Exception
      * @param string $expected
      * @param string $actual
      */
-    public function __construct($expected, $actual)
+    public function __construct(string $expected, string $actual)
     {
         $this->message = sprintf('Item must be of type %s. %s given', $expected, $actual);
     }

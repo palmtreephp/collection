@@ -6,7 +6,7 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 
 class TypeValidator
 {
-    /** @var string */
+    /** @var string|null */
     protected $type;
 
     /**
@@ -22,7 +22,7 @@ class TypeValidator
         'float' => 'double',
     ];
 
-    public function __construct($type = null)
+    public function __construct(?string $type = null)
     {
         $this->setType($type);
     }
@@ -32,11 +32,11 @@ class TypeValidator
      *
      * @see $typeMap for valid primitive types.
      *
-     * @param mixed $type
+     * @param string|null $type
      *
      * @return TypeValidator
      */
-    public function setType($type)
+    public function setType(?string $type): TypeValidator
     {
         if (!is_null($type) && !is_string($type)) {
             throw new \InvalidArgumentException('Type must be a string');
@@ -50,9 +50,9 @@ class TypeValidator
     /**
      * Returns the type for this collection.
      *
-     * @return string
+     * @return string|null
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -60,7 +60,7 @@ class TypeValidator
     /**
      * @return array
      */
-    public function getTypeMap()
+    public function getTypeMap(): array
     {
         return $this->typeMap;
     }
@@ -69,7 +69,7 @@ class TypeValidator
      * @param array $typeMap
      * @return TypeValidator
      */
-    public function setTypeMap(array $typeMap)
+    public function setTypeMap(array $typeMap): TypeValidator
     {
         $this->typeMap = $typeMap;
         return $this;
@@ -83,7 +83,7 @@ class TypeValidator
      * @return bool
      * @throws InvalidTypeException
      */
-    public function validate($element)
+    public function validate($element): bool
     {
         $expected = $this->getType();
         if (!$expected) {
@@ -100,12 +100,12 @@ class TypeValidator
     }
 
     /**
-     * @param mixed  $element     The item to check.
+     * @param mixed  $element  The item to check.
      * @param string $expected The expected type $element should be.
      * @param string $actual   The actual type of $element.
      * @return bool
      */
-    public function isValid($element, $expected, $actual)
+    public function isValid($element, string $expected, string $actual): bool
     {
         if ($this->isInstanceOf($element, $expected) || $this->getMappedType($expected) === $actual) {
             return true;
@@ -121,7 +121,7 @@ class TypeValidator
      * @param string $class Fully qualified class or interface name.
      * @return bool
      */
-    protected function isInstanceOf($thing, $class)
+    protected function isInstanceOf($thing, string $class): bool
     {
         return (class_exists($class) || interface_exists($class)) && $thing instanceof $class;
     }
@@ -130,8 +130,8 @@ class TypeValidator
      * @param string $type
      * @return string
      */
-    protected function getMappedType($type)
+    protected function getMappedType(string $type): string
     {
-        return isset($this->typeMap[$type]) ? $this->typeMap[$type] : $type;
+        return $this->typeMap[$type] ?? $type;
     }
 }

@@ -7,7 +7,7 @@ class Sequence extends AbstractCollection
     /**
      * @inheritDoc
      */
-    public function add($elements)
+    public function add(iterable $elements): CollectionInterface
     {
         return $this->push(...$elements);
     }
@@ -19,7 +19,7 @@ class Sequence extends AbstractCollection
      *
      * @return Sequence
      */
-    public function push(...$elements)
+    public function push(...$elements): CollectionInterface
     {
         foreach ($elements as $element) {
             $this->validate($element);

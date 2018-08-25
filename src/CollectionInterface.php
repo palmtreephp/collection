@@ -20,7 +20,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public function add($elements);
+    public function add(iterable $elements): CollectionInterface;
 
     /**
      * Removes an item with the given key from the collection.
@@ -29,21 +29,21 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public function removeItem($key);
+    public function removeItem($key): CollectionInterface;
 
     /**
      * Clears all items from the collection.
      *
      * @return CollectionInterface
      */
-    public function clear();
+    public function clear(): CollectionInterface;
 
     /**
      * Returns the entire collection.
      *
      * @return array
      */
-    public function all();
+    public function all(): array;
 
     /**
      * Returns the first item in the collection.
@@ -67,19 +67,27 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return bool
      */
-    public function has($element, $strict = true);
+    public function has($element, bool $strict = true): bool;
+
+    /**
+     * Returns whether the given key exists in the collection.
+     *
+     * @param string|int
+     * @return bool
+     */
+    public function hasKey($key): bool;
 
     /**
      * Returns whether the collection is empty.
      *
      * @return bool
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     /**
      * @return CollectionInterface
      */
-    public function getKeys();
+    public function getKeys(): CollectionInterface;
 
     /**
      * Returns a new instance containing items mapped from the given callback.
@@ -90,7 +98,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public function map(callable $callback, $type = null, $keys = false);
+    public function map(callable $callback, string $type = null, bool $keys = false): CollectionInterface;
 
     /**
      * Returns a new instance containing items in the collection filtered by a predicate.
@@ -100,7 +108,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public function filter(callable $predicate = null, $keys = false);
+    public function filter(callable $predicate = null, bool $keys = false): CollectionInterface;
 
     /**
      * @param array|\Traversable $elements
@@ -108,17 +116,17 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return CollectionInterface
      */
-    public static function fromArray($elements, $type = null);
+    public static function fromArray(iterable $elements, string $type = null): CollectionInterface;
 
     /**
      * @return array
      */
-    public function toArray();
+    public function toArray(): array;
 
     /**
      * @param string $json
      * @param string $type
      * @return CollectionInterface
      */
-    public static function fromJson($json, $type = null);
+    public static function fromJson(string $json, string $type = null): CollectionInterface;
 }

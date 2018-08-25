@@ -7,7 +7,7 @@ use Palmtree\Collection\Validator\TypeValidator;
 abstract class AbstractCollection implements CollectionInterface
 {
     /** @var array */
-    protected $elements = [];
+    protected $elements;
     /** @var TypeValidator */
     protected $validator;
 
@@ -16,28 +16,10 @@ abstract class AbstractCollection implements CollectionInterface
      *
      * @param string $type
      */
-    public function __construct($type = null)
+    public function __construct(?string $type = null)
     {
+        $this->elements  = [];
         $this->validator = new TypeValidator($type);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function fromJson($json, $type = null)
-    {
-        return static::fromArray(json_decode($json, true), $type);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function fromArray($elements, $type = null)
-    {
-        $collection = new static($type);
-        $collection->add($elements);
-
-        return $collection;
     }
 
     /**
@@ -51,7 +33,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function has($element, $strict = true)
+    public function has($element, bool $strict = true): bool
     {
         return in_array($element, $this->elements, $strict);
     }
@@ -59,7 +41,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function hasKey($key)
+    public function hasKey($key): bool
     {
         return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
     }
@@ -72,7 +54,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function removeItem($element)
+    public function removeItem($element): CollectionInterface
     {
         $key = array_search($element, $this->elements);
 
@@ -86,7 +68,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function getKeys()
+    public function getKeys(): CollectionInterface
     {
         return static::fromArray(array_keys($this->elements));
     }
@@ -94,7 +76,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function clear()
+    public function clear(): CollectionInterface
     {
         $this->elements = [];
 
@@ -104,7 +86,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function all()
+    public function all(): array
     {
         return $this->toArray();
     }
@@ -112,7 +94,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->elements;
     }
@@ -144,7 +126,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->elements);
     }
@@ -152,7 +134,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function filter(callable $predicate = null, $keys = false)
+    public function filter(callable $predicate = null, bool $keys = false): CollectionInterface
     {
         if (is_null($predicate)) {
             $predicate = function ($value) {
@@ -166,6 +148,7 @@ abstract class AbstractCollection implements CollectionInterface
             if ($keys) {
                 $args[] = $key;
             }
+
             if ($predicate(...$args)) {
                 $filtered[$key] = $value;
             }
@@ -174,15 +157,14 @@ abstract class AbstractCollection implements CollectionInterface
         return static::fromArray($filtered, $this->getValidator()->getType());
     }
 
- /**
+    /**
      * @inheritDoc
      */
-    public function map(callable $callback, $type = null, $keys = false)
+    public function map(callable $callback, string $type = null, bool $keys = false): CollectionInterface
     {
         $map = [];
         foreach ($this->elements as $key => $value) {
             $args = [$value];
-
             if ($keys) {
                 $args[] = $key;
             }
@@ -196,7 +178,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @return TypeValidator
      */
-    public function getValidator()
+    public function getValidator(): TypeValidator
     {
         return $this->validator;
     }
@@ -205,7 +187,7 @@ abstract class AbstractCollection implements CollectionInterface
      * @param $element
      * @return bool
      */
-    public function validate($element)
+    public function validate($element): bool
     {
         return $this->getValidator()->validate($element);
     }
@@ -213,7 +195,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
     }
@@ -225,6 +207,7 @@ abstract class AbstractCollection implements CollectionInterface
     {
         return $this->hasKey($offset);
     }
+
     /**
      * @inheritDoc
      */
@@ -247,5 +230,24 @@ abstract class AbstractCollection implements CollectionInterface
     public function jsonSerialize()
     {
         return $this->elements;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fromJson(string $json, string $type = null): CollectionInterface
+    {
+        return static::fromArray(json_decode($json, true), $type);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fromArray(iterable $elements, string $type = null): CollectionInterface
+    {
+        $collection = new static($type);
+        $collection->add($elements);
+
+        return $collection;
     }
 }
