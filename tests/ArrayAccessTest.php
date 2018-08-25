@@ -6,7 +6,7 @@ use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
-class CollectionArrayAccessTest extends TestCase
+class ArrayAccessTest extends TestCase
 {
     public function testOffsetExists()
     {

@@ -6,7 +6,7 @@ use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
-class CollectionTypeValidationTest extends TestCase
+class TypeValidationTest extends TestCase
 {
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidObjectType()
