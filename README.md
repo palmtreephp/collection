@@ -29,6 +29,13 @@ $map = new Map();
 
 $map->set('foo', 'Bar');
 $map->set('baz', true);
+
+var_dump($map->get('baz')); // Returns true
+
+// Array access
+echo $map['foo']; // Prints Bar;
+
+$map['bar'] = 'Baz';
 ```
 
 #### Sequence
