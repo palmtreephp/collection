@@ -53,6 +53,11 @@ $sequence
 
 // Create instance from an array of integers
 $sequence = Sequence::fromArray([1,2,3,4], 'int');
+
+// Maps and Sequences are both traversable
+foreach($sequence as $integer) {
+    
+}
 ```
 
 #### Instances of the same class
