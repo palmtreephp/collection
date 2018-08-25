@@ -43,6 +43,35 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
+    public function get($key)
+    {
+        return $this->hasKey($key) ? $this->elements[$key] : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function has($element, $strict = true)
+    {
+        return in_array($element, $this->elements, $strict);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasKey($key)
+    {
+        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
+    }
+
+    public function remove($key)
+    {
+        unset($this->elements[$key]);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function removeItem($element)
     {
         $key = array_search($element, $this->elements);
@@ -52,11 +81,6 @@ abstract class AbstractCollection implements CollectionInterface
         }
 
         return $this;
-    }
-
-    public function remove($key)
-    {
-        unset($this->elements[$key]);
     }
 
     /**
@@ -150,15 +174,7 @@ abstract class AbstractCollection implements CollectionInterface
         return static::fromArray($filtered, $this->getValidator()->getType());
     }
 
-    /**
-     * @return TypeValidator
-     */
-    public function getValidator()
-    {
-        return $this->validator;
-    }
-
-    /**
+ /**
      * @inheritDoc
      */
     public function map(callable $callback, $type = null, $keys = false)
@@ -178,11 +194,11 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @inheritDoc
+     * @return TypeValidator
      */
-    public function getIterator()
+    public function getValidator()
     {
-        return new \ArrayIterator($this->elements);
+        return $this->validator;
     }
 
     /**
@@ -197,33 +213,24 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function offsetExists($offset)
+    public function getIterator()
     {
-        return $this->hasKey($offset);
+        return new \ArrayIterator($this->elements);
     }
 
     /**
      * @inheritDoc
      */
-    public function hasKey($key)
+    public function offsetExists($offset)
     {
-        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
+        return $this->hasKey($offset);
     }
-
     /**
      * @inheritDoc
      */
     public function offsetGet($offset)
     {
         return $this->get($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get($key)
-    {
-        return $this->hasKey($key) ? $this->elements[$key] : null;
     }
 
     /**
@@ -240,33 +247,5 @@ abstract class AbstractCollection implements CollectionInterface
     public function jsonSerialize()
     {
         return $this->elements;
-    }
-
-    /**
-     * @deprecated Use has instead
-     */
-    public function contains($element, $strict = true)
-    {
-        trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
-
-        return $this->has($element, $strict);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function has($element, $strict = true)
-    {
-        return in_array($element, $this->elements, $strict);
-    }
-
-    /**
-     * @deprecated Use hasKey instead
-     */
-    public function containsKey($key)
-    {
-        trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
-
-        return $this->hasKey($key);
     }
 }

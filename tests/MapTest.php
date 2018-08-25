@@ -54,26 +54,6 @@ class MapTest extends TestCase
         $this->assertTrue($collection->has(2));
     }
 
-    /**
-     * @expectedException \PHPUnit\Framework\Error\Deprecated
-     */
-    public function testContains()
-    {
-        $collection = new Map();
-
-        $collection->contains(2);
-    }
-
-    /**
-     * @expectedException \PHPUnit\Framework\Error\Deprecated
-     */
-    public function testContainsKey()
-    {
-        $collection = new Map();
-
-        $collection->containsKey('foo');
-    }
-
     public function testHasKey()
     {
         $collection = new Map();
