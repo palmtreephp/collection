@@ -201,19 +201,31 @@ class MapTest extends TestCase
 
     public function testFilter()
     {
-        $collection = new Map('int');
+        $map = new Map('int');
 
-        $collection
+        $map
             ->set('foo', 1)
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $collection->filter(function ($item) {
-            return $item > 1;
+        $filtered = $map->filter(function ($element) {
+            return $element > 1;
         });
 
-        $this->assertNotSame($collection, $filtered);
+        $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
+
+        $map = new Map('bool');
+
+        $map
+            ->set('foo', true)
+            ->set('bar', false)
+            ->set('baz', true);
+
+        $filtered = $map->filter();
+
+        $this->assertNotSame($map, $filtered);
+        $this->assertFalse($filtered->hasKey('bar'));
     }
 
     public function testFilterWithKeys()
@@ -225,12 +237,32 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $collection->filter(function ($item, $key) {
+        $filtered = $collection->filter(function ($element, $key) {
             return $key !== 'foo';
         }, true);
 
         $this->assertNotSame($collection, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
+    }
+
+    public function testMapWithKeys()
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', 1)
+            ->set('bar', 2)
+            ->set('baz', 3);
+
+        $mapped = $map->map(function ($element, $key) {
+            if ($key === 'bar') {
+                return 4;
+            }
+
+            return $element;
+        }, null, true);
+
+        $this->assertSame(4, $mapped['bar']);
     }
 
     public function testJsonSerialize()

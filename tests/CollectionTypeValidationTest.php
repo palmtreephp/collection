@@ -19,22 +19,22 @@ class CollectionTypeValidationTest extends TestCase
     {
         $collection = new Map(\stdClass::class);
 
-        $this->assertTrue($collection->getValidator()->validate(new \stdClass()));
+        $this->assertTrue($collection->validate(new \stdClass()));
     }
 
     public function testValidScalarTypes()
     {
         $collection = new Map('string');
 
-        $this->assertTrue($collection->getValidator()->validate('Foo'));
+        $this->assertTrue($collection->validate('Foo'));
 
         $collection = new Map('float');
 
-        $this->assertTrue($collection->getValidator()->validate(0.1));
+        $this->assertTrue($collection->validate(0.1));
 
         $collection = new Map('bool');
 
-        $this->assertTrue($collection->getValidator()->validate(true));
+        $this->assertTrue($collection->validate(true));
     }
 
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */

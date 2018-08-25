@@ -5,17 +5,27 @@ namespace Palmtree\Collection;
 class Sequence extends AbstractCollection
 {
     /**
+     * @inheritDoc
+     */
+    public function add($elements)
+    {
+        return $this->push(...$elements);
+    }
+
+    /**
      * Pushes an item on to the end of the sequence.
      *
-     * @param $item
+     * @param $elements ...
      *
      * @return Sequence
      */
-    public function push($item)
+    public function push(...$elements)
     {
-        $this->validator->validate($item);
+        foreach ($elements as $element) {
+            $this->validate($element);
 
-        $this->items[] = $item;
+            $this->elements[] = $element;
+        }
 
         return $this;
     }
@@ -27,7 +37,7 @@ class Sequence extends AbstractCollection
      */
     public function pop()
     {
-        return array_pop($this->items);
+        return array_pop($this->elements);
     }
 
     /**
@@ -37,33 +47,23 @@ class Sequence extends AbstractCollection
      */
     public function shift()
     {
-        return array_shift($this->items);
+        return array_shift($this->elements);
     }
 
     /**
-     * Prepends one or more items to the beginning of an array
+     * Prepends one or more items to the beginning of the sequence
      *
-     * @param mixed $item
+     * @param mixed $elements ...
      *
      * @return int
      */
-    public function unshift(...$item)
+    public function unshift(...$elements)
     {
-        $this->validator->validate($item);
-
-        return array_unshift($this->items, $item);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function add($items)
-    {
-        foreach ($items as $item) {
-            $this->push($item);
+        foreach ($elements as $element) {
+            $this->validate($element);
         }
 
-        return $this;
+        return array_unshift($this->elements, ...$elements);
     }
 
     /**
@@ -71,9 +71,12 @@ class Sequence extends AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        // TODO: should we throw an exception here?
-        $this->validator->validate($value);
+        $this->validate($value);
 
-        $this->items[$offset] = $value;
+        if (is_null($offset)) {
+            $this->elements[] = $value;
+        } else {
+            $this->elements[$offset] = $value;
+        }
     }
 }

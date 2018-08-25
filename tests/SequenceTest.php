@@ -6,33 +6,46 @@ use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class SequenceTest extends TestCase
 {
-    public function testPushArray()
+    public function testPush()
     {
         $collection = new Sequence();
 
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
+        $collection->push(1, 2, 3);
 
         $this->assertSame([1, 2, 3], $collection->toArray());
     }
 
-    public function testAdd()
+    public function testPop()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
-        $data = [
-            'Bar',
-            'Bez',
-            'Bah',
-        ];
+        $sequence->push(1, 2, 3);
 
-        $collection->add($data);
+        $this->assertSame(3, $sequence->pop());
+        $this->assertFalse($sequence->has(3));
+    }
 
-        $this->assertSame($data, $collection->toArray());
+    public function testShift()
+    {
+        $sequence = new Sequence();
+
+        $sequence->push(1, 2, 3);
+
+        $this->assertSame(1, $sequence->shift());
+        $this->assertFalse($sequence->has(1));
+    }
+
+    public function testUnshift()
+    {
+        $sequence = new Sequence();
+
+        $sequence->push(2, 3);
+
+        $sequence->unshift(1);
+
+        $this->assertSame(1, $sequence->first());
     }
 
     public function testRemove()
@@ -81,16 +94,22 @@ class CollectionTest extends TestCase
         $objectTwo   = new \stdClass();
         $objectThree = new \stdClass();
 
-        $collection
-            ->push($objectOne)
-            ->push($objectTwo)
-            ->push($objectThree);
+        $collection->push($objectOne, $objectTwo, $objectThree);
 
         $this->assertSame($objectOne, $collection->first());
         $this->assertNotSame($objectTwo, $collection->first());
 
         $this->assertSame($objectThree, $collection->last());
         $this->assertNotSame($objectTwo, $collection->last());
+    }
+
+    public function testAll()
+    {
+        $sequence = new Sequence();
+
+        $sequence->push(1, 2, 3);
+
+        $this->assertSame([1, 2, 3], $sequence->all());
     }
 
     public function testClear()
@@ -103,14 +122,43 @@ class CollectionTest extends TestCase
         $this->assertEmpty($collection);
     }
 
+    public function testFilter()
+    {
+        $sequence = new Sequence('int');
+
+        $sequence->push(1, 2, 3);
+
+        $filtered = $sequence->filter(function ($item) {
+            return $item < 3;
+        });
+
+        $this->assertNotSame($sequence, $filtered);
+        $this->assertFalse($filtered->has(3));
+    }
+
+    public function testMap()
+    {
+        $objectOne      = new \stdClass();
+        $objectOne->foo = 'Bar';
+
+        $objectTwo      = new \stdClass();
+        $objectTwo->foo = 'Baz';
+
+        $sequence = new Sequence(\stdClass::class);
+        $sequence->push($objectOne, $objectTwo);
+
+        $mapped = $sequence->map(function (\stdClass $object) {
+            return $object->foo;
+        }, 'string');
+
+        $this->assertSame(['Bar', 'Baz'], $mapped->toArray());
+    }
+
     public function testIterator()
     {
         $collection = new Sequence();
 
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
+        $collection->push(1, 2, 3);
 
         $this->assertSame([1, 2, 3], iterator_to_array($collection));
     }
@@ -119,10 +167,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Sequence('int');
 
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
+        $collection->push(1, 2, 3);
 
         $serialized = serialize($collection);
 
@@ -134,31 +179,11 @@ class CollectionTest extends TestCase
         $this->assertSame([1, 2, 3], $collection->toArray());
     }
 
-    public function testFilter()
-    {
-        $collection = new Sequence('int');
-
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
-
-        $filtered = $collection->filter(function ($item) {
-            return $item < 3;
-        });
-
-        $this->assertNotSame($collection, $filtered);
-        $this->assertFalse($filtered->has(3));
-    }
-
     public function testJsonSerialize()
     {
         $collection = new Sequence('int');
 
-        $collection
-            ->push(1)
-            ->push(2)
-            ->push(3);
+        $collection->push(1, 2, 3);
 
         $json = json_encode($collection);
 

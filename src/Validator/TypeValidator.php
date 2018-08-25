@@ -78,21 +78,21 @@ class TypeValidator
     /**
      * Returns whether the given item is a valid type.
      *
-     * @param mixed $item
+     * @param mixed $element
      *
      * @return bool
      * @throws InvalidTypeException
      */
-    public function validate($item)
+    public function validate($element)
     {
         $expected = $this->getType();
         if (!$expected) {
             return true;
         }
 
-        $actual = is_object($item) ? get_class($item) : gettype($item);
+        $actual = is_object($element) ? get_class($element) : gettype($element);
 
-        if (!$this->isValid($item, $expected, $actual)) {
+        if (!$this->isValid($element, $expected, $actual)) {
             throw new InvalidTypeException($expected, $actual);
         }
 
@@ -100,14 +100,14 @@ class TypeValidator
     }
 
     /**
-     * @param mixed  $item     The item to check.
-     * @param string $expected The expected type $item should be.
-     * @param string $actual   The actual type of $item.
+     * @param mixed  $element     The item to check.
+     * @param string $expected The expected type $element should be.
+     * @param string $actual   The actual type of $element.
      * @return bool
      */
-    public function isValid($item, $expected, $actual)
+    public function isValid($element, $expected, $actual)
     {
-        if ($this->isInstanceOf($item, $expected) || $this->getMappedType($expected) === $actual) {
+        if ($this->isInstanceOf($element, $expected) || $this->getMappedType($expected) === $actual) {
             return true;
         }
 

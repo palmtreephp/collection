@@ -55,10 +55,10 @@ $sequence = Sequence::fromArray([1,2,3,4], 'int');
 <?php
 $objects = new Map(\stdClass::class);
 
-$item       = new \stdClass();
-$item->data = 'Hello, World!';
+$element       = new \stdClass();
+$element->data = 'Hello, World!';
 
-$objects->set('key1', $item);
+$objects->set('key1', $element);
 ```
 
 #### Single type

@@ -3,6 +3,7 @@
 namespace Palmtree\Collection\Test;
 
 use Palmtree\Collection\Map;
+use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class CollectionArrayAccessTest extends TestCase
@@ -27,17 +28,21 @@ class CollectionArrayAccessTest extends TestCase
 
     public function testOffsetSet()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection['foo'] = 'Bar';
+        $map['foo'] = 'Bar';
 
-        $this->assertEquals('Bar', $collection->get('foo'));
+        $this->assertEquals('Bar', $map->get('foo'));
 
-        $collection = new Map();
+        $sequence = new Sequence();
 
-        $collection[] = 'Bar';
+        $sequence[] = 'Bar';
 
-        $this->assertEquals('Bar', $collection[0]);
+        $this->assertEquals('Bar', $sequence[0]);
+
+        $sequence[0] = 'Foo';
+
+        $this->assertEquals('Foo', $sequence[0]);
     }
 
     public function testOffsetUnset()

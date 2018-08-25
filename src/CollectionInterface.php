@@ -16,11 +16,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Adds a set of items to the collection.
      *
-     * @param array|\Traversable $items
+     * @param array|\Traversable $elements
      *
      * @return CollectionInterface
      */
-    public function add($items);
+    public function add($elements);
 
     /**
      * Removes an item with the given key from the collection.
@@ -62,12 +62,12 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns whether the given item is in the collection.
      *
-     * @param mixed $item
+     * @param mixed $element
      * @param bool  $strict
      *
      * @return bool
      */
-    public function has($item, $strict = true);
+    public function has($element, $strict = true);
 
     /**
      * Returns whether the collection is empty.
@@ -84,12 +84,13 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns a new instance containing items mapped from the given callback.
      *
-     * @param callable $callback
-     * @param bool     $keys Whether to pass keys as a second argument to the callback.
+     * @param callable    $callback
+     * @param string|null $type Type of the mapped collection
+     * @param bool        $keys Whether to pass keys as a second argument to the callback.
      *
      * @return CollectionInterface
      */
-    public function map(callable $callback, $keys);
+    public function map(callable $callback, $type = null, $keys = false);
 
     /**
      * Returns a new instance containing items in the collection filtered by a predicate.
@@ -102,12 +103,12 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function filter(callable $predicate = null, $keys = false);
 
     /**
-     * @param array|\Traversable $items
+     * @param array|\Traversable $elements
      * @param string             $type
      *
      * @return CollectionInterface
      */
-    public static function fromArray($items, $type = null);
+    public static function fromArray($elements, $type = null);
 
     /**
      * @return array

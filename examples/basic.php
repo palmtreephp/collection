@@ -8,28 +8,28 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // Objects of the same class
 $objects = new Map(\stdClass::class);
 
-$item       = new \stdClass();
-$item->data = 'Hello, World!';
+$element       = new \stdClass();
+$element->data = 'Hello, World!';
 
-$objects->set('key1', $item);
+$objects->set('key1', $element);
 
 // Throws an InvalidArgumentException
 //$objects->set('wont_work', ['Noop']);
 
-$item2      = new \stdClass();
-$item->data = 'Hello, again!';
+$element2      = new \stdClass();
+$element->data = 'Hello, again!';
 
-$objects->set('key2', $item2);
+$objects->set('key2', $element2);
 
 // Arrays
 $arrays = new Map('array');
 
-$items = [];
+$elements = [];
 
-$items['key1'] = [true, 'Some value', 7];
-$items['key2'] = [false, 'Another value', 8];
+$elements['key1'] = [true, 'Some value', 7];
+$elements['key2'] = [false, 'Another value', 8];
 
-$arrays->add($items);
+$arrays->add($elements);
 
 // Throws an InvalidTypeException
 //$arrays->set('wont_work', 'Noop');

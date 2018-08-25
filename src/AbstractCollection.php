@@ -7,7 +7,7 @@ use Palmtree\Collection\Validator\TypeValidator;
 abstract class AbstractCollection implements CollectionInterface
 {
     /** @var array */
-    protected $items = [];
+    protected $elements = [];
     /** @var TypeValidator */
     protected $validator;
 
@@ -24,17 +24,28 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function get($key)
+    public static function fromJson($json, $type = null)
     {
-        return $this->hasKey($key) ? $this->items[$key] : null;
+        return static::fromArray(json_decode($json, true), $type);
     }
 
     /**
      * @inheritDoc
      */
-    public function removeItem($item)
+    public static function fromArray($elements, $type = null)
     {
-        $key = array_search($item, $this->items);
+        $collection = new static($type);
+        $collection->add($elements);
+
+        return $collection;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeItem($element)
+    {
+        $key = array_search($element, $this->elements);
 
         if ($key !== false) {
             $this->remove($key);
@@ -45,7 +56,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     public function remove($key)
     {
-        unset($this->items[$key]);
+        unset($this->elements[$key]);
     }
 
     /**
@@ -53,23 +64,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function getKeys()
     {
-        return static::fromArray(array_keys($this->items));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function has($item, $strict = true)
-    {
-        return in_array($item, $this->items, $strict);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasKey($key)
-    {
-        return isset($this->items[$key]) || array_key_exists($key, $this->items);
+        return static::fromArray(array_keys($this->elements));
     }
 
     /**
@@ -77,7 +72,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function clear()
     {
-        $this->items = [];
+        $this->elements = [];
 
         return $this;
     }
@@ -87,7 +82,15 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function all()
     {
-        return $this->items;
+        return $this->toArray();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray()
+    {
+        return $this->elements;
     }
 
     /**
@@ -95,7 +98,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function first()
     {
-        return reset($this->items);
+        return reset($this->elements);
     }
 
     /**
@@ -103,7 +106,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        return end($this->items);
+        return end($this->elements);
     }
 
     /**
@@ -111,7 +114,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function count()
     {
-        return count($this->items);
+        return count($this->elements);
     }
 
     /**
@@ -119,7 +122,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function isEmpty()
     {
-        return empty($this->items);
+        return empty($this->elements);
     }
 
     /**
@@ -134,7 +137,7 @@ abstract class AbstractCollection implements CollectionInterface
         }
 
         $filtered = [];
-        foreach ($this->items as $key => $value) {
+        foreach ($this->elements as $key => $value) {
             $args = [$value];
             if ($keys) {
                 $args[] = $key;
@@ -144,53 +147,7 @@ abstract class AbstractCollection implements CollectionInterface
             }
         }
 
-        return self::fromArray($filtered, $this->validator->getType());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function map(callable $callback, $keys = false)
-    {
-        $map = [];
-        foreach ($this->items as $key => $value) {
-            $args = [$value];
-
-            if ($keys) {
-                $args[] = $key;
-            }
-
-            $map[$key] = $callback(...$args);
-        }
-
-        return static::fromArray($map, $this->getValidator()->getType());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->items);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function fromArray($items, $type = null)
-    {
-        $collection = new static($type);
-        $collection->add($items);
-
-        return $collection;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function toArray()
-    {
-        return $this->items;
+        return static::fromArray($filtered, $this->getValidator()->getType());
     }
 
     /**
@@ -204,6 +161,42 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
+    public function map(callable $callback, $type = null, $keys = false)
+    {
+        $map = [];
+        foreach ($this->elements as $key => $value) {
+            $args = [$value];
+
+            if ($keys) {
+                $args[] = $key;
+            }
+
+            $map[$key] = $callback(...$args);
+        }
+
+        return static::fromArray($map, $type);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->elements);
+    }
+
+    /**
+     * @param $element
+     * @return bool
+     */
+    public function validate($element)
+    {
+        return $this->getValidator()->validate($element);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function offsetExists($offset)
     {
         return $this->hasKey($offset);
@@ -212,9 +205,25 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
+    public function hasKey($key)
+    {
+        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get($key)
+    {
+        return $this->hasKey($key) ? $this->elements[$key] : null;
     }
 
     /**
@@ -230,25 +239,25 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function jsonSerialize()
     {
-        return $this->items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function fromJson($json, $type = null)
-    {
-        return static::fromArray(json_decode($json, true), $type);
+        return $this->elements;
     }
 
     /**
      * @deprecated Use has instead
      */
-    public function contains($item, $strict = true)
+    public function contains($element, $strict = true)
     {
         trigger_error(__METHOD__ . ' is deprecated and will be removed in v1.0', E_USER_DEPRECATED);
 
-        return $this->has($item, $strict);
+        return $this->has($element, $strict);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function has($element, $strict = true)
+    {
+        return in_array($element, $this->elements, $strict);
     }
 
     /**
