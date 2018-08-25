@@ -21,6 +21,16 @@ composer require palmtree/collection
 
 ### Basic Usage
 
+#### Map
+
+```php
+<?php
+$map = new Map();
+
+$map->set('foo', 'Bar');
+$map->set('baz', true);
+```
+
 #### Sequence
 
 ```php
@@ -33,17 +43,6 @@ $sequence->push('Foo');
 $sequence
     ->push('Bar')
     ->push('Baz');
-
-```
-
-#### Map
-
-```php
-<?php
-$map = new Map();
-
-$map->set('foo', 'Bar');
-$map->set('baz', true);
 
 // Create instance from an array of integers
 $sequence = Sequence::fromArray([1,2,3,4], 'int');
