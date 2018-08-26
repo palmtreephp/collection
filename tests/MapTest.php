@@ -3,6 +3,8 @@
 namespace Palmtree\Collection\Test;
 
 use Palmtree\Collection\Map;
+use Palmtree\Collection\Test\Fixture\Foo;
+use Palmtree\Collection\Test\Fixture\FooInterface;
 use PHPUnit\Framework\TestCase;
 
 class MapTest extends TestCase
@@ -243,6 +245,32 @@ class MapTest extends TestCase
         }, null, true);
 
         $this->assertSame(4, $mapped['bar']);
+    }
+
+    public function testIndex()
+    {
+        $map = new Map(FooInterface::class);
+
+        $foo = new Foo('test');
+        $foo2 = new Foo('test2');
+
+        $map->set('foo', $foo);
+        $map->set('foo2', $foo2);
+
+        $map->addIndex('bar', function (Foo $element) {
+            return $element->getBar();
+        });
+
+        $this->assertSame($foo, $map->getByIndex('bar', 'test'));
+        $this->assertSame($foo2, $map->getByIndex('bar', 'test2'));
+    }
+
+    /** @expectedException \Palmtree\Collection\Exception\InvalidMapIndex */
+    public function testInvalidIndex()
+    {
+        $map = new Map();
+
+        $map->getByIndex('blah', 1);
     }
 
     public function testJsonSerialize()
