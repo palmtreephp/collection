@@ -15,6 +15,11 @@
       "Palmtree\\Collection\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Palmtree\\Collection\\Test\\Fixture\\": "tests/fixtures"
+    }
+  },
   "require": {
     "php": ">=7.1"
   },

@@ -4,6 +4,8 @@ namespace Palmtree\Collection\Test;
 
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
+use Palmtree\Collection\Test\Fixture\Foo;
+use Palmtree\Collection\Test\Fixture\FooInterface;
 use PHPUnit\Framework\TestCase;
 
 class TypeValidationTest extends TestCase
@@ -11,15 +13,22 @@ class TypeValidationTest extends TestCase
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidObjectType()
     {
-        $collection = new Sequence(\stdClass::class);
-        $collection->push(1);
+        $sequence = new Sequence('int');
+        $sequence->push(new \stdClass());
     }
 
     public function testValidObjectType()
     {
-        $collection = new Map(\stdClass::class);
+        $map = new Map(\stdClass::class);
 
-        $this->assertTrue($collection->validate(new \stdClass()));
+        $this->assertTrue($map->validate(new \stdClass()));
+    }
+
+    public function testValidObjectInterfaceType()
+    {
+        $sequence = new Sequence(FooInterface::class);
+
+        $this->assertTrue($sequence->validate(new Foo()));
     }
 
     public function testValidScalarTypes()
@@ -40,8 +49,8 @@ class TypeValidationTest extends TestCase
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidScalarType()
     {
-        $collection = new Sequence('string');
-        $collection->push(1);
+        $sequence = new Sequence('string');
+        $sequence->push(1);
     }
 
     /** @expectedException \InvalidArgumentException */

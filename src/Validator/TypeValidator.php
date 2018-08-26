@@ -26,13 +26,17 @@ class TypeValidator
         'resource' => 'resource',
     ];
 
+    /**
+     * TypeValidator constructor.
+     * @param string|null $type
+     */
     public function __construct(?string $type = null)
     {
         $this->setType($type);
     }
 
     /**
-     * Sets the type all items in the collection must be. Can be a primitive type or class name.
+     * Sets the type all items in the collection must be. Can be a primitive type, class name or interface.
      *
      * @see $typeMap for valid primitive types.
      *
@@ -91,6 +95,7 @@ class TypeValidator
     public function setTypeMap(array $typeMap): TypeValidator
     {
         $this->typeMap = $typeMap;
+
         return $this;
     }
 
@@ -104,53 +109,18 @@ class TypeValidator
      */
     public function validate($element): bool
     {
-        $expected = $this->getType();
-        if (!$expected) {
+        $expectedType = $this->getType();
+        if (!$expectedType) {
             return true;
         }
 
-        $actual = is_object($element) ? get_class($element) : gettype($element);
+        $expectedType = $this->typeMap[$expectedType] ?? $expectedType;
+        $actualType   = is_object($element) ? get_class($element) : gettype($element);
 
-        if (!$this->isValid($element, $expected, $actual)) {
-            throw new InvalidTypeException($expected, $actual);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param mixed  $element  The item to check.
-     * @param string $expected The expected type $element should be.
-     * @param string $actual   The actual type of $element.
-     * @return bool
-     */
-    public function isValid($element, string $expected, string $actual): bool
-    {
-        if ($this->isInstanceOf($element, $expected) || $this->getMappedType($expected) === $actual) {
+        if ((is_object($element) && $element instanceof $expectedType) || $actualType === $expectedType) {
             return true;
         }
 
-        return false;
-    }
-
-    /**
-     * Returns whether an object is an instance of the given class or interface
-     *
-     * @param object $thing
-     * @param string $class Fully qualified class or interface name.
-     * @return bool
-     */
-    protected function isInstanceOf($thing, string $class): bool
-    {
-        return (class_exists($class) || interface_exists($class)) && $thing instanceof $class;
-    }
-
-    /**
-     * @param string $type
-     * @return string
-     */
-    protected function getMappedType(string $type): string
-    {
-        return $this->typeMap[$type] ?? $type;
+        throw new InvalidTypeException($expectedType, $actualType);
     }
 }
