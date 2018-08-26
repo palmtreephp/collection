@@ -5,10 +5,12 @@
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/palmtreephp/collection.svg)](https://scrutinizer-ci.com/g/palmtreephp/collection/)
 [![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/palmtreephp/collection.svg)](https://scrutinizer-ci.com/g/palmtreephp/collection/)
 
-Collection class with optional type validation.
+Maps and Sequences with optional type validation.
 
 ## Requirements
-* PHP >= 5.6
+* PHP >= 7.1
+
+For PHP 5.6 support use [v1.0](v1.0.0)
 
 ## Installation
 
