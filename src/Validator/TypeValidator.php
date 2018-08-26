@@ -36,7 +36,7 @@ class TypeValidator
     }
 
     /**
-     * Sets the type all items in the collection must be. Can be a primitive type, class name or interface.
+     * Sets the type all elements in the collection must be. Can be a primitive type, class name or interface.
      *
      * @see $typeMap for valid primitive types.
      *
@@ -100,7 +100,7 @@ class TypeValidator
     }
 
     /**
-     * Returns whether the given item is a valid type.
+     * Returns whether the given element is a valid type.
      *
      * @param mixed $element
      *

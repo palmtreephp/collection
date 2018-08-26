@@ -5,7 +5,7 @@ namespace Palmtree\Collection;
 interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
-     * Returns a single item with the given key from the collection.
+     * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
      *
@@ -14,53 +14,76 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function get($key);
 
     /**
-     * Adds a set of items to the collection.
+     * Adds a set of elements to the collection.
      *
-     * @param array|\Traversable $elements
+     * @param iterable $elements
      *
      * @return CollectionInterface
      */
     public function add(iterable $elements): CollectionInterface;
 
     /**
-     * Removes an item with the given key from the collection.
+     * Removes an element with the given key from the collection.
      *
      * @param string|int $key
      *
      * @return CollectionInterface
      */
-    public function removeItem($key): CollectionInterface;
+    public function remove($key): CollectionInterface;
 
     /**
-     * Clears all items from the collection.
+     * Removes an element from the collection.
+     *
+     * @param mixed $element
+     *
+     * @return CollectionInterface
+     */
+    public function removeElement($element): CollectionInterface;
+
+    /**
+     * Clears all elements from the collection.
      *
      * @return CollectionInterface
      */
     public function clear(): CollectionInterface;
 
     /**
-     * Returns the entire collection.
+     * Returns the entire collection as an array.
      *
      * @return array
      */
     public function all(): array;
 
     /**
-     * Returns the first item in the collection.
+     * Returns the first element in the collection.
      *
      * @return mixed
      */
     public function first();
 
     /**
-     * Returns the last item in the collection.
+     * Returns the last element in the collection.
      *
      * @return mixed
      */
     public function last();
 
     /**
-     * Returns whether the given item is in the collection.
+     * Returns a new collection containing this collection's keys.
+     *
+     * @return CollectionInterface
+     */
+    public function keys(): CollectionInterface;
+
+    /**
+     * Returns a new collection containing this collection's values.
+     *
+     * @return CollectionInterface
+     */
+    public function values(): CollectionInterface;
+
+    /**
+     * Returns whether the given element is in the collection.
      *
      * @param mixed $element
      * @param bool  $strict
@@ -78,19 +101,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function hasKey($key): bool;
 
     /**
-     * Returns whether the collection is empty.
-     *
-     * @return bool
-     */
-    public function isEmpty(): bool;
-
-    /**
-     * @return CollectionInterface
-     */
-    public function getKeys(): CollectionInterface;
-
-    /**
-     * Returns a new instance containing items mapped from the given callback.
+     * Returns a new instance containing elements mapped from the given callback.
      *
      * @param callable    $callback
      * @param string|null $type Type of the mapped collection
@@ -101,7 +112,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function map(callable $callback, string $type = null, bool $keys = false): CollectionInterface;
 
     /**
-     * Returns a new instance containing items in the collection filtered by a predicate.
+     * Returns a new instance containing elements in the collection filtered by a predicate.
      *
      * @param callable $predicate
      * @param bool     $keys Whether to pass keys as a second argument to the predicate
@@ -111,21 +122,31 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function filter(callable $predicate = null, bool $keys = false): CollectionInterface;
 
     /**
-     * @param array|\Traversable $elements
-     * @param string             $type
+     * Returns whether the collection is empty.
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool;
+
+    /**
+     * Returns the collection as an array.
+     *
+     * @return array
+     */
+    public function toArray(): array;
+
+    /**
+     * @param iterable $elements
+     * @param string   $type
      *
      * @return CollectionInterface
      */
     public static function fromArray(iterable $elements, string $type = null): CollectionInterface;
 
     /**
-     * @return array
-     */
-    public function toArray(): array;
-
-    /**
      * @param string $json
      * @param string $type
+     *
      * @return CollectionInterface
      */
     public static function fromJson(string $json, string $type = null): CollectionInterface;

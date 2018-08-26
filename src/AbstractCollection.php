@@ -46,15 +46,20 @@ abstract class AbstractCollection implements CollectionInterface
         return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
     }
 
-    public function remove($key)
+    /**
+     * @inheritDoc
+     */
+    public function remove($key): CollectionInterface
     {
         unset($this->elements[$key]);
+
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function removeItem($element): CollectionInterface
+    public function removeElement($element): CollectionInterface
     {
         $key = array_search($element, $this->elements);
 
@@ -68,9 +73,17 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function getKeys(): CollectionInterface
+    public function keys(): CollectionInterface
     {
         return static::fromArray(array_keys($this->elements));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function values(): CollectionInterface
+    {
+        return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
     }
 
     /**

@@ -57,7 +57,7 @@ class SequenceTest extends TestCase
 
         $this->assertTrue($sequence->has($object));
 
-        $sequence->removeItem($object);
+        $sequence->removeElement($object);
 
         $this->assertFalse($sequence->has($object));
     }
@@ -128,8 +128,8 @@ class SequenceTest extends TestCase
 
         $sequence->push(1, 2, 3);
 
-        $filtered = $sequence->filter(function ($item) {
-            return $item < 3;
+        $filtered = $sequence->filter(function ($element) {
+            return $element < 3;
         });
 
         $this->assertNotSame($sequence, $filtered);

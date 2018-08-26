@@ -4,8 +4,11 @@ namespace Palmtree\Collection;
 
 class Map extends AbstractCollection
 {
+
     /**
      * @inheritDoc
+
+     * @return Map
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -17,21 +20,14 @@ class Map extends AbstractCollection
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getValues(): CollectionInterface
-    {
-        return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
-    }
-
-    /**
      * Adds a single element with the given key to the collection.
      *
      * @param string|int $key
      * @param mixed      $element
+     *
      * @return Map
      */
-    public function set($key, $element): CollectionInterface
+    public function set($key, $element): Map
     {
         $this->validate($element);
 

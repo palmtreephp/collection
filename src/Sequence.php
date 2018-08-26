@@ -6,6 +6,8 @@ class Sequence extends AbstractCollection
 {
     /**
      * @inheritDoc
+     *
+     * @return Sequence
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -13,13 +15,13 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Pushes an item on to the end of the sequence.
+     * Pushes an element on to the end of the sequence.
      *
      * @param $elements ...
      *
      * @return Sequence
      */
-    public function push(...$elements): CollectionInterface
+    public function push(...$elements): Sequence
     {
         foreach ($elements as $element) {
             $this->validate($element);
@@ -31,7 +33,7 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Pops the item off the end of sequence.
+     * Pops the last element off the end of sequence.
      *
      * @return mixed
      */
@@ -41,7 +43,7 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Shifts an item off the beginning of sequence.
+     * Shifts an element off the beginning of sequence.
      *
      * @return mixed
      */
@@ -51,11 +53,11 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Prepends one or more items to the beginning of the sequence
+     * Prepends one or more elements to the beginning of the sequence.
      *
      * @param mixed $elements ...
      *
-     * @return int
+     * @return int The number of new elements in the sequence.
      */
     public function unshift(...$elements)
     {

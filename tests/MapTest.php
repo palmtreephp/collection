@@ -40,7 +40,7 @@ class MapTest extends TestCase
 
         $this->assertTrue($map->has($object));
 
-        $map->removeItem($object);
+        $map->removeElement($object);
 
         $this->assertFalse($map->has($object));
     }
@@ -119,7 +119,7 @@ class MapTest extends TestCase
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertSame(['foo', 'baz'], $map->getKeys()->toArray());
+        $this->assertSame(['foo', 'baz'], $map->keys()->toArray());
     }
 
     public function testValues()
@@ -133,7 +133,7 @@ class MapTest extends TestCase
             ->set('foo', $objectOne)
             ->set('baz', $objectTwo);
 
-        $this->assertSame([$objectOne, $objectTwo], $map->getValues()->toArray());
+        $this->assertSame([$objectOne, $objectTwo], $map->values()->toArray());
     }
 
     public function testIterator()
