@@ -25,10 +25,14 @@ composer require palmtree/collection
 
 ```php
 <?php
+use Palmtree\Collection\Map;
+
 $map = new Map();
 
-$map->set('foo', 'Bar');
-$map->set('baz', true);
+// Supports chaining
+$map
+    ->set('foo', 'Bar')
+    ->set('baz', true);
 
 var_dump($map->get('baz')); // Returns true
 
@@ -42,28 +46,31 @@ $map['bar'] = 'Baz';
 
 ```php
 <?php
+use Palmtree\Collection\Sequence;
+
 $sequence = new Sequence();
 
 $sequence->push('Foo');
 
-// Supports chaining
-$sequence
-    ->push('Bar')
-    ->push('Baz');
+// Sequence::push() is variadic as per array_push()
+$sequence->push('Bar', 'Baz');
 
 // Create instance from an array of integers
 $sequence = Sequence::fromArray([1,2,3,4], 'int');
 
 // Maps and Sequences are both traversable
 foreach($sequence as $integer) {
-    
 }
 ```
 
 #### Instances of the same class
 
+Ensure each element is an instance of a particular class or interface
+
 ```php
 <?php
+use Palmtree\Collection\Map;
+
 $objects = new Map(\stdClass::class);
 
 $element       = new \stdClass();
@@ -72,15 +79,25 @@ $element->data = 'Hello, World!';
 $objects->set('key1', $element);
 ```
 
-#### Single type
+```php
+<?php
+$foos = new \Palmtree\Collection\Sequence(FooInterface::class);
+
+$foos->push(new Foo());
+```
+
+#### Primitive types
 
 Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function as well as `float`, `int`, and `bool` for convenience.
 ```php
 <?php
+use Palmtree\Collection\Sequence;
+
 $floats = new Sequence('float');
 
-$floats->push(3.4);
-$floats->push(789.83);
+$floats
+    ->push(3.4)
+    ->push(789.83);
 ```
 
 ## License
