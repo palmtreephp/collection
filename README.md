@@ -10,7 +10,7 @@ Maps and Sequences with optional type validation.
 ## Requirements
 * PHP >= 7.1
 
-For PHP 5.6 support use [v1.0](/tree/v1.0.0)
+For PHP 5.6 support use [v1.0](https://github.com/palmtreephp/collection/tree/v1.0.0)
 
 ## Installation
 
