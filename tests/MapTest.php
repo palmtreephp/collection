@@ -9,16 +9,16 @@ class MapTest extends TestCase
 {
     public function testSetGet()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection->set('foo', 'Bar');
+        $map->set('foo', 'Bar');
 
-        $this->assertSame('Bar', $collection->get('foo'));
+        $this->assertSame('Bar', $map->get('foo'));
     }
 
     public function testAdd()
     {
-        $collection = new Map();
+        $map = new Map();
 
         $data = [
             'foo'  => 'Bar',
@@ -26,121 +26,121 @@ class MapTest extends TestCase
             'bing' => 'Bah',
         ];
 
-        $collection->add($data);
+        $map->add($data);
 
-        $this->assertSame($data, $collection->toArray());
+        $this->assertSame($data, $map->toArray());
     }
 
     public function testRemove()
     {
-        $collection = new Map();
+        $map = new Map();
 
         $object = new \stdClass();
-        $collection->set('foo', $object);
+        $map->set('foo', $object);
 
-        $this->assertTrue($collection->has($object));
+        $this->assertTrue($map->has($object));
 
-        $collection->removeItem($object);
+        $map->removeItem($object);
 
-        $this->assertFalse($collection->has($object));
+        $this->assertFalse($map->has($object));
     }
 
     public function testHas()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection->add([1, 2, 3]);
+        $map->add([1, 2, 3]);
 
-        $this->assertTrue($collection->has(2));
+        $this->assertTrue($map->has(2));
     }
 
     public function testHasKey()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection
+        $map
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertTrue($collection->hasKey('foo'));
-        $this->assertTrue($collection->hasKey('baz'));
+        $this->assertTrue($map->hasKey('foo'));
+        $this->assertTrue($map->hasKey('baz'));
     }
 
     public function testIsEmpty()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection
+        $map
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertFalse($collection->isEmpty());
+        $this->assertFalse($map->isEmpty());
 
-        $collection->clear();
+        $map->clear();
 
-        $this->assertTrue($collection->isEmpty());
+        $this->assertTrue($map->isEmpty());
     }
 
     public function testFirstLast()
     {
-        $collection = new Map();
+        $map = new Map();
 
         $objectOne   = new \stdClass();
         $objectTwo   = new \stdClass();
         $objectThree = new \stdClass();
 
-        $collection
+        $map
             ->set('one', $objectOne)
             ->set('two', $objectTwo)
             ->set('three', $objectThree);
 
-        $this->assertSame($objectOne, $collection->first());
-        $this->assertNotSame($objectTwo, $collection->first());
+        $this->assertSame($objectOne, $map->first());
+        $this->assertNotSame($objectTwo, $map->first());
 
-        $this->assertSame($objectThree, $collection->last());
-        $this->assertNotSame($objectTwo, $collection->last());
+        $this->assertSame($objectThree, $map->last());
+        $this->assertNotSame($objectTwo, $map->last());
     }
 
     public function testClear()
     {
-        $collection = new Map();
-        $collection->set('foo', 'Foo');
+        $map = new Map();
+        $map->set('foo', 'Foo');
 
-        $collection->clear();
+        $map->clear();
 
-        $this->assertEmpty($collection);
+        $this->assertEmpty($map);
     }
 
     public function testKeys()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection
+        $map
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertSame(['foo', 'baz'], $collection->getKeys()->toArray());
+        $this->assertSame(['foo', 'baz'], $map->getKeys()->toArray());
     }
 
     public function testValues()
     {
-        $collection = new Map();
+        $map = new Map();
 
         $objectOne = new \stdClass();
         $objectTwo = new \stdClass();
 
-        $collection
+        $map
             ->set('foo', $objectOne)
             ->set('baz', $objectTwo);
 
-        $this->assertSame([$objectOne, $objectTwo], $collection->getValues()->toArray());
+        $this->assertSame([$objectOne, $objectTwo], $map->getValues()->toArray());
     }
 
     public function testIterator()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection
+        $map
             ->set('one', 1)
             ->set('two', 2)
             ->set('three', 3);
@@ -151,24 +151,24 @@ class MapTest extends TestCase
             'three' => 3,
         ];
 
-        $this->assertSame($expected, iterator_to_array($collection));
+        $this->assertSame($expected, iterator_to_array($map));
     }
 
     public function testSerialization()
     {
-        $collection = new Map('int');
+        $map = new Map('int');
 
-        $collection
+        $map
             ->set('foo', 1)
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $serialized = serialize($collection);
+        $serialized = serialize($map);
 
-        /** @var Map $newCollection */
-        $newCollection = unserialize($serialized);
+        /** @var Map $newMap */
+        $newMap = unserialize($serialized);
 
-        $this->assertEquals('int', $newCollection->getValidator()->getType());
+        $this->assertEquals('int', $newMap->getValidator()->getType());
 
         $expected = [
             'foo' => 1,
@@ -176,7 +176,7 @@ class MapTest extends TestCase
             'baz' => 3,
         ];
 
-        $this->assertSame($expected, $collection->toArray());
+        $this->assertSame($expected, $map->toArray());
     }
 
     public function testFilter()
@@ -210,18 +210,18 @@ class MapTest extends TestCase
 
     public function testFilterWithKeys()
     {
-        $collection = new Map('int');
+        $map = new Map('int');
 
-        $collection
+        $map
             ->set('foo', 1)
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $collection->filter(function ($element, $key) {
+        $filtered = $map->filter(function ($element, $key) {
             return $key !== 'foo';
         }, true);
 
-        $this->assertNotSame($collection, $filtered);
+        $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
     }
 
@@ -247,19 +247,19 @@ class MapTest extends TestCase
 
     public function testJsonSerialize()
     {
-        $collection = new Map('int');
+        $map = new Map('int');
 
-        $collection
+        $map
             ->set('foo', 1)
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $json = json_encode($collection);
+        $json = json_encode($map);
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 
-        $collectionFromJson = Map::fromJson($json, $collection->getValidator()->getType());
+        $mapFromJson = Map::fromJson($json, $map->getValidator()->getType());
 
-        $this->assertEquals($collection, $collectionFromJson);
+        $this->assertEquals($map, $mapFromJson);
     }
 }

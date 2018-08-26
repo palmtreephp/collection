@@ -10,11 +10,11 @@ class SequenceTest extends TestCase
 {
     public function testPush()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
-        $collection->push(1, 2, 3);
+        $sequence->push(1, 2, 3);
 
-        $this->assertSame([1, 2, 3], $collection->toArray());
+        $this->assertSame([1, 2, 3], $sequence->toArray());
     }
 
     public function testPop()
@@ -50,57 +50,57 @@ class SequenceTest extends TestCase
 
     public function testRemove()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
         $object = new \stdClass();
-        $collection->push($object);
+        $sequence->push($object);
 
-        $this->assertTrue($collection->has($object));
+        $this->assertTrue($sequence->has($object));
 
-        $collection->removeItem($object);
+        $sequence->removeItem($object);
 
-        $this->assertFalse($collection->has($object));
+        $this->assertFalse($sequence->has($object));
     }
 
     public function testHas()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
-        $collection->add([1, 2, 3]);
+        $sequence->add([1, 2, 3]);
 
-        $this->assertTrue($collection->has(2));
+        $this->assertTrue($sequence->has(2));
     }
 
     public function testIsEmpty()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
-        $collection
+        $sequence
             ->push('Bar')
             ->push(null);
 
-        $this->assertFalse($collection->isEmpty());
+        $this->assertFalse($sequence->isEmpty());
 
-        $collection->clear();
+        $sequence->clear();
 
-        $this->assertTrue($collection->isEmpty());
+        $this->assertTrue($sequence->isEmpty());
     }
 
     public function testFirstLast()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
         $objectOne   = new \stdClass();
         $objectTwo   = new \stdClass();
         $objectThree = new \stdClass();
 
-        $collection->push($objectOne, $objectTwo, $objectThree);
+        $sequence->push($objectOne, $objectTwo, $objectThree);
 
-        $this->assertSame($objectOne, $collection->first());
-        $this->assertNotSame($objectTwo, $collection->first());
+        $this->assertSame($objectOne, $sequence->first());
+        $this->assertNotSame($objectTwo, $sequence->first());
 
-        $this->assertSame($objectThree, $collection->last());
-        $this->assertNotSame($objectTwo, $collection->last());
+        $this->assertSame($objectThree, $sequence->last());
+        $this->assertNotSame($objectTwo, $sequence->last());
     }
 
     public function testAll()
@@ -114,12 +114,12 @@ class SequenceTest extends TestCase
 
     public function testClear()
     {
-        $collection = new Sequence();
-        $collection->push('Foo');
+        $sequence = new Sequence();
+        $sequence->push('Foo');
 
-        $collection->clear();
+        $sequence->clear();
 
-        $this->assertEmpty($collection);
+        $this->assertEmpty($sequence);
     }
 
     public function testFilter()
@@ -156,41 +156,41 @@ class SequenceTest extends TestCase
 
     public function testIterator()
     {
-        $collection = new Sequence();
+        $sequence = new Sequence();
 
-        $collection->push(1, 2, 3);
+        $sequence->push(1, 2, 3);
 
-        $this->assertSame([1, 2, 3], iterator_to_array($collection));
+        $this->assertSame([1, 2, 3], iterator_to_array($sequence));
     }
 
     public function testSerialization()
     {
-        $collection = new Sequence('int');
+        $sequence = new Sequence('int');
 
-        $collection->push(1, 2, 3);
+        $sequence->push(1, 2, 3);
 
-        $serialized = serialize($collection);
+        $serialized = serialize($sequence);
 
         /** @var Map $newCollection */
         $newCollection = unserialize($serialized);
 
         $this->assertEquals('int', $newCollection->getValidator()->getType());
 
-        $this->assertSame([1, 2, 3], $collection->toArray());
+        $this->assertSame([1, 2, 3], $sequence->toArray());
     }
 
     public function testJsonSerialize()
     {
-        $collection = new Sequence('int');
+        $sequence = new Sequence('int');
 
-        $collection->push(1, 2, 3);
+        $sequence->push(1, 2, 3);
 
-        $json = json_encode($collection);
+        $json = json_encode($sequence);
 
         $this->assertSame('[1,2,3]', $json);
 
-        $collectionFromJson = Sequence::fromJson($json, $collection->getValidator()->getType());
+        $sequenceFromJson = Sequence::fromJson($json, $sequence->getValidator()->getType());
 
-        $this->assertEquals($collection, $collectionFromJson);
+        $this->assertEquals($sequence, $sequenceFromJson);
     }
 }

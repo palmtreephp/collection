@@ -10,20 +10,20 @@ class ArrayAccessTest extends TestCase
 {
     public function testOffsetExists()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection->set('foo', 'Bar');
+        $map->set('foo', 'Bar');
 
-        $this->assertTrue(isset($collection['foo']));
+        $this->assertTrue(isset($map['foo']));
     }
 
     public function testOffsetGet()
     {
-        $collection = new Map();
+        $map = new Map();
 
-        $collection->set('foo', 'Bar');
+        $map->set('foo', 'Bar');
 
-        $this->assertEquals('Bar', $collection['foo']);
+        $this->assertEquals('Bar', $map['foo']);
     }
 
     public function testOffsetSet()

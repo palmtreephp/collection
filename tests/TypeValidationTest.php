@@ -33,17 +33,17 @@ class TypeValidationTest extends TestCase
 
     public function testValidScalarTypes()
     {
-        $collection = new Map('string');
+        $map = new Map('string');
 
-        $this->assertTrue($collection->validate('Foo'));
+        $this->assertTrue($map->validate('Foo'));
 
-        $collection = new Map('float');
+        $map = new Map('float');
 
-        $this->assertTrue($collection->validate(0.1));
+        $this->assertTrue($map->validate(0.1));
 
-        $collection = new Map('bool');
+        $map = new Map('bool');
 
-        $this->assertTrue($collection->validate(true));
+        $this->assertTrue($map->validate(true));
     }
 
     /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
