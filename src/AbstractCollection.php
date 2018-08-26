@@ -61,7 +61,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function removeElement($element): CollectionInterface
     {
-        $key = array_search($element, $this->elements);
+        $key = array_search($element, $this->elements, true);
 
         if ($key !== false) {
             $this->remove($key);
