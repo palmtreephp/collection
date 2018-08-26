@@ -50,24 +50,32 @@ class TypeValidator
             !isset($this->typeMap[$type]) && !in_array($type, $this->typeMap) &&
             !class_exists($type) && !interface_exists($type)
         ) {
-            $validTypes = [];
-            foreach ($this->getTypeMap() as $key => $value) {
-                $validTypes[] = $key;
-                if ($value !== $key) {
-                    $validTypes[] = $value;
-                }
-            }
-
-            $message = "Invalid type '$type'. Must be either NULL, one of ";
-            $message .= implode(', ', $validTypes);
-            $message .= ' or a fully qualified class name or interface';
-
-            throw new \InvalidArgumentException($message);
+            $this->throwSetTypeException($type);
         }
 
         $this->type = $type;
 
         return $this;
+    }
+
+    /**
+     * @param null|string $type
+     */
+    protected function throwSetTypeException(?string $type): void
+    {
+        $validTypes = [];
+        foreach ($this->getTypeMap() as $key => $value) {
+            $validTypes[] = $key;
+            if ($value !== $key) {
+                $validTypes[] = $value;
+            }
+        }
+
+        $message = "Invalid type '$type'. Must be either NULL, one of ";
+        $message .= implode(', ', $validTypes);
+        $message .= ' or a fully qualified class name or interface';
+
+        throw new \InvalidArgumentException($message);
     }
 
     /**
