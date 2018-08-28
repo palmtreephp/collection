@@ -261,8 +261,8 @@ class MapTest extends TestCase
             return $element->getBar();
         });
 
-        $this->assertSame($foo, $map->getByIndex('bar', 'test'));
-        $this->assertSame($foo2, $map->getByIndex('bar', 'test2'));
+        $this->assertSame($foo, $map->getBy('bar', 'test'));
+        $this->assertSame($foo2, $map->getBy('bar', 'test2'));
     }
 
     /** @expectedException \Palmtree\Collection\Exception\InvalidMapIndex */
@@ -270,7 +270,7 @@ class MapTest extends TestCase
     {
         $map = new Map();
 
-        $map->getByIndex('blah', 1);
+        $map->getBy('blah', 1);
     }
 
     public function testJsonSerialize()
