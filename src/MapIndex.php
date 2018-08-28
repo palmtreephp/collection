@@ -4,8 +4,6 @@ namespace Palmtree\Collection;
 
 class MapIndex
 {
-    /** @var string */
-    private $id;
     /** @var callable */
     private $callback;
     /** @var array */
@@ -14,12 +12,10 @@ class MapIndex
     /**
      * MapIndex constructor.
      *
-     * @param string   $id
      * @param callable $callback
      */
-    public function __construct(string $id, callable $callback)
+    public function __construct(callable $callback)
     {
-        $this->id       = $id;
         $this->callback = $callback;
         $this->index    = [];
     }

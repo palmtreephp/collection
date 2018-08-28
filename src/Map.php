@@ -7,7 +7,7 @@ use Palmtree\Collection\Exception\InvalidMapIndex;
 class Map extends AbstractCollection
 {
     /** @var MapIndex[] */
-    private $indices = [];
+    private $indexes = [];
 
     /**
      * @inheritDoc
@@ -36,7 +36,7 @@ class Map extends AbstractCollection
 
         $this->elements[$key] = $element;
 
-        foreach ($this->indices as $index) {
+        foreach ($this->indexes as $index) {
             $index->add($key, $element);
         }
 
@@ -50,7 +50,7 @@ class Map extends AbstractCollection
      */
     public function remove($key): CollectionInterface
     {
-        foreach ($this->indices as $index) {
+        foreach ($this->indexes as $index) {
             $index->remove($key);
         }
 
@@ -64,7 +64,7 @@ class Map extends AbstractCollection
      */
     public function clear(): CollectionInterface
     {
-        foreach ($this->indices as $index) {
+        foreach ($this->indexes as $index) {
             $index->clear();
         }
 
@@ -80,11 +80,11 @@ class Map extends AbstractCollection
      */
     public function getBy(string $indexId, $key)
     {
-        if (!isset($this->indices[$indexId])) {
+        if (!isset($this->indexes[$indexId])) {
             throw new InvalidMapIndex($indexId);
         }
 
-        return $this->get($this->indices[$indexId]->get($key));
+        return $this->get($this->indexes[$indexId]->get($key));
     }
 
     /**
@@ -95,13 +95,13 @@ class Map extends AbstractCollection
      */
     public function addIndex(string $id, callable $callback): Map
     {
-        $index = new MapIndex($id, $callback);
+        $index = new MapIndex($callback);
 
         foreach ($this->elements as $key => $element) {
             $index->add($key, $element);
         }
 
-        $this->indices[$id] = $index;
+        $this->indexes[$id] = $index;
 
         return $this;
     }
@@ -113,7 +113,7 @@ class Map extends AbstractCollection
      */
     public function removeIndex(string $id): Map
     {
-        unset($this->indices[$id]);
+        unset($this->indexes[$id]);
 
         return $this;
     }
