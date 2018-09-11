@@ -25,12 +25,12 @@ class Map extends AbstractCollection
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @param string|int $key
-     * @param mixed      $element
+     * @param string $key
+     * @param mixed  $element
      *
      * @return Map
      */
-    public function set($key, $element): Map
+    public function set(string $key, $element): Map
     {
         $this->validate($element);
 
@@ -73,12 +73,12 @@ class Map extends AbstractCollection
 
     /**
      * @param string $indexId
-     * @param        $key
+     * @param string $key
      *
      * @return mixed|null
      * @throws InvalidMapIndex
      */
-    public function getBy(string $indexId, $key)
+    public function getBy(string $indexId, string $key)
     {
         if (!isset($this->indexes[$indexId])) {
             throw new InvalidMapIndex($indexId);
