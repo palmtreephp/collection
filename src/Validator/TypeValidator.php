@@ -7,7 +7,7 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 class TypeValidator
 {
     /** @var string|null */
-    protected $type;
+    private $type;
 
     /**
      * Array of short-hand types which can be used as the value of $this->type as well as any value returned
@@ -16,7 +16,7 @@ class TypeValidator
      *
      * @var array
      */
-    protected $typeMap = [
+    private $typeMap = [
         'bool'     => 'boolean',
         'int'      => 'integer',
         'float'    => 'double',
@@ -46,11 +46,12 @@ class TypeValidator
      */
     public function setType(?string $type): TypeValidator
     {
-        if (!is_null($type) &&
-            !isset($this->typeMap[$type]) && !in_array($type, $this->typeMap) &&
-            !class_exists($type) && !interface_exists($type)
-        ) {
-            $this->throwSetTypeException($type);
+        if (!$this->isValidType($type)) {
+            throw new \InvalidArgumentException(sprintf(
+                "Invalid type '%s'. Must be either NULL, one of %s, or a fully qualified class name or interface",
+                $type,
+                implode(', ', $this->getValidTypes())
+            ));
         }
 
         $this->type = $type;
@@ -60,8 +61,22 @@ class TypeValidator
 
     /**
      * @param null|string $type
+     *
+     * @return bool
      */
-    protected function throwSetTypeException(?string $type): void
+    public function isValidType(?string $type): bool
+    {
+        return
+            is_null($type) ||
+            class_exists($type) ||
+            interface_exists($type) ||
+            in_array($type, $this->getValidTypes());
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidTypes(): array
     {
         $validTypes = [];
         foreach ($this->getTypeMap() as $key => $value) {
@@ -71,11 +86,7 @@ class TypeValidator
             }
         }
 
-        $message = "Invalid type '$type'. Must be either NULL, one of ";
-        $message .= implode(', ', $validTypes);
-        $message .= ' or a fully qualified class name or interface';
-
-        throw new \InvalidArgumentException($message);
+        return $validTypes;
     }
 
     /**
@@ -117,18 +128,17 @@ class TypeValidator
      */
     public function validate($element): bool
     {
-        $expectedType = $this->getType();
-        if (!$expectedType) {
+        if (!$expectedType = $this->getType()) {
             return true;
         }
 
         $expectedType = $this->typeMap[$expectedType] ?? $expectedType;
-        $actualType   = is_object($element) ? get_class($element) : gettype($element);
+        $actualType   = gettype($element);
 
-        if ((is_object($element) && $element instanceof $expectedType) || $actualType === $expectedType) {
+        if (($actualType === 'object' && $element instanceof $expectedType) || $actualType === $expectedType) {
             return true;
         }
 
-        throw new InvalidTypeException($expectedType, $actualType);
+        throw new InvalidTypeException($expectedType, $actualType === 'object' ? get_class($element) : $actualType);
     }
 }
