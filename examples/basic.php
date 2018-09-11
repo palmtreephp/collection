@@ -35,13 +35,12 @@ $arrays->add($elements);
 //$arrays->set('wont_work', 'Noop');
 //$arrays->set('wont_work', 1);
 
-/*$files = new Collection();
-$files->setType(\SplFileObject::class);
+$files = new Sequence(\SplFileObject::class);
 
 $files->add([
-    new SplFileObject(),
-    new SplFileObject(),
-])*/;
+    new \SplFileObject('foo.txt'),
+    new \SplFileObject('bar.txt'),
+]);
 
 $closures = new Sequence(\Closure::class);
 
