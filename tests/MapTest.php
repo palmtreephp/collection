@@ -33,7 +33,7 @@ class MapTest extends TestCase
         $this->assertSame($data, $map->toArray());
     }
 
-    public function testRemove()
+    public function testRemoveElement()
     {
         $map = new Map();
 
@@ -45,6 +45,25 @@ class MapTest extends TestCase
         $map->removeElement($object);
 
         $this->assertFalse($map->has($object));
+    }
+
+    public function testRemove()
+    {
+        $map = new Map(\stdClass::class);
+
+        $object = new \stdClass();
+        $object->foo = 'bar';
+
+        $map->set('some_object', $object);
+
+        $map->addIndex('foo', function (\stdClass $element) {
+            return $element->foo;
+        });
+
+        $map->remove('some_object');
+
+        $this->assertFalse($map->has('some_object'));
+        $this->assertNull($map->getBy('foo', 'bar'));
     }
 
     public function testHas()
@@ -66,6 +85,25 @@ class MapTest extends TestCase
 
         $this->assertTrue($map->hasKey('foo'));
         $this->assertTrue($map->hasKey('baz'));
+    }
+
+    public function testClear()
+    {
+        $map = new Map(\stdClass::class);
+
+        $object = new \stdClass();
+        $object->foo = 'bar';
+
+        $map->addIndex('foo', function (\stdClass $element) {
+            return $element->foo;
+        });
+
+        $map->set('some_object', $object);
+
+        $map->clear();
+
+        $this->assertTrue($map->isEmpty());
+        $this->assertNull($map->getBy('foo', 'bar'));
     }
 
     public function testIsEmpty()
@@ -101,16 +139,6 @@ class MapTest extends TestCase
 
         $this->assertSame($objectThree, $map->last());
         $this->assertNotSame($objectTwo, $map->last());
-    }
-
-    public function testClear()
-    {
-        $map = new Map();
-        $map->set('foo', 'Foo');
-
-        $map->clear();
-
-        $this->assertEmpty($map);
     }
 
     public function testKeys()
@@ -271,6 +299,22 @@ class MapTest extends TestCase
         $map = new Map();
 
         $map->getBy('blah', 1);
+    }
+
+    /** @expectedException \Palmtree\Collection\Exception\InvalidMapIndex */
+    public function testRemoveIndex()
+    {
+        $map = new Map();
+
+        $map->set('bar', 'baz');
+
+        $map->addIndex('foo', function () {
+
+        });
+
+        $map->removeIndex('foo');
+
+        $map->getBy('foo', 'bar');
     }
 
     public function testJsonSerialize()
