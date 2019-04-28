@@ -11,6 +11,7 @@ class Map extends AbstractCollection
 
     /**
      * @inheritDoc
+     *
      * @return Map
      */
     public function add(iterable $elements): CollectionInterface
@@ -30,7 +31,7 @@ class Map extends AbstractCollection
      *
      * @return Map
      */
-    public function set(string $key, $element): Map
+    public function set(string $key, $element): self
     {
         $this->validate($element);
 
@@ -76,6 +77,7 @@ class Map extends AbstractCollection
      * @param string $key
      *
      * @return mixed|null
+     *
      * @throws InvalidMapIndex
      */
     public function getBy(string $indexId, string $key)
@@ -93,7 +95,7 @@ class Map extends AbstractCollection
      *
      * @return Map
      */
-    public function addIndex(string $id, callable $callback): Map
+    public function addIndex(string $id, callable $callback): self
     {
         $index = new MapIndex($callback);
 
@@ -111,7 +113,7 @@ class Map extends AbstractCollection
      *
      * @return Map
      */
-    public function removeIndex(string $id): Map
+    public function removeIndex(string $id): self
     {
         unset($this->indexes[$id]);
 

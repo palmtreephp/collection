@@ -26,10 +26,6 @@ class TypeValidator
         'resource' => 'resource',
     ];
 
-    /**
-     * TypeValidator constructor.
-     * @param string|null $type
-     */
     public function __construct(?string $type = null)
     {
         $this->setType($type);
@@ -44,13 +40,13 @@ class TypeValidator
      *
      * @return TypeValidator
      */
-    public function setType(?string $type): TypeValidator
+    public function setType(?string $type): self
     {
         if (!$this->isValidType($type)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 "Invalid type '%s'. Must be either NULL, one of %s, or a fully qualified class name or interface",
                 $type,
-                implode(', ', $this->getValidTypes())
+                \implode(', ', $this->getValidTypes())
             ));
         }
 
@@ -60,17 +56,17 @@ class TypeValidator
     }
 
     /**
-     * @param null|string $type
+     * @param string|null $type
      *
      * @return bool
      */
     public function isValidType(?string $type): bool
     {
         return
-            is_null($type) ||
-            class_exists($type) ||
-            interface_exists($type) ||
-            in_array($type, $this->getValidTypes());
+            null === $type ||
+            \class_exists($type) ||
+            \interface_exists($type) ||
+            \in_array($type, $this->getValidTypes());
     }
 
     /**
@@ -109,9 +105,10 @@ class TypeValidator
 
     /**
      * @param array $typeMap
+     *
      * @return TypeValidator
      */
-    public function setTypeMap(array $typeMap): TypeValidator
+    public function setTypeMap(array $typeMap): self
     {
         $this->typeMap = $typeMap;
 
@@ -124,6 +121,7 @@ class TypeValidator
      * @param mixed $element
      *
      * @return bool
+     *
      * @throws InvalidTypeException
      */
     public function validate($element): bool
@@ -133,12 +131,12 @@ class TypeValidator
         }
 
         $expectedType = $this->typeMap[$expectedType] ?? $expectedType;
-        $actualType   = gettype($element);
+        $actualType   = \gettype($element);
 
         if (($actualType === 'object' && $element instanceof $expectedType) || $actualType === $expectedType) {
             return true;
         }
 
-        throw new InvalidTypeException($expectedType, $actualType === 'object' ? get_class($element) : $actualType);
+        throw new InvalidTypeException($expectedType, $actualType === 'object' ? \get_class($element) : $actualType);
     }
 }

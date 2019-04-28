@@ -22,6 +22,7 @@ class MapIndex
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function get($key)
@@ -34,7 +35,7 @@ class MapIndex
      *
      * @return MapIndex
      */
-    public function remove($key): MapIndex
+    public function remove($key): self
     {
         unset($this->index[$key]);
 
@@ -44,7 +45,7 @@ class MapIndex
     /**
      * @return MapIndex
      */
-    public function clear(): MapIndex
+    public function clear(): self
     {
         $this->index = [];
 
@@ -54,9 +55,10 @@ class MapIndex
     /**
      * @param $key
      * @param $element
+     *
      * @return MapIndex
      */
-    public function add($key, $element): MapIndex
+    public function add($key, $element): self
     {
         $callback = $this->callback;
 

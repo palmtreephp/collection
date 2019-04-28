@@ -51,7 +51,7 @@ class MapTest extends TestCase
     {
         $map = new Map(\stdClass::class);
 
-        $object = new \stdClass();
+        $object      = new \stdClass();
         $object->foo = 'bar';
 
         $map->set('some_object', $object);
@@ -91,7 +91,7 @@ class MapTest extends TestCase
     {
         $map = new Map(\stdClass::class);
 
-        $object = new \stdClass();
+        $object      = new \stdClass();
         $object->foo = 'bar';
 
         $map->addIndex('foo', function (\stdClass $element) {
@@ -181,7 +181,7 @@ class MapTest extends TestCase
             'three' => 3,
         ];
 
-        $this->assertSame($expected, iterator_to_array($map));
+        $this->assertSame($expected, \iterator_to_array($map));
     }
 
     public function testSerialization()
@@ -193,10 +193,10 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $serialized = serialize($map);
+        $serialized = \serialize($map);
 
         /** @var Map $newMap */
-        $newMap = unserialize($serialized);
+        $newMap = \unserialize($serialized);
 
         $this->assertEquals('int', $newMap->getValidator()->getType());
 
@@ -279,7 +279,7 @@ class MapTest extends TestCase
     {
         $map = new Map(FooInterface::class);
 
-        $foo = new Foo('test');
+        $foo  = new Foo('test');
         $foo2 = new Foo('test2');
 
         $map->set('foo', $foo);
@@ -309,7 +309,6 @@ class MapTest extends TestCase
         $map->set('bar', 'baz');
 
         $map->addIndex('foo', function () {
-
         });
 
         $map->removeIndex('foo');
@@ -326,7 +325,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $json = json_encode($map);
+        $json = \json_encode($map);
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 

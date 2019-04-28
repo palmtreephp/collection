@@ -21,7 +21,7 @@ class Sequence extends AbstractCollection
      *
      * @return Sequence
      */
-    public function push(...$elements): Sequence
+    public function push(...$elements): self
     {
         foreach ($elements as $element) {
             $this->validate($element);
@@ -39,7 +39,7 @@ class Sequence extends AbstractCollection
      */
     public function pop()
     {
-        return array_pop($this->elements);
+        return \array_pop($this->elements);
     }
 
     /**
@@ -49,7 +49,7 @@ class Sequence extends AbstractCollection
      */
     public function shift()
     {
-        return array_shift($this->elements);
+        return \array_shift($this->elements);
     }
 
     /**
@@ -65,7 +65,7 @@ class Sequence extends AbstractCollection
             $this->validate($element);
         }
 
-        return array_unshift($this->elements, ...$elements);
+        return \array_unshift($this->elements, ...$elements);
     }
 
     /**
@@ -75,7 +75,7 @@ class Sequence extends AbstractCollection
     {
         $this->validate($value);
 
-        if (is_null($offset)) {
+        if (null === $offset) {
             $this->elements[] = $value;
         } else {
             $this->elements[$offset] = $value;

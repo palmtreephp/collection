@@ -19,5 +19,5 @@ $objects
         return $object->id;
     });
 
-var_dump($objects->getBy('id', 'foo') === $object1);
-var_dump($objects->getBy('id', 'bar') === $object2);
+\var_dump($objects->getBy('id', 'foo') === $object1);
+\var_dump($objects->getBy('id', 'bar') === $object2);

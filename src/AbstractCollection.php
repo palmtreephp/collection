@@ -35,7 +35,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function has($element, bool $strict = true): bool
     {
-        return in_array($element, $this->elements, $strict);
+        return \in_array($element, $this->elements, $strict);
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function hasKey($key): bool
     {
-        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
+        return isset($this->elements[$key]) || \array_key_exists($key, $this->elements);
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function removeElement($element): CollectionInterface
     {
-        $key = array_search($element, $this->elements, true);
+        $key = \array_search($element, $this->elements, true);
 
         if ($key !== false) {
             $this->remove($key);
@@ -75,7 +75,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function keys(): CollectionInterface
     {
-        return static::fromArray(array_keys($this->elements));
+        return static::fromArray(\array_keys($this->elements));
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function values(): CollectionInterface
     {
-        return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
+        return static::fromArray(\array_values($this->elements), $this->getValidator()->getType());
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function first()
     {
-        return reset($this->elements);
+        return \reset($this->elements);
     }
 
     /**
@@ -125,7 +125,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        return end($this->elements);
+        return \end($this->elements);
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function count()
     {
-        return count($this->elements);
+        return \count($this->elements);
     }
 
     /**
@@ -149,7 +149,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function filter(callable $predicate = null, bool $keys = false): CollectionInterface
     {
-        if (is_null($predicate)) {
+        if (null === $predicate) {
             $predicate = function ($value) {
                 return (bool)$value;
             };
@@ -198,6 +198,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param $element
+     *
      * @return bool
      */
     public function validate($element): bool
@@ -250,7 +251,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public static function fromJson(string $json, string $type = null): CollectionInterface
     {
-        return static::fromArray(json_decode($json, true), $type);
+        return static::fromArray(\json_decode($json, true), $type);
     }
 
     /**
