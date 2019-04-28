@@ -102,6 +102,32 @@ $floats
     ->push(789.83);
 ```
 
+#### Custom Indexes
+
+Custom indexes may be added to a collection to enable `O(1)` (isset) lookups instead of `O(n)` (in_array):
+
+```php
+<?php
+use Palmtree\Collection\Map;
+
+$objects = new Map(\stdClass::class);
+
+$object1     = new \stdClass();
+$object1->id = 'foo';
+
+$object2     = new \stdClass();
+$object2->id = 'bar';
+
+$objects->set('key1', $object1)->set('key2', $object2);
+
+$objects->addIndex('id', function(\stdClass $object) {
+   return $object->id; 
+});
+
+$object1 = $objects->getBy('id', 'foo');
+$object2 = $objects->getBy('id', 'bar');
+``` 
+
 ## License
 
 Released under the [MIT license](LICENSE)
