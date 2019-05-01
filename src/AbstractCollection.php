@@ -11,11 +11,6 @@ abstract class AbstractCollection implements CollectionInterface
     /** @var TypeValidator */
     protected $validator;
 
-    /**
-     * AbstractCollection constructor.
-     *
-     * @param string $type
-     */
     public function __construct(?string $type = null)
     {
         $this->elements  = [];

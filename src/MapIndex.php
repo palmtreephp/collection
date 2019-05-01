@@ -9,11 +9,6 @@ class MapIndex
     /** @var array */
     private $index;
 
-    /**
-     * MapIndex constructor.
-     *
-     * @param callable $callback
-     */
     public function __construct(callable $callback)
     {
         $this->callback = $callback;

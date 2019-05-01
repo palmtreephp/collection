@@ -15,7 +15,7 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Pushes an element on to the end of the sequence.
+     * Pushes one or more elements on to the end of the sequence.
      *
      * @param $elements ...
      *
@@ -33,7 +33,7 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Pops the last element off the end of sequence.
+     * Pops and returns the last element of the sequence, shortening the sequence by one element.
      *
      * @return mixed
      */
@@ -43,7 +43,7 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * Shifts an element off the beginning of sequence.
+     * Shifts an element off the beginning of sequence and returns it.
      *
      * @return mixed
      */
