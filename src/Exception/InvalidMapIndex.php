@@ -6,6 +6,6 @@ class InvalidMapIndex extends \Exception
 {
     public function __construct(string $id)
     {
-        $this->message = "Map index '$id' not found";
+        parent::__construct("Map index '$id' not found");
     }
 }

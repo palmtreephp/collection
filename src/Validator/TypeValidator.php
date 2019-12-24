@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection\Validator;
 
+use Palmtree\Collection\Exception\InvalidArgumentException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 
 class TypeValidator
@@ -39,7 +40,8 @@ class TypeValidator
     public function setType(?string $type): self
     {
         if (!$this->isValidType($type)) {
-            throw new \InvalidArgumentException(\sprintf("Invalid type '%s'. Must be either NULL, one of %s, or a fully qualified class name or interface", $type, \implode(', ', $this->getValidTypes())));
+            $validTypes = \implode(', ', $this->getValidTypes());
+            throw new InvalidArgumentException("Invalid type '$type'. Must be either NULL, one of $validTypes, or a FQCN or interface");
         }
 
         $this->type = $type;
@@ -87,7 +89,7 @@ class TypeValidator
     }
 
     /**
-     * Returns whether the given element is a valid type.
+     * Returns true if the given element is a valid type. Throws an InvalidTypeException otherwise.
      *
      * @param mixed $element
      *

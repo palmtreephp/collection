@@ -2,6 +2,8 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\Exception\InvalidArgumentException;
+use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use Palmtree\Collection\Test\Fixture\Foo;
@@ -10,9 +12,10 @@ use PHPUnit\Framework\TestCase;
 
 class TypeValidationTest extends TestCase
 {
-    /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidObjectType()
     {
+        $this->expectException(InvalidTypeException::class);
+
         $sequence = new Sequence('int');
         $sequence->push(new \stdClass());
     }
@@ -46,16 +49,18 @@ class TypeValidationTest extends TestCase
         $this->assertTrue($map->validate(true));
     }
 
-    /** @expectedException \Palmtree\Collection\Exception\InvalidTypeException */
     public function testInvalidScalarType()
     {
+        $this->expectException(InvalidTypeException::class);
+
         $sequence = new Sequence('string');
         $sequence->push(1);
     }
 
-    /** @expectedException \InvalidArgumentException */
     public function testInvalidTypeValue()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         new Map(1);
     }
 

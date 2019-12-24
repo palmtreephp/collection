@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\Exception\InvalidMapIndex;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Test\Fixture\Foo;
 use Palmtree\Collection\Test\Fixture\FooInterface;
@@ -293,17 +294,19 @@ class MapTest extends TestCase
         $this->assertSame($foo2, $map->getBy('bar', 'test2'));
     }
 
-    /** @expectedException \Palmtree\Collection\Exception\InvalidMapIndex */
     public function testInvalidIndex()
     {
+        $this->expectException(InvalidMapIndex::class);
+
         $map = new Map();
 
         $map->getBy('blah', 1);
     }
 
-    /** @expectedException \Palmtree\Collection\Exception\InvalidMapIndex */
     public function testRemoveIndex()
     {
+        $this->expectException(InvalidMapIndex::class);
+
         $map = new Map();
 
         $map->set('bar', 'baz');

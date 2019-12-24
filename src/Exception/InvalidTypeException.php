@@ -6,6 +6,6 @@ class InvalidTypeException extends \Exception
 {
     public function __construct(string $expected, string $actual)
     {
-        $this->message = "Element must be of type $expected. $actual given";
+        parent::__construct("Element must be of type $expected. $actual given");
     }
 }
