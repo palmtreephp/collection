@@ -104,7 +104,7 @@ $floats
 
 #### Custom Indexes
 
-Custom indexes may be added to a collection to enable `O(1)` (isset) lookups instead of `O(n)` (in_array):
+Custom indexes may be added to a collection to enable `O(1)` (constant as per `isset`) lookups instead of `O(n)` (linear as per `in_array`):
 
 ```php
 <?php
@@ -121,12 +121,12 @@ $object2->id = 'bar';
 $objects->set('key1', $object1)->set('key2', $object2);
 
 $objects->addIndex('id', function(\stdClass $object) {
-   return $object->id; 
+   return $object->id;
 });
 
 $object1 = $objects->getBy('id', 'foo');
 $object2 = $objects->getBy('id', 'bar');
-``` 
+```
 
 ## License
 
