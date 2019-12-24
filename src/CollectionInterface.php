@@ -95,7 +95,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns a new instance containing elements mapped from the given callback.
      *
-     * @param bool        $keys Whether to pass keys as a second argument to the callback.
+     * @param bool $keys Whether to pass keys as a second argument to the callback.
      *
      * @return CollectionInterface
      */
