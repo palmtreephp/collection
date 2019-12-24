@@ -26,8 +26,7 @@ class Map extends AbstractCollection
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @param string $key
-     * @param mixed  $element
+     * @param mixed $element
      *
      * @return Map
      */
@@ -73,9 +72,6 @@ class Map extends AbstractCollection
     }
 
     /**
-     * @param string $indexId
-     * @param string $key
-     *
      * @return mixed|null
      *
      * @throws InvalidMapIndex
@@ -89,12 +85,6 @@ class Map extends AbstractCollection
         return $this->get($this->indexes[$indexId]->get($key));
     }
 
-    /**
-     * @param string   $id
-     * @param callable $callback
-     *
-     * @return Map
-     */
     public function addIndex(string $id, callable $callback): self
     {
         $index = new MapIndex($callback);
@@ -108,11 +98,6 @@ class Map extends AbstractCollection
         return $this;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return Map
-     */
     public function removeIndex(string $id): self
     {
         unset($this->indexes[$id]);

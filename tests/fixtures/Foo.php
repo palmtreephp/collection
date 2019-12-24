@@ -12,9 +12,6 @@ class Foo implements FooInterface
         $this->bar = $bar;
     }
 
-    /**
-     * @return string|null
-     */
     public function getBar(): ?string
     {
         return $this->bar;

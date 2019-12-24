@@ -35,19 +35,11 @@ class TypeValidator
      * Sets the type all elements in the collection must be. Can be a primitive type, class name or interface.
      *
      * @see $typeMap for valid primitive types.
-     *
-     * @param string|null $type
-     *
-     * @return TypeValidator
      */
     public function setType(?string $type): self
     {
         if (!$this->isValidType($type)) {
-            throw new \InvalidArgumentException(\sprintf(
-                "Invalid type '%s'. Must be either NULL, one of %s, or a fully qualified class name or interface",
-                $type,
-                \implode(', ', $this->getValidTypes())
-            ));
+            throw new \InvalidArgumentException(\sprintf("Invalid type '%s'. Must be either NULL, one of %s, or a fully qualified class name or interface", $type, \implode(', ', $this->getValidTypes())));
         }
 
         $this->type = $type;
@@ -55,11 +47,6 @@ class TypeValidator
         return $this;
     }
 
-    /**
-     * @param string|null $type
-     *
-     * @return bool
-     */
     public function isValidType(?string $type): bool
     {
         return
@@ -69,9 +56,6 @@ class TypeValidator
             \in_array($type, $this->getValidTypes());
     }
 
-    /**
-     * @return array
-     */
     public function getValidTypes(): array
     {
         $validTypes = [];
@@ -85,29 +69,16 @@ class TypeValidator
         return $validTypes;
     }
 
-    /**
-     * Returns the type for this collection.
-     *
-     * @return string|null
-     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @return array
-     */
     public function getTypeMap(): array
     {
         return $this->typeMap;
     }
 
-    /**
-     * @param array $typeMap
-     *
-     * @return TypeValidator
-     */
     public function setTypeMap(array $typeMap): self
     {
         $this->typeMap = $typeMap;
@@ -119,8 +90,6 @@ class TypeValidator
      * Returns whether the given element is a valid type.
      *
      * @param mixed $element
-     *
-     * @return bool
      *
      * @throws InvalidTypeException
      */

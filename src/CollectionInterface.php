@@ -16,8 +16,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Adds a set of elements to the collection.
      *
-     * @param iterable $elements
-     *
      * @return CollectionInterface
      */
     public function add(iterable $elements): self;
@@ -49,8 +47,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns the entire collection as an array.
-     *
-     * @return array
      */
     public function all(): array;
 
@@ -86,9 +82,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given element is in the collection.
      *
      * @param mixed $element
-     * @param bool  $strict
-     *
-     * @return bool
      */
     public function has($element, bool $strict = true): bool;
 
@@ -96,59 +89,44 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given key exists in the collection.
      *
      * @param string|int
-     *
-     * @return bool
      */
     public function hasKey($key): bool;
 
     /**
      * Returns a new instance containing elements mapped from the given callback.
      *
-     * @param callable    $callback
-     * @param string|null $type     Type of the mapped collection
-     * @param bool        $keys     Whether to pass keys as a second argument to the callback.
+     * @param bool        $keys Whether to pass keys as a second argument to the callback.
      *
      * @return CollectionInterface
      */
-    public function map(callable $callback, string $type = null, bool $keys = false): self;
+    public function map(callable $callback, ?string $type = null, bool $keys = false): self;
 
     /**
      * Returns a new instance containing elements in the collection filtered by a predicate.
      *
-     * @param callable $predicate
-     * @param bool     $keys      Whether to pass keys as a second argument to the predicate
+     * @param bool $keys Whether to pass keys as a second argument to the predicate
      *
      * @return CollectionInterface
      */
-    public function filter(callable $predicate = null, bool $keys = false): self;
+    public function filter(?callable $predicate = null, bool $keys = false): self;
 
     /**
      * Returns whether the collection is empty.
-     *
-     * @return bool
      */
     public function isEmpty(): bool;
 
     /**
      * Returns the collection as an array.
-     *
-     * @return array
      */
     public function toArray(): array;
 
     /**
-     * @param iterable $elements
-     * @param string   $type
-     *
      * @return CollectionInterface
      */
-    public static function fromArray(iterable $elements, string $type = null): self;
+    public static function fromArray(iterable $elements, ?string $type = null): self;
 
     /**
-     * @param string $json
-     * @param string $type
-     *
      * @return CollectionInterface
      */
-    public static function fromJson(string $json, string $type = null): self;
+    public static function fromJson(string $json, ?string $type = null): self;
 }

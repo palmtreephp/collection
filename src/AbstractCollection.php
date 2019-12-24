@@ -183,9 +183,6 @@ abstract class AbstractCollection implements CollectionInterface
         return static::fromArray($map, $type);
     }
 
-    /**
-     * @return TypeValidator
-     */
     public function getValidator(): TypeValidator
     {
         return $this->validator;
@@ -193,8 +190,6 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param $element
-     *
-     * @return bool
      */
     public function validate($element): bool
     {
