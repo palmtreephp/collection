@@ -160,7 +160,7 @@ class SequenceTest extends TestCase
 
         $sequence->push(1, 2, 3);
 
-        $this->assertSame([1, 2, 3], \iterator_to_array($sequence));
+        $this->assertSame([1, 2, 3], iterator_to_array($sequence));
     }
 
     public function testSerialization()
@@ -169,10 +169,10 @@ class SequenceTest extends TestCase
 
         $sequence->push(1, 2, 3);
 
-        $serialized = \serialize($sequence);
+        $serialized = serialize($sequence);
 
         /** @var Map $newCollection */
-        $newCollection = \unserialize($serialized);
+        $newCollection = unserialize($serialized);
 
         $this->assertEquals('int', $newCollection->getValidator()->getType());
 
@@ -185,7 +185,7 @@ class SequenceTest extends TestCase
 
         $sequence->push(1, 2, 3);
 
-        $json = \json_encode($sequence);
+        $json = json_encode($sequence);
 
         $this->assertSame('[1,2,3]', $json);
 

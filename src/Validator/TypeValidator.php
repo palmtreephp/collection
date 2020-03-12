@@ -40,7 +40,7 @@ class TypeValidator
     public function setType(?string $type): self
     {
         if (!$this->isValidType($type)) {
-            $validTypes = \implode(', ', $this->getValidTypes());
+            $validTypes = implode(', ', $this->getValidTypes());
             throw new InvalidArgumentException("Invalid type '$type'. Must be either NULL, one of $validTypes, or a FQCN or interface");
         }
 
@@ -53,8 +53,8 @@ class TypeValidator
     {
         return
             null === $type ||
-            \class_exists($type) ||
-            \interface_exists($type) ||
+            class_exists($type) ||
+            interface_exists($type) ||
             \in_array($type, $this->getValidTypes());
     }
 

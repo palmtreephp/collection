@@ -56,7 +56,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function removeElement($element): CollectionInterface
     {
-        $key = \array_search($element, $this->elements, true);
+        $key = array_search($element, $this->elements, true);
 
         if ($key !== false) {
             $this->remove($key);
@@ -70,7 +70,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function keys(): CollectionInterface
     {
-        return static::fromArray(\array_keys($this->elements));
+        return static::fromArray(array_keys($this->elements));
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function values(): CollectionInterface
     {
-        return static::fromArray(\array_values($this->elements), $this->getValidator()->getType());
+        return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function first()
     {
-        return \reset($this->elements);
+        return reset($this->elements);
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        return \end($this->elements);
+        return end($this->elements);
     }
 
     /**
@@ -241,7 +241,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public static function fromJson(string $json, string $type = null): CollectionInterface
     {
-        return static::fromArray(\json_decode($json, true), $type);
+        return static::fromArray(json_decode($json, true), $type);
     }
 
     /**

@@ -182,7 +182,7 @@ class MapTest extends TestCase
             'three' => 3,
         ];
 
-        $this->assertSame($expected, \iterator_to_array($map));
+        $this->assertSame($expected, iterator_to_array($map));
     }
 
     public function testSerialization()
@@ -194,10 +194,10 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $serialized = \serialize($map);
+        $serialized = serialize($map);
 
         /** @var Map $newMap */
-        $newMap = \unserialize($serialized);
+        $newMap = unserialize($serialized);
 
         $this->assertEquals('int', $newMap->getValidator()->getType());
 
@@ -328,7 +328,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $json = \json_encode($map);
+        $json = json_encode($map);
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 
