@@ -112,7 +112,11 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function first()
     {
-        return reset($this->elements);
+        foreach ($this->elements as $element) {
+            return $element;
+        }
+
+        return null;
     }
 
     /**
@@ -120,7 +124,11 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        return end($this->elements);
+        foreach (\array_slice($this->elements, -1) as $element) {
+            return $element;
+        }
+
+        return null;
     }
 
     /**

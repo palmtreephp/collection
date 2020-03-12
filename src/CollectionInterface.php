@@ -53,14 +53,14 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns the first element in the collection.
      *
-     * @return mixed
+     * @return mixed|null
      */
     public function first();
 
     /**
      * Returns the last element in the collection.
      *
-     * @return mixed
+     * @return mixed|null
      */
     public function last();
 
