@@ -15,8 +15,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Adds a set of elements to the collection.
-     *
-     * @return CollectionInterface
      */
     public function add(iterable $elements): self;
 
@@ -33,15 +31,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element from the collection.
      *
      * @param mixed $element
-     *
-     * @return CollectionInterface
      */
     public function removeElement($element): self;
 
     /**
      * Clears all elements from the collection.
-     *
-     * @return CollectionInterface
      */
     public function clear(): self;
 
@@ -66,15 +60,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns a new collection containing this collection's keys.
-     *
-     * @return CollectionInterface
      */
     public function keys(): self;
 
     /**
      * Returns a new collection containing this collection's values.
-     *
-     * @return CollectionInterface
      */
     public function values(): self;
 
@@ -96,17 +86,13 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a new instance containing elements mapped from the given callback.
      *
      * @param bool $keys Whether to pass keys as a second argument to the callback.
-     *
-     * @return CollectionInterface
      */
     public function map(callable $callback, ?string $type = null, bool $keys = false): self;
 
     /**
      * Returns a new instance containing elements in the collection filtered by a predicate.
      *
-     * @param bool $keys Whether to pass keys as a second argument to the predicate
-     *
-     * @return CollectionInterface
+     * @param bool $keys Whether to pass keys as a second argument to the predicate.
      */
     public function filter(?callable $predicate = null, bool $keys = false): self;
 
@@ -120,13 +106,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      */
     public function toArray(): array;
 
-    /**
-     * @return CollectionInterface
-     */
     public static function fromArray(iterable $elements, ?string $type = null): self;
 
-    /**
-     * @return CollectionInterface
-     */
     public static function fromJson(string $json, ?string $type = null): self;
 }

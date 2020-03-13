@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Validator\TypeValidator;
 
 abstract class AbstractCollection implements CollectionInterface
@@ -78,7 +79,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function values(): CollectionInterface
     {
-        return static::fromArray(array_values($this->elements), $this->getValidator()->getType());
+        return static::fromArray(array_values($this->elements), $this->validator->getType());
     }
 
     /**
@@ -150,27 +151,15 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function filter(callable $predicate = null, bool $keys = false): CollectionInterface
+    public function filter(?callable $predicate = null, bool $keys = false): CollectionInterface
     {
-        if (null === $predicate) {
-            $predicate = function ($value) {
-                return (bool)$value;
-            };
+        if ($predicate) {
+            $filtered = array_filter($this->elements, $predicate, $keys ? ARRAY_FILTER_USE_BOTH : 0);
+        } else {
+            $filtered = array_filter($this->elements);
         }
 
-        $filtered = [];
-        foreach ($this->elements as $key => $value) {
-            $args = [$value];
-            if ($keys) {
-                $args[] = $key;
-            }
-
-            if ($predicate(...$args)) {
-                $filtered[$key] = $value;
-            }
-        }
-
-        return static::fromArray($filtered, $this->getValidator()->getType());
+        return static::fromArray($filtered, $this->validator->getType());
     }
 
     /**
@@ -197,11 +186,11 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param $element
+     * @throws InvalidTypeException
      */
     public function validate($element): bool
     {
-        return $this->getValidator()->validate($element);
+        return $this->validator->validate($element);
     }
 
     /**
