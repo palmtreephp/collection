@@ -17,8 +17,6 @@ class MapIndex
 
     /**
      * @param $key
-     *
-     * @return mixed
      */
     public function get($key)
     {

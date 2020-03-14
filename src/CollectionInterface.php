@@ -8,8 +8,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
-     *
-     * @return mixed
      */
     public function get($key);
 
@@ -27,8 +25,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Removes an element from the collection.
-     *
-     * @param mixed $element
      */
     public function removeElement($element): self;
 
@@ -68,8 +64,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns whether the given element is in the collection.
-     *
-     * @param mixed $element
      */
     public function has($element, bool $strict = true): bool;
 
@@ -89,6 +83,28 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a new instance containing elements in the collection filtered by a predicate.
      */
     public function filter(?callable $predicate = null): self;
+
+    /**
+     * Returns whether at least one element passes the predicate function.
+     */
+    public function some(callable $predicate): bool;
+
+    /**
+     * Returns whether all elements pass the predicate function.
+     */
+    public function every(callable $predicate): bool;
+
+    /**
+     * Returns the first element that passes the predicate function.
+     */
+    public function find(callable $predicate);
+
+    /**
+     * Reduces the collection a single value.
+     *
+     * @see array_reduce()
+     */
+    public function reduce(callable $callback, $initial = null);
 
     /**
      * Returns whether the collection is empty.

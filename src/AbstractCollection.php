@@ -2,7 +2,6 @@
 
 namespace Palmtree\Collection;
 
-use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Validator\TypeValidator;
 
@@ -172,6 +171,53 @@ abstract class AbstractCollection implements CollectionInterface
         }
 
         return static::fromArray($map, $type);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function some(callable $callback): bool
+    {
+        foreach ($this->elements as $key => $value) {
+            if ($callback($value, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function every(callable $callback): bool
+    {
+        foreach ($this->elements as $key => $value) {
+            if (!$callback($value, $key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(callable $predicate)
+    {
+        foreach ($this->elements as $key => $value) {
+            if ($predicate($value, $key)) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    public function reduce(callable $callback, $initial = null)
+    {
+        return array_reduce($this->elements, $callback, $initial);
     }
 
     public function getValidator(): TypeValidator

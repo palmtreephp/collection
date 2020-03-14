@@ -154,6 +154,15 @@ class SequenceTest extends TestCase
         $this->assertSame(['Bar', 'Baz'], $mapped->toArray());
     }
 
+    public function testEvery()
+    {
+        $sequence = Sequence::fromArray([1, 30, 39, 29, 10, 13]);
+
+        $this->assertTrue($sequence->every(function ($value) {
+            return $value < 40;
+        }));
+    }
+
     public function testIterator()
     {
         $sequence = new Sequence();

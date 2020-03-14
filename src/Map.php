@@ -26,8 +26,6 @@ class Map extends AbstractCollection
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @param mixed $element
-     *
      * @return Map
      */
     public function set(string $key, $element): self

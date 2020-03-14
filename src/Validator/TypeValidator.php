@@ -91,8 +91,6 @@ class TypeValidator
     /**
      * Returns true if the given element is a valid type. Throws an InvalidTypeException otherwise.
      *
-     * @param mixed $element
-     *
      * @throws InvalidTypeException
      */
     public function validate($element): bool

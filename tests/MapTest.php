@@ -276,6 +276,20 @@ class MapTest extends TestCase
         $this->assertSame(4, $mapped['bar']);
     }
 
+    public function testSome()
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', false)
+            ->set('bar', true)
+            ->set('baz', false);
+
+        $this->assertTrue($map->some(function ($element) {
+            return $element === true;
+        }));
+    }
+
     public function testIndex()
     {
         $map = new Map(FooInterface::class);
