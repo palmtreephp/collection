@@ -22,8 +22,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element with the given key from the collection.
      *
      * @param string|int $key
-     *
-     * @return CollectionInterface
      */
     public function remove($key): self;
 

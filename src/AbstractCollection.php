@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Validator\TypeValidator;
 
@@ -156,6 +157,10 @@ abstract class AbstractCollection implements CollectionInterface
         if ($predicate) {
             $filtered = array_filter($this->elements, $predicate, $keys ? ARRAY_FILTER_USE_BOTH : 0);
         } else {
+            if (func_num_args() > 1) {
+                throw new BadMethodCallException('Cannot use $keys without passing a predicate function');
+            }
+
             $filtered = array_filter($this->elements);
         }
 
