@@ -15,7 +15,7 @@ $object2->id = 'bar';
 $objects
     ->set('key1', $object1)
     ->set('key2', $object2)
-    ->addIndex('id', function (\stdClass $object) {
+    ->addIndex('id', static function (\stdClass $object) {
         return $object->id;
     });
 

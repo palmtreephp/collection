@@ -44,7 +44,7 @@ $files->add([
 
 $closures = new Sequence(\Closure::class);
 
-$closures->push(function ($test) {
+$closures->push(static function ($test) {
     echo $test;
 });
 

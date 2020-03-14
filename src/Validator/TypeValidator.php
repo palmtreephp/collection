@@ -51,8 +51,7 @@ class TypeValidator
 
     public function isValidType(?string $type): bool
     {
-        return
-            null === $type ||
+        return $type === null ||
             class_exists($type) ||
             interface_exists($type) ||
             \in_array($type, $this->getValidTypes());

@@ -7,7 +7,7 @@ class Sequence extends AbstractCollection
     /**
      * @inheritDoc
      *
-     * @return Sequence
+     * @return self
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -16,10 +16,6 @@ class Sequence extends AbstractCollection
 
     /**
      * Pushes one or more elements on to the end of the sequence.
-     *
-     * @param $elements ...
-     *
-     * @return Sequence
      */
     public function push(...$elements): self
     {
@@ -34,6 +30,8 @@ class Sequence extends AbstractCollection
 
     /**
      * Pops and returns the last element of the sequence, shortening the sequence by one element.
+     *
+     * @see array_pop
      */
     public function pop()
     {
@@ -42,6 +40,8 @@ class Sequence extends AbstractCollection
 
     /**
      * Shifts an element off the beginning of sequence and returns it.
+     *
+     * @see array_shift
      */
     public function shift()
     {
@@ -51,11 +51,9 @@ class Sequence extends AbstractCollection
     /**
      * Prepends one or more elements to the beginning of the sequence.
      *
-     * @param mixed $elements ...
-     *
-     * @return int The number of new elements in the sequence.
+     * @see array_unshift
      */
-    public function unshift(...$elements)
+    public function unshift(...$elements): int
     {
         foreach ($elements as $element) {
             $this->validate($element);
@@ -71,7 +69,7 @@ class Sequence extends AbstractCollection
     {
         $this->validate($value);
 
-        if (null === $offset) {
+        if ($offset === null) {
             $this->elements[] = $value;
         } else {
             $this->elements[$offset] = $value;

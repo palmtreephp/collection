@@ -215,6 +215,9 @@ abstract class AbstractCollection implements CollectionInterface
         return null;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function reduce(callable $callback, $initial = null)
     {
         return array_reduce($this->elements, $callback, $initial);
@@ -276,7 +279,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public static function fromJson(string $json, string $type = null): CollectionInterface
+    public static function fromJson(string $json, ?string $type = null): CollectionInterface
     {
         return static::fromArray(json_decode($json, true), $type);
     }
@@ -284,7 +287,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public static function fromArray(iterable $elements, string $type = null): CollectionInterface
+    public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
     {
         $collection = new static($type);
         $collection->add($elements);
