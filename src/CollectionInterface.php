@@ -82,17 +82,13 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns a new instance containing elements mapped from the given callback.
-     *
-     * @param bool $keys Whether to pass keys as a second argument to the callback.
      */
-    public function map(callable $callback, ?string $type = null, bool $keys = false): self;
+    public function map(callable $callback, ?string $type = null): self;
 
     /**
      * Returns a new instance containing elements in the collection filtered by a predicate.
-     *
-     * @param bool $keys Whether to pass keys as a second argument to the predicate.
      */
-    public function filter(?callable $predicate = null, bool $keys = false): self;
+    public function filter(?callable $predicate = null): self;
 
     /**
      * Returns whether the collection is empty.

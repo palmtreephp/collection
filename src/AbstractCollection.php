@@ -152,34 +152,23 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function filter(?callable $predicate = null, bool $keys = false): CollectionInterface
+    public function filter(?callable $predicate = null): CollectionInterface
     {
-        if ($predicate) {
-            $filtered = array_filter($this->elements, $predicate, $keys ? ARRAY_FILTER_USE_BOTH : 0);
-        } else {
-            if (func_num_args() > 1) {
-                throw new BadMethodCallException('Cannot use $keys without passing a predicate function');
-            }
-
-            $filtered = array_filter($this->elements);
+        if (!$predicate) {
+            return static::fromArray(array_filter($this->elements), $this->validator->getType());
         }
 
-        return static::fromArray($filtered, $this->validator->getType());
+        return static::fromArray(array_filter($this->elements, $predicate, ARRAY_FILTER_USE_BOTH), $this->validator->getType());
     }
 
     /**
      * @inheritDoc
      */
-    public function map(callable $callback, string $type = null, bool $keys = false): CollectionInterface
+    public function map(callable $callback, ?string $type = null): CollectionInterface
     {
         $map = [];
         foreach ($this->elements as $key => $value) {
-            $args = [$value];
-            if ($keys) {
-                $args[] = $key;
-            }
-
-            $map[$key] = $callback(...$args);
+            $map[$key] = $callback($value, $key);
         }
 
         return static::fromArray($map, $type);

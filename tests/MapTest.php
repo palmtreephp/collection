@@ -250,7 +250,7 @@ class MapTest extends TestCase
 
         $filtered = $map->filter(function ($element, $key) {
             return $key !== 'foo';
-        }, true);
+        });
 
         $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->hasKey('foo'));
@@ -271,7 +271,7 @@ class MapTest extends TestCase
             }
 
             return $element;
-        }, null, true);
+        }, null);
 
         $this->assertSame(4, $mapped['bar']);
     }
