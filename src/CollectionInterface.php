@@ -107,6 +107,13 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function reduce(callable $callback, $initial = null);
 
     /**
+     * Reduces the collection a single value, iterating from right to left.
+     *
+     * @see array_reduce()
+     */
+    public function reduceRight(callable $callback, $initial = null);
+
+    /**
      * Returns whether the collection is empty.
      */
     public function isEmpty(): bool;

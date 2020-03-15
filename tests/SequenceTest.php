@@ -163,6 +163,24 @@ class SequenceTest extends TestCase
         }));
     }
 
+    public function testReduce()
+    {
+        $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
+
+        $this->assertSame('12345', $sequence->reduce(function ($prev, $cur) {
+            return $prev . $cur;
+        }, ''));
+    }
+
+    public function testReduceRight()
+    {
+        $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
+
+        $this->assertSame('54321', $sequence->reduceRight(function ($prev, $cur) {
+            return $prev . $cur;
+        }, ''));
+    }
+
     public function testIterator()
     {
         $sequence = new Sequence();

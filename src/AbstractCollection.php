@@ -223,6 +223,14 @@ abstract class AbstractCollection implements CollectionInterface
         return array_reduce($this->elements, $callback, $initial);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function reduceRight(callable $callback, $initial = null)
+    {
+        return array_reduce(array_reverse($this->elements), $callback, $initial);
+    }
+
     public function getValidator(): TypeValidator
     {
         return $this->validator;
