@@ -5,7 +5,7 @@ namespace Palmtree\Collection;
 class Sequence extends AbstractCollection
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return self
      */
@@ -62,9 +62,6 @@ class Sequence extends AbstractCollection
         return array_unshift($this->elements, ...$elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetSet($offset, $value)
     {
         $this->validator->validate($value);

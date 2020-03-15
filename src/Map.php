@@ -10,7 +10,7 @@ class Map extends AbstractCollection
     private $indexes = [];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return Map
      */
@@ -42,7 +42,7 @@ class Map extends AbstractCollection
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return Map
      */
@@ -56,7 +56,7 @@ class Map extends AbstractCollection
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return Map
      */
@@ -103,9 +103,6 @@ class Map extends AbstractCollection
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
