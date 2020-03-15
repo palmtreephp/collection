@@ -142,6 +142,19 @@ class MapTest extends TestCase
         $this->assertNotSame($objectTwo, $map->last());
     }
 
+    public function testFirstLastKeys()
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', true)
+            ->set('bar', true)
+            ->set('baz', true);
+
+        $this->assertSame('foo', $map->firstKey());
+        $this->assertSame('baz', $map->lastKey());
+    }
+
     public function testKeys()
     {
         $map = new Map();

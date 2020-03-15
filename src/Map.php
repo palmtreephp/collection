@@ -12,7 +12,7 @@ class Map extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @return Map
+     * @return self
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -25,8 +25,6 @@ class Map extends AbstractCollection
 
     /**
      * Adds a single element with the given key to the collection.
-     *
-     * @return Map
      */
     public function set(string $key, $element): self
     {
@@ -44,7 +42,7 @@ class Map extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @return Map
+     * @return self
      */
     public function remove($key): CollectionInterface
     {
@@ -58,7 +56,7 @@ class Map extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @return Map
+     * @return self
      */
     public function clear(): CollectionInterface
     {
