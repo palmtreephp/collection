@@ -30,7 +30,7 @@ class Map extends AbstractCollection
      */
     public function set(string $key, $element): self
     {
-        $this->validate($element);
+        $this->validator->validate($element);
 
         $this->elements[$key] = $element;
 

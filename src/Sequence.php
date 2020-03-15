@@ -20,7 +20,7 @@ class Sequence extends AbstractCollection
     public function push(...$elements): self
     {
         foreach ($elements as $element) {
-            $this->validate($element);
+            $this->validator->validate($element);
 
             $this->elements[] = $element;
         }
@@ -56,7 +56,7 @@ class Sequence extends AbstractCollection
     public function unshift(...$elements): int
     {
         foreach ($elements as $element) {
-            $this->validate($element);
+            $this->validator->validate($element);
         }
 
         return array_unshift($this->elements, ...$elements);
@@ -67,7 +67,7 @@ class Sequence extends AbstractCollection
      */
     public function offsetSet($offset, $value)
     {
-        $this->validate($value);
+        $this->validator->validate($value);
 
         if ($offset === null) {
             $this->elements[] = $value;

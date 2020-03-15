@@ -2,7 +2,6 @@
 
 namespace Palmtree\Collection;
 
-use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Validator\TypeValidator;
 
 abstract class AbstractCollection implements CollectionInterface
@@ -132,6 +131,26 @@ abstract class AbstractCollection implements CollectionInterface
         return null;
     }
 
+    public function firstKey()
+    {
+        if (\PHP_VERSION_ID < 70300) {
+            foreach ($this->elements as $key => $noop) {
+                return $key;
+            }
+        }
+
+        return array_key_first($this->elements);
+    }
+
+    public function lastKey()
+    {
+        if (\PHP_VERSION_ID < 70300) {
+            return key(\array_slice($this->elements, -1, 1, true));
+        }
+
+        return array_key_last($this->elements);
+    }
+
     /**
      * @inheritDoc
      */
@@ -157,7 +176,7 @@ abstract class AbstractCollection implements CollectionInterface
             return static::fromArray(array_filter($this->elements), $this->validator->getType());
         }
 
-        return static::fromArray(array_filter($this->elements, $predicate, ARRAY_FILTER_USE_BOTH), $this->validator->getType());
+        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->getType());
     }
 
     /**
@@ -176,10 +195,10 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function some(callable $callback): bool
+    public function some(callable $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
-            if ($callback($value, $key)) {
+            if ($predicate($value, $key)) {
                 return true;
             }
         }
@@ -190,10 +209,10 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @inheritDoc
      */
-    public function every(callable $callback): bool
+    public function every(callable $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
-            if (!$callback($value, $key)) {
+            if (!$predicate($value, $key)) {
                 return false;
             }
         }
@@ -234,14 +253,6 @@ abstract class AbstractCollection implements CollectionInterface
     public function getValidator(): TypeValidator
     {
         return $this->validator;
-    }
-
-    /**
-     * @throws InvalidTypeException
-     */
-    public function validate($element): bool
-    {
-        return $this->validator->validate($element);
     }
 
     /**

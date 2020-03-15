@@ -53,6 +53,20 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function last();
 
     /**
+     * Returns the first key in the collection.
+     *
+     * @return string|int|null
+     */
+    public function firstKey();
+
+    /**
+     * Returns the last key in the collection.
+     *
+     * @return string|int|null
+     */
+    public function lastKey();
+
+    /**
      * Returns a new collection containing this collection's keys.
      */
     public function keys(): self;
