@@ -8,6 +8,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
+     * @return mixed
      */
     public function get($key);
 
@@ -25,6 +26,8 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Removes an element from the collection.
+     *
+     * @param mixed $element
      */
     public function removeElement($element): self;
 
@@ -78,13 +81,15 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns whether the given element is in the collection.
+     *
+     * @param mixed $element
      */
     public function has($element, bool $strict = true): bool;
 
     /**
      * Returns whether the given key exists in the collection.
      *
-     * @param string|int
+     * @param string|int $key
      */
     public function hasKey($key): bool;
 
@@ -110,11 +115,16 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns the first element that passes the predicate function.
+     *
+     * @return mixed
      */
     public function find(callable $predicate);
 
     /**
      * Reduces the collection a single value.
+     *
+     * @param mixed $initial
+     * @return mixed
      *
      * @see array_reduce()
      */
@@ -122,6 +132,9 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Reduces the collection a single value, iterating from right to left.
+     *
+     * @param mixed $initial
+     * @return mixed
      *
      * @see array_reduce()
      */
@@ -137,7 +150,13 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      */
     public function toArray(): array;
 
+    /**
+     * Returns a new collection from an array or iterable.
+     */
     public static function fromArray(iterable $elements, ?string $type = null): self;
 
+    /**
+     * Returns a new collection from a JSON string.
+     */
     public static function fromJson(string $json, ?string $type = null): self;
 }

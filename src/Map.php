@@ -25,6 +25,8 @@ class Map extends AbstractCollection
 
     /**
      * Adds a single element with the given key to the collection.
+     *
+     * @param mixed $element
      */
     public function set(string $key, $element): self
     {
@@ -47,7 +49,7 @@ class Map extends AbstractCollection
     public function remove($key): CollectionInterface
     {
         foreach ($this->indexes as $index) {
-            $index->remove($key);
+            $index->remove((string)$key);
         }
 
         return parent::remove($key);
@@ -101,7 +103,11 @@ class Map extends AbstractCollection
         return $this;
     }
 
-    public function offsetSet($offset, $value)
+    /**
+     * @param string $offset
+     * @param mixed  $value
+     */
+    public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);
     }

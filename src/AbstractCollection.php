@@ -11,17 +11,24 @@ abstract class AbstractCollection implements CollectionInterface
     /** @var TypeValidator */
     protected $validator;
 
-    public function __construct(?string $type = null)
+    final public function __construct(?string $type = null)
     {
         $this->elements  = [];
         $this->validator = new TypeValidator($type);
     }
 
+    /**
+     * @param string|int $key
+     * @return mixed|null
+     */
     public function get($key)
     {
         return $this->hasKey($key) ? $this->elements[$key] : null;
     }
 
+    /**
+     * @param mixed $element
+     */
     public function has($element, bool $strict = true): bool
     {
         return \in_array($element, $this->elements, $strict);
@@ -169,6 +176,9 @@ abstract class AbstractCollection implements CollectionInterface
         return true;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function find(callable $predicate)
     {
         foreach ($this->elements as $key => $value) {
@@ -200,17 +210,27 @@ abstract class AbstractCollection implements CollectionInterface
         return new \ArrayIterator($this->elements);
     }
 
+    /**
+     * @param string|int $offset
+     */
     public function offsetExists($offset): bool
     {
         return $this->hasKey($offset);
     }
 
+    /**
+     * @param string|int $offset
+     * @return mixed|null
+     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
-    public function offsetUnset($offset)
+    /**
+     * @param string|int $offset
+     */
+    public function offsetUnset($offset): void
     {
         $this->remove($offset);
     }

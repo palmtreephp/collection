@@ -15,6 +15,9 @@ class MapIndex
         $this->index    = [];
     }
 
+    /**
+     * @return mixed|null
+     */
     public function get(string $key)
     {
         return $this->index[$key] ?? null;
@@ -34,6 +37,9 @@ class MapIndex
         return $this;
     }
 
+    /**
+     * @param mixed $element
+     */
     public function add(string $key, $element): self
     {
         $callback = $this->callback;

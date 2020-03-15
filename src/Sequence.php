@@ -16,6 +16,8 @@ class Sequence extends AbstractCollection
 
     /**
      * Pushes one or more elements on to the end of the sequence.
+     *
+     * @param mixed ...$elements
      */
     public function push(...$elements): self
     {
@@ -31,6 +33,8 @@ class Sequence extends AbstractCollection
     /**
      * Pops and returns the last element of the sequence, shortening the sequence by one element.
      *
+     * @return mixed
+     *
      * @see array_pop
      */
     public function pop()
@@ -41,6 +45,8 @@ class Sequence extends AbstractCollection
     /**
      * Shifts an element off the beginning of sequence and returns it.
      *
+     * @return mixed
+     *
      * @see array_shift
      */
     public function shift()
@@ -50,6 +56,8 @@ class Sequence extends AbstractCollection
 
     /**
      * Prepends one or more elements to the beginning of the sequence.
+     *
+     * @param mixed ...$elements
      *
      * @see array_unshift
      */
@@ -62,7 +70,11 @@ class Sequence extends AbstractCollection
         return array_unshift($this->elements, ...$elements);
     }
 
-    public function offsetSet($offset, $value)
+    /**
+     * @param int|null $offset
+     * @param mixed    $value
+     */
+    public function offsetSet($offset, $value): void
     {
         $this->validator->validate($value);
 
