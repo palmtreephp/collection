@@ -8,6 +8,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
+     *
      * @return mixed
      */
     public function get($key);
@@ -124,6 +125,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Reduces the collection a single value.
      *
      * @param mixed $initial
+     *
      * @return mixed
      *
      * @see array_reduce()
@@ -134,6 +136,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Reduces the collection a single value, iterating from right to left.
      *
      * @param mixed $initial
+     *
      * @return mixed
      *
      * @see array_reduce()

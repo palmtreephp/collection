@@ -19,6 +19,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $key
+     *
      * @return mixed|null
      */
     public function get($key)
@@ -220,6 +221,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     *
      * @return mixed|null
      */
     public function offsetGet($offset)
