@@ -71,6 +71,24 @@ class Sequence extends AbstractCollection
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return self
+     */
+    public function sort(?callable $comparator = null): CollectionInterface
+    {
+        if (!$comparator) {
+            sort($this->elements);
+
+            return $this;
+        }
+
+        usort($this->elements, $comparator);
+
+        return $this;
+    }
+
+    /**
      * @param int|null $offset
      * @param mixed    $value
      */

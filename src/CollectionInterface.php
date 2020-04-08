@@ -144,6 +144,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function reduceRight(callable $callback, $initial = null);
 
     /**
+     * Sorts the collection in-place, using an optional comparator function.
+     */
+    public function sort(?callable $comparator = null): self;
+
+    /**
      * Returns whether the collection is empty.
      */
     public function isEmpty(): bool;

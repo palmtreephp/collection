@@ -70,6 +70,24 @@ class Map extends AbstractCollection
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return self
+     */
+    public function sort(?callable $comparator = null): CollectionInterface
+    {
+        if (!$comparator) {
+            asort($this->elements);
+
+            return $this;
+        }
+
+        uasort($this->elements, $comparator);
+
+        return $this;
+    }
+
+    /**
      * @return mixed|null
      *
      * @throws InvalidMapIndex
