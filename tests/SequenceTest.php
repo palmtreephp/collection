@@ -181,6 +181,116 @@ class SequenceTest extends TestCase
         }, ''));
     }
 
+    public function testIndex()
+    {
+        $obj1     = new \stdClass();
+        $obj1->id = 'foo';
+
+        $obj2     = new \stdClass();
+        $obj2->id = 'bar';
+
+        $obj3     = new \stdClass();
+        $obj3->id = 'baz';
+
+        $obj4     = new \stdClass();
+        $obj4->id = 'qux';
+
+        $sequence = new Sequence(\stdClass::class);
+        $sequence->addIndex('id', function ($obj) {
+            return $obj->id;
+        });
+        $sequence->push($obj1, $obj2, $obj3, $obj4);
+
+        $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
+        $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
+        $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+        $this->assertSame($obj4, $sequence->getBy('id', 'qux'));
+
+        $this->assertSame($obj4, $sequence->pop());
+
+        $this->assertNull($sequence->getBy('id', 'qux'));
+        $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
+        $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
+        $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+    }
+
+    public function testIndexAfterShift()
+    {
+        $obj1     = new \stdClass();
+        $obj1->id = 'foo';
+
+        $obj2     = new \stdClass();
+        $obj2->id = 'bar';
+
+        $obj3     = new \stdClass();
+        $obj3->id = 'baz';
+
+        $sequence = new Sequence(\stdClass::class);
+        $sequence->addIndex('id', function ($obj) {
+            return $obj->id;
+        });
+
+        $sequence->push($obj1, $obj2, $obj3);
+
+        $this->assertSame($obj1, $sequence->shift());
+
+        $this->assertNull($sequence->getBy('id', 'foo'));
+        $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
+        $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+    }
+
+    public function testIndexAfterUnShift()
+    {
+        $obj1     = new \stdClass();
+        $obj1->id = 'foo';
+
+        $obj2     = new \stdClass();
+        $obj2->id = 'bar';
+
+        $obj3     = new \stdClass();
+        $obj3->id = 'baz';
+
+        $obj4     = new \stdClass();
+        $obj4->id = 'qux';
+
+        $sequence = new Sequence(\stdClass::class);
+        $sequence->addIndex('id', function ($obj) {
+            return $obj->id;
+        });
+
+        $sequence->push($obj1, $obj2);
+
+        $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
+        $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
+
+        $sequence->unshift($obj3, $obj4);
+
+        $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
+        $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
+        $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+        $this->assertSame($obj4, $sequence->getBy('id', 'qux'));
+    }
+
+    public function testSort()
+    {
+        $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
+
+        $sequence->sort();
+
+        $this->assertEquals(['1', '2', '3', '4', '5'], $sequence->toArray());
+    }
+
+    public function testSortWithComparator()
+    {
+        $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
+
+        $sequence->sort(function ($a, $b) {
+            return $b <=> $a;
+        });
+
+        $this->assertEquals(['5', '4', '3', '2','1'], $sequence->toArray());
+    }
+
     public function testIterator()
     {
         $sequence = new Sequence();

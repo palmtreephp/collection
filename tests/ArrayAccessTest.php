@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -39,10 +40,14 @@ class ArrayAccessTest extends TestCase
         $sequence[] = 'Bar';
 
         $this->assertEquals('Bar', $sequence[0]);
+    }
 
+    public function testOffsetSetWithValueOnSequenceThrowsException()
+    {
+        $this->expectException(BadMethodCallException::class);
+
+        $sequence    = new Sequence();
         $sequence[0] = 'Foo';
-
-        $this->assertEquals('Foo', $sequence[0]);
     }
 
     public function testOffsetUnset()

@@ -2,13 +2,10 @@
 
 namespace Palmtree\Collection;
 
-use Palmtree\Collection\Exception\InvalidMapIndex;
+use Palmtree\Collection\Exception\InvalidIndex;
 
 class Map extends AbstractCollection
 {
-    /** @var MapIndex[] */
-    private $indexes = [];
-
     /**
      * {@inheritDoc}
      *
@@ -46,34 +43,6 @@ class Map extends AbstractCollection
      *
      * @return self
      */
-    public function remove($key): CollectionInterface
-    {
-        foreach ($this->indexes as $index) {
-            $index->remove((string)$key);
-        }
-
-        return parent::remove($key);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return self
-     */
-    public function clear(): CollectionInterface
-    {
-        foreach ($this->indexes as $index) {
-            $index->clear();
-        }
-
-        return parent::clear();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return self
-     */
     public function sort(?callable $comparator = null): CollectionInterface
     {
         if (!$comparator) {
@@ -83,40 +52,6 @@ class Map extends AbstractCollection
         }
 
         uasort($this->elements, $comparator);
-
-        return $this;
-    }
-
-    /**
-     * @return mixed|null
-     *
-     * @throws InvalidMapIndex
-     */
-    public function getBy(string $indexId, string $key)
-    {
-        if (!isset($this->indexes[$indexId])) {
-            throw new InvalidMapIndex($indexId);
-        }
-
-        return $this->get($this->indexes[$indexId]->get($key));
-    }
-
-    public function addIndex(string $id, callable $callback): self
-    {
-        $index = new MapIndex($callback);
-
-        foreach ($this->elements as $key => $element) {
-            $index->add($key, $element);
-        }
-
-        $this->indexes[$id] = $index;
-
-        return $this;
-    }
-
-    public function removeIndex(string $id): self
-    {
-        unset($this->indexes[$id]);
 
         return $this;
     }

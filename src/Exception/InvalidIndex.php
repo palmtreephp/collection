@@ -2,10 +2,10 @@
 
 namespace Palmtree\Collection\Exception;
 
-class InvalidMapIndex extends \Exception
+class InvalidIndex extends \Exception
 {
     public function __construct(string $id)
     {
-        parent::__construct("Map index '$id' not found");
+        parent::__construct("Index '$id' not found");
     }
 }

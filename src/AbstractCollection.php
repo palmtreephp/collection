@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidIndex;
 use Palmtree\Collection\Validator\TypeValidator;
 
 abstract class AbstractCollection implements CollectionInterface
@@ -10,6 +11,8 @@ abstract class AbstractCollection implements CollectionInterface
     protected $elements;
     /** @var TypeValidator */
     protected $validator;
+    /** @var Index[] */
+    protected $indexes = [];
 
     final public function __construct(?string $type = null)
     {
@@ -42,6 +45,10 @@ abstract class AbstractCollection implements CollectionInterface
 
     public function remove($key): CollectionInterface
     {
+        foreach ($this->indexes as $index) {
+            $index->remove((string)$key);
+        }
+
         unset($this->elements[$key]);
 
         return $this;
@@ -70,6 +77,10 @@ abstract class AbstractCollection implements CollectionInterface
 
     public function clear(): CollectionInterface
     {
+        foreach ($this->indexes as $index) {
+            $index->clear();
+        }
+
         $this->elements = [];
 
         return $this;
@@ -199,6 +210,40 @@ abstract class AbstractCollection implements CollectionInterface
     public function reduceRight(callable $callback, $initial = null)
     {
         return array_reduce(array_reverse($this->elements), $callback, $initial);
+    }
+
+    /**
+     * @return mixed|null
+     *
+     * @throws InvalidIndex
+     */
+    public function getBy(string $indexId, string $key)
+    {
+        if (!isset($this->indexes[$indexId])) {
+            throw new InvalidIndex($indexId);
+        }
+
+        return $this->get($this->indexes[$indexId]->get($key));
+    }
+
+    public function addIndex(string $id, callable $callback): self
+    {
+        $index = new Index($callback);
+
+        foreach ($this->elements as $key => $element) {
+            $index->add($key, $element);
+        }
+
+        $this->indexes[$id] = $index;
+
+        return $this;
+    }
+
+    public function removeIndex(string $id): self
+    {
+        unset($this->indexes[$id]);
+
+        return $this;
     }
 
     public function getValidator(): TypeValidator

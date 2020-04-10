@@ -2,7 +2,7 @@
 
 namespace Palmtree\Collection;
 
-class MapIndex
+class Index
 {
     /** @var callable */
     private $callback;

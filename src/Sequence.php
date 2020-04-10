@@ -2,6 +2,8 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\BadMethodCallException;
+
 class Sequence extends AbstractCollection
 {
     /**
@@ -27,6 +29,8 @@ class Sequence extends AbstractCollection
             $this->elements[] = $element;
         }
 
+        $this->reindex();
+
         return $this;
     }
 
@@ -39,7 +43,11 @@ class Sequence extends AbstractCollection
      */
     public function pop()
     {
-        return array_pop($this->elements);
+        $popped = array_pop($this->elements);
+
+        $this->reindex();
+
+        return $popped;
     }
 
     /**
@@ -51,7 +59,11 @@ class Sequence extends AbstractCollection
      */
     public function shift()
     {
-        return array_shift($this->elements);
+        $shifted = array_shift($this->elements);
+
+        $this->reindex();
+
+        return $shifted;
     }
 
     /**
@@ -67,7 +79,11 @@ class Sequence extends AbstractCollection
             $this->validator->validate($element);
         }
 
-        return array_unshift($this->elements, ...$elements);
+        $result = array_unshift($this->elements, ...$elements);
+
+        $this->reindex();
+
+        return $result;
     }
 
     /**
@@ -85,21 +101,38 @@ class Sequence extends AbstractCollection
 
         usort($this->elements, $comparator);
 
+        $this->reindex();
+
         return $this;
     }
 
+    private function reindex(): void
+    {
+        if (empty($this->indexes)) {
+            return;
+        }
+
+        foreach ($this->indexes as $index) {
+            $index->clear();
+        }
+
+        foreach ($this->elements as $key => $value) {
+            foreach ($this->indexes as $index) {
+                $index->add($key, $value);
+            }
+        }
+    }
+
     /**
-     * @param int|null $offset
-     * @param mixed    $value
+     * @param null  $offset
+     * @param mixed $value
      */
     public function offsetSet($offset, $value): void
     {
-        $this->validator->validate($value);
-
-        if ($offset === null) {
-            $this->elements[] = $value;
-        } else {
-            $this->elements[$offset] = $value;
+        if ($offset !== null) {
+            throw new BadMethodCallException("Cannot set element at offset $offset. Sequences must be sequential");
         }
+
+        $this->push($value);
     }
 }
