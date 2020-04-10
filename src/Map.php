@@ -2,8 +2,6 @@
 
 namespace Palmtree\Collection;
 
-use Palmtree\Collection\Exception\InvalidIndex;
-
 class Map extends AbstractCollection
 {
     /**

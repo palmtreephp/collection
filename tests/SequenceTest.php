@@ -288,7 +288,7 @@ class SequenceTest extends TestCase
             return $b <=> $a;
         });
 
-        $this->assertEquals(['5', '4', '3', '2','1'], $sequence->toArray());
+        $this->assertEquals(['5', '4', '3', '2', '1'], $sequence->toArray());
     }
 
     public function testIterator()
