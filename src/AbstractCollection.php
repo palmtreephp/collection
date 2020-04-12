@@ -20,19 +20,11 @@ abstract class AbstractCollection implements CollectionInterface
         $this->validator = new TypeValidator($type);
     }
 
-    /**
-     * @param string|int $key
-     *
-     * @return mixed|null
-     */
     public function get($key)
     {
         return $this->hasKey($key) ? $this->elements[$key] : null;
     }
 
-    /**
-     * @param mixed $element
-     */
     public function has($element, bool $strict = true): bool
     {
         return \in_array($element, $this->elements, $strict);
@@ -89,11 +81,6 @@ abstract class AbstractCollection implements CollectionInterface
     public function all(): array
     {
         return $this->toArray();
-    }
-
-    public function toArray(): array
-    {
-        return $this->elements;
     }
 
     public function first()
@@ -210,6 +197,11 @@ abstract class AbstractCollection implements CollectionInterface
     public function reduceRight(callable $callback, $initial = null)
     {
         return array_reduce(array_reverse($this->elements), $callback, $initial);
+    }
+
+    public function toArray(): array
+    {
+        return $this->elements;
     }
 
     /**
