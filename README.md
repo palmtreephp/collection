@@ -25,10 +25,9 @@ composer require palmtree/collection
 
 #### Map
 
-```php
-<?php
-use Palmtree\Collection\Map;
+Maps are key-value data structures where performance is expected to be O(1) for `get()` and `hasKey()` methods.
 
+```php
 $map = new Map();
 
 // Supports chaining
@@ -36,7 +35,7 @@ $map
     ->set('foo', 'Bar')
     ->set('baz', true);
 
-var_dump($map->get('baz')); // Returns true
+$map->get('baz'); // Returns true
 
 // Array access
 echo $map['foo']; // Prints Bar;
@@ -46,10 +45,9 @@ $map['bar'] = 'Baz';
 
 #### Sequence
 
-```php
-<?php
-use Palmtree\Collection\Sequence;
+Sequences - sometimes referred to as Lists - are data structures containing a linear, sequential set of values.
 
+```php
 $sequence = new Sequence();
 
 $sequence->push('Foo');
@@ -70,9 +68,6 @@ foreach($sequence as $integer) {
 Ensure each element is an instance of a particular class or interface
 
 ```php
-<?php
-use Palmtree\Collection\Map;
-
 $objects = new Map(\stdClass::class);
 
 $element       = new \stdClass();
@@ -82,8 +77,7 @@ $objects->set('key1', $element);
 ```
 
 ```php
-<?php
-$foos = new \Palmtree\Collection\Sequence(FooInterface::class);
+$foos = new Sequence(FooInterface::class);
 
 $foos->push(new Foo());
 ```
@@ -92,24 +86,21 @@ $foos->push(new Foo());
 
 Can be anything returned by PHP's [gettype()](http://php.net/manual/en/function.gettype.php#refsect1-function.gettype-returnvalues) function as well as `float`, `int`, and `bool` for convenience.
 ```php
-<?php
-use Palmtree\Collection\Sequence;
-
 $floats = new Sequence('float');
 
-$floats
-    ->push(3.4)
-    ->push(789.83);
+$floats->push(3.4, 789,83);
 ```
 
 #### Custom Indexes
 
 Custom indexes may be added to a collection to enable `O(1)` (constant as per `isset`) lookups instead of `O(n)` (linear as per `in_array`):
 
-```php
-<?php
-use Palmtree\Collection\Map;
+The addIndex method takes an index key and a callback. The callback takes a single element from the collection and must
+return a scalar value to be used as the index value.
 
+The example below shows how to add a custom ID index where the callback returns an object's ID value:
+
+```php
 $objects = new Map(\stdClass::class);
 
 $object1     = new \stdClass();
@@ -118,7 +109,9 @@ $object1->id = 'foo';
 $object2     = new \stdClass();
 $object2->id = 'bar';
 
-$objects->set('key1', $object1)->set('key2', $object2);
+$objects
+    ->set('key1', $object1)
+    ->set('key2', $object2);
 
 $objects->addIndex('id', function(\stdClass $object) {
    return $object->id;
