@@ -124,8 +124,8 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * @param null  $offset
-     * @param mixed $value
+     * @param int|string|null $offset
+     * @param mixed           $value
      */
     public function offsetSet($offset, $value): void
     {

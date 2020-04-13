@@ -27,6 +27,8 @@ class TypeValidator
     /**
      * Returns true if the given element is a valid type.
      *
+     * @param mixed $element
+     *
      * @throws InvalidTypeException If the given element is not a valid type.
      */
     public function validate($element): bool
@@ -60,7 +62,7 @@ class TypeValidator
     /**
      * Sets the type all elements in the collection must be. Can be a primitive type, class name or interface.
      */
-    private function setType(?string $type)
+    private function setType(?string $type): void
     {
         if (!$this->isValidType($type)) {
             $validTypes = implode(', ', self::VALID_PRIMITIVE_TYPES);
