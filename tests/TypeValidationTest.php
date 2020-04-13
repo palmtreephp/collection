@@ -64,12 +64,11 @@ class TypeValidationTest extends TestCase
         new Map(1);
     }
 
-    public function testTypeMap()
+    public function testNoTypeChecking()
     {
-        $map = new Map();
+        $sequence = new Sequence();
+        $sequence->push(1, true, 'Hello World');
 
-        $map->getValidator()->setTypeMap(['bool' => 'boolean']);
-
-        $this->assertSame(['bool' => 'boolean'], $map->getValidator()->getTypeMap());
+        $this->assertSame([1, true, 'Hello World'], $sequence->toArray());
     }
 }
