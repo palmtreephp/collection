@@ -85,14 +85,14 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @param mixed $element
      */
-    public function has($element, bool $strict = true): bool;
+    public function contains($element, bool $strict = true): bool;
 
     /**
      * Returns whether the given key exists in the collection.
      *
      * @param string|int $key
      */
-    public function hasKey($key): bool;
+    public function containsKey($key): bool;
 
     /**
      * Returns a new instance containing elements mapped from the given callback.

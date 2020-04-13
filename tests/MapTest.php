@@ -41,11 +41,11 @@ class MapTest extends TestCase
         $object = new \stdClass();
         $map->set('foo', $object);
 
-        $this->assertTrue($map->has($object));
+        $this->assertTrue($map->contains($object));
 
         $map->removeElement($object);
 
-        $this->assertFalse($map->has($object));
+        $this->assertFalse($map->contains($object));
     }
 
     public function testRemove()
@@ -63,7 +63,7 @@ class MapTest extends TestCase
 
         $map->remove('some_object');
 
-        $this->assertFalse($map->has('some_object'));
+        $this->assertFalse($map->contains('some_object'));
         $this->assertNull($map->getBy('foo', 'bar'));
     }
 
@@ -73,7 +73,7 @@ class MapTest extends TestCase
 
         $map->add([1, 2, 3]);
 
-        $this->assertTrue($map->has(2));
+        $this->assertTrue($map->contains(2));
     }
 
     public function testHasKey()
@@ -84,8 +84,8 @@ class MapTest extends TestCase
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertTrue($map->hasKey('foo'));
-        $this->assertTrue($map->hasKey('baz'));
+        $this->assertTrue($map->containsKey('foo'));
+        $this->assertTrue($map->containsKey('baz'));
     }
 
     public function testClear()
@@ -237,7 +237,7 @@ class MapTest extends TestCase
         });
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('foo'));
+        $this->assertFalse($filtered->containsKey('foo'));
 
         $map = new Map('bool');
 
@@ -249,7 +249,7 @@ class MapTest extends TestCase
         $filtered = $map->filter();
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('bar'));
+        $this->assertFalse($filtered->containsKey('bar'));
     }
 
     public function testFilterWithKeys()
@@ -266,7 +266,7 @@ class MapTest extends TestCase
         });
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('foo'));
+        $this->assertFalse($filtered->containsKey('foo'));
     }
 
     public function testMapWithKeys()

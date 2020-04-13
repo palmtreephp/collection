@@ -25,7 +25,7 @@ composer require palmtree/collection
 
 #### Map
 
-Maps are key-value data structures where performance is expected to be O(1) for `get()` and `hasKey()` methods.
+Maps are key-value data structures where performance is expected to be O(1) for `get()` and `containsKey()` methods.
 
 ```php
 $map = new Map();

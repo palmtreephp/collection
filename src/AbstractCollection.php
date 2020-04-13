@@ -22,15 +22,15 @@ abstract class AbstractCollection implements CollectionInterface
 
     public function get($key)
     {
-        return $this->hasKey($key) ? $this->elements[$key] : null;
+        return $this->containsKey($key) ? $this->elements[$key] : null;
     }
 
-    public function has($element, bool $strict = true): bool
+    public function contains($element, bool $strict = true): bool
     {
         return \in_array($element, $this->elements, $strict);
     }
 
-    public function hasKey($key): bool
+    public function containsKey($key): bool
     {
         return isset($this->elements[$key]) || \array_key_exists($key, $this->elements);
     }
@@ -253,7 +253,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function offsetExists($offset): bool
     {
-        return $this->hasKey($offset);
+        return $this->containsKey($offset);
     }
 
     /**

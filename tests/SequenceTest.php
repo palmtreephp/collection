@@ -24,7 +24,7 @@ class SequenceTest extends TestCase
         $sequence->push(1, 2, 3);
 
         $this->assertSame(3, $sequence->pop());
-        $this->assertFalse($sequence->has(3));
+        $this->assertFalse($sequence->contains(3));
     }
 
     public function testShift()
@@ -34,7 +34,7 @@ class SequenceTest extends TestCase
         $sequence->push(1, 2, 3);
 
         $this->assertSame(1, $sequence->shift());
-        $this->assertFalse($sequence->has(1));
+        $this->assertFalse($sequence->contains(1));
     }
 
     public function testUnshift()
@@ -55,11 +55,11 @@ class SequenceTest extends TestCase
         $object = new \stdClass();
         $sequence->push($object);
 
-        $this->assertTrue($sequence->has($object));
+        $this->assertTrue($sequence->contains($object));
 
         $sequence->removeElement($object);
 
-        $this->assertFalse($sequence->has($object));
+        $this->assertFalse($sequence->contains($object));
     }
 
     public function testHas()
@@ -68,7 +68,7 @@ class SequenceTest extends TestCase
 
         $sequence->add([1, 2, 3]);
 
-        $this->assertTrue($sequence->has(2));
+        $this->assertTrue($sequence->contains(2));
     }
 
     public function testIsEmpty()
@@ -133,7 +133,7 @@ class SequenceTest extends TestCase
         });
 
         $this->assertNotSame($sequence, $filtered);
-        $this->assertFalse($filtered->has(3));
+        $this->assertFalse($filtered->contains(3));
     }
 
     public function testMap()
