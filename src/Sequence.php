@@ -20,6 +20,7 @@ class Sequence extends AbstractCollection
      * Pushes one or more elements on to the end of the sequence.
      *
      * @param mixed ...$elements
+     * @throws Exception\InvalidTypeException
      */
     public function push(...$elements): self
     {
@@ -71,6 +72,7 @@ class Sequence extends AbstractCollection
      *
      * @param mixed ...$elements
      *
+     * @throws Exception\InvalidTypeException
      * @see array_unshift
      */
     public function unshift(...$elements): int
@@ -125,7 +127,8 @@ class Sequence extends AbstractCollection
 
     /**
      * @param int|string|null $offset
-     * @param mixed           $value
+     * @param mixed $value
+     * @throws Exception\InvalidTypeException
      */
     public function offsetSet($offset, $value): void
     {
