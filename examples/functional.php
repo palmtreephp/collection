@@ -21,13 +21,13 @@ $obj4->price = 40;
 $sequence->push($obj1, $obj2, $obj3, $obj4);
 
 $filtered = $sequence
-    ->filter(function (\stdClass $obj) {
+    ->filter(function (stdClass $obj) {
         return $obj->price < 40;
-    })->sort(function (\stdClass $a, \stdClass $b) {
+    })->sort(function (stdClass $a, stdClass $b) {
         return $b->price <=> $a->price;
     });
 
-$total = $filtered->reduce(function ($total, \stdClass $obj) {
+$total = $filtered->reduce(function ($total, stdClass $obj) {
     return $total + $obj->price;
 }, 0);
 
