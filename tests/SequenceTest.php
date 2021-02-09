@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -208,10 +209,12 @@ class SequenceTest extends TestCase
 
         $this->assertSame($obj4, $sequence->pop());
 
-        $this->assertNull($sequence->getBy('id', 'qux'));
         $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
         $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
         $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+
+        $this->expectException(OutOfBoundsException::class);
+        $sequence->getBy('id', 'qux');
     }
 
     public function testIndexAfterShift()
@@ -234,9 +237,11 @@ class SequenceTest extends TestCase
 
         $this->assertSame($obj1, $sequence->shift());
 
-        $this->assertNull($sequence->getBy('id', 'foo'));
         $this->assertSame($obj2, $sequence->getBy('id', 'bar'));
         $this->assertSame($obj3, $sequence->getBy('id', 'baz'));
+
+        $this->expectException(OutOfBoundsException::class);
+        $sequence->getBy('id', 'foo');
     }
 
     public function testIndexAfterUnShift()

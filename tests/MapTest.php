@@ -3,6 +3,7 @@
 namespace Palmtree\Collection\Test;
 
 use Palmtree\Collection\Exception\InvalidIndex;
+use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Test\Fixture\Foo;
 use Palmtree\Collection\Test\Fixture\FooInterface;
@@ -64,7 +65,10 @@ class MapTest extends TestCase
         $map->remove('some_object');
 
         $this->assertFalse($map->contains('some_object'));
-        $this->assertNull($map->getBy('foo', 'bar'));
+
+        $this->expectException(OutOfBoundsException::class);
+
+        $map->getBy('foo', 'bar');
     }
 
     public function testHas()
@@ -104,7 +108,9 @@ class MapTest extends TestCase
         $map->clear();
 
         $this->assertTrue($map->isEmpty());
-        $this->assertNull($map->getBy('foo', 'bar'));
+
+        $this->expectException(OutOfBoundsException::class);
+        $map->getBy('foo', 'bar');
     }
 
     public function testIsEmpty()
