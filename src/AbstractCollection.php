@@ -3,6 +3,7 @@
 namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\InvalidIndex;
+use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Validator\TypeValidator;
 
 abstract class AbstractCollection implements CollectionInterface
@@ -20,9 +21,16 @@ abstract class AbstractCollection implements CollectionInterface
         $this->validator = new TypeValidator($type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function get($key)
     {
-        return $this->containsKey($key) ? $this->elements[$key] : null;
+        if (!$this->containsKey($key)) {
+            throw new OutOfBoundsException("Element with key '$key' does not exist");
+        }
+
+        return $this->elements[$key];
     }
 
     public function contains($element, bool $strict = true): bool
