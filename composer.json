@@ -1,6 +1,6 @@
 {
     "name": "palmtree/collection",
-    "description": "Collection component for Palmtree PHP",
+    "description": "Maps and Sequences with optional type validation",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -19,7 +19,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~9.0",
+        "phpunit/phpunit": "^9.0.0",
         "palmtree/php-cs-fixer-config": "^1.0.2"
     },
     "autoload-dev": {
@@ -28,9 +28,7 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit",
-        "sniff": "vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff --diff-format=udiff",
-        "fix": "vendor/bin/php-cs-fixer fix --diff",
-        "lint": "find -L .  -path ./vendor -prune -o -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+        "test": "vendor/bin/phpunit",
+        "fix": "vendor/bin/php-cs-fixer fix --diff"
     }
 }
