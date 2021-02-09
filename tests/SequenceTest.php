@@ -291,6 +291,17 @@ class SequenceTest extends TestCase
         $this->assertEquals(['5', '4', '3', '2', '1'], $sequence->toArray());
     }
 
+    public function testSorted()
+    {
+        $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
+
+        $sortedSequence = $sequence->sorted();
+
+        $this->assertNotSame($sequence, $sortedSequence);
+        $this->assertEquals(['1', '2', '3', '4', '5'], $sortedSequence->toArray());
+        $this->assertEquals(['4', '5', '3', '1', '2'], $sequence->toArray());
+    }
+
     public function testIterator()
     {
         $sequence = new Sequence();

@@ -8,6 +8,7 @@ class Map extends AbstractCollection
      * {@inheritDoc}
      *
      * @return self
+     *
      * @throws Exception\InvalidTypeException
      */
     public function add(iterable $elements): CollectionInterface
@@ -23,6 +24,7 @@ class Map extends AbstractCollection
      * Adds a single element with the given key to the collection.
      *
      * @param mixed $element
+     *
      * @throws Exception\InvalidTypeException
      */
     public function set(string $key, $element): self
@@ -58,7 +60,8 @@ class Map extends AbstractCollection
 
     /**
      * @param string $offset
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @throws Exception\InvalidTypeException
      */
     public function offsetSet($offset, $value): void

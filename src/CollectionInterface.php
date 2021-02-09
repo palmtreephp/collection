@@ -149,6 +149,11 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function sort(?callable $comparator = null): self;
 
     /**
+     * Sorts and returns a copy of the collection using an optional comparator function.
+     */
+    public function sorted(?callable $comparator = null): self;
+
+    /**
      * Returns whether the collection is empty.
      */
     public function isEmpty(): bool;

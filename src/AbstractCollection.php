@@ -265,6 +265,16 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return static
+     */
+    public function sorted(?callable $comparator = null): CollectionInterface
+    {
+        return static::fromArray($this->elements, $this->validator->getType())->sort($comparator);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
