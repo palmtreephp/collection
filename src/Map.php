@@ -4,6 +4,11 @@ namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\InvalidMapIndex;
 
+/**
+ * @template TKey of array-key
+ * @template T
+ * @extends AbstractCollection<TKey,T>
+ */
 class Map extends AbstractCollection
 {
     /** @var MapIndex[] */
@@ -26,7 +31,8 @@ class Map extends AbstractCollection
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @param mixed $element
+     * @param TKey $key
+     * @param T $element
      */
     public function set(string $key, $element): self
     {

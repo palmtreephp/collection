@@ -2,6 +2,7 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\CollectionInterface;
 use Palmtree\Collection\Exception\InvalidMapIndex;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Test\Fixture\Foo;
@@ -15,6 +16,10 @@ class MapTest extends TestCase
         $map = new Map();
 
         $map->set('foo', 'Bar');
+
+        $p = $map->get('foo');
+
+        $z = count($p);
 
         $this->assertSame('Bar', $map->get('foo'));
     }

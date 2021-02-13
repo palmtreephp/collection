@@ -4,9 +4,14 @@ namespace Palmtree\Collection;
 
 use Palmtree\Collection\Validator\TypeValidator;
 
+/**
+ * @template TKey of array-key
+ * @template T
+ * @implements CollectionInterface<TKey,T>
+ */
 abstract class AbstractCollection implements CollectionInterface
 {
-    /** @var array */
+    /** @var array<TKey,T> */
     protected $elements;
     /** @var TypeValidator */
     protected $validator;
@@ -18,18 +23,13 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param string|int $key
-     *
-     * @return mixed|null
+     * {@inheritDoc}
      */
     public function get($key)
     {
         return $this->hasKey($key) ? $this->elements[$key] : null;
     }
 
-    /**
-     * @param mixed $element
-     */
     public function has($element, bool $strict = true): bool
     {
         return \in_array($element, $this->elements, $strict);
