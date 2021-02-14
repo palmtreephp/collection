@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SequenceTest extends TestCase
 {
-    public function testPush()
+    public function testPush(): void
     {
         $sequence = new Sequence();
 
@@ -18,7 +18,7 @@ class SequenceTest extends TestCase
         $this->assertSame([1, 2, 3], $sequence->toArray());
     }
 
-    public function testPop()
+    public function testPop(): void
     {
         $sequence = new Sequence();
 
@@ -28,7 +28,7 @@ class SequenceTest extends TestCase
         $this->assertFalse($sequence->contains(3));
     }
 
-    public function testShift()
+    public function testShift(): void
     {
         $sequence = new Sequence();
 
@@ -38,7 +38,7 @@ class SequenceTest extends TestCase
         $this->assertFalse($sequence->contains(1));
     }
 
-    public function testUnshift()
+    public function testUnshift(): void
     {
         $sequence = new Sequence();
 
@@ -49,7 +49,7 @@ class SequenceTest extends TestCase
         $this->assertSame(1, $sequence->first());
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $sequence = new Sequence();
 
@@ -63,7 +63,7 @@ class SequenceTest extends TestCase
         $this->assertFalse($sequence->contains($object));
     }
 
-    public function testHas()
+    public function testHas(): void
     {
         $sequence = new Sequence();
 
@@ -72,7 +72,7 @@ class SequenceTest extends TestCase
         $this->assertTrue($sequence->contains(2));
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $sequence = new Sequence();
 
@@ -87,7 +87,7 @@ class SequenceTest extends TestCase
         $this->assertTrue($sequence->isEmpty());
     }
 
-    public function testFirstLast()
+    public function testFirstLast(): void
     {
         $sequence = new Sequence();
 
@@ -104,7 +104,7 @@ class SequenceTest extends TestCase
         $this->assertNotSame($objectTwo, $sequence->last());
     }
 
-    public function testAll()
+    public function testAll(): void
     {
         $sequence = new Sequence();
 
@@ -113,7 +113,7 @@ class SequenceTest extends TestCase
         $this->assertSame([1, 2, 3], $sequence->all());
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $sequence = new Sequence();
         $sequence->push('Foo');
@@ -124,7 +124,7 @@ class SequenceTest extends TestCase
         $this->assertEmpty($sequence);
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         $sequence = new Sequence('int');
 
@@ -138,7 +138,7 @@ class SequenceTest extends TestCase
         $this->assertFalse($filtered->contains(3));
     }
 
-    public function testMap()
+    public function testMap(): void
     {
         $objectOne      = new \stdClass();
         $objectOne->foo = 'Bar';
@@ -156,7 +156,7 @@ class SequenceTest extends TestCase
         $this->assertSame(['Bar', 'Baz'], $mapped->toArray());
     }
 
-    public function testEvery()
+    public function testEvery(): void
     {
         $sequence = Sequence::fromArray([1, 30, 39, 29, 10, 13]);
 
@@ -165,7 +165,7 @@ class SequenceTest extends TestCase
         }));
     }
 
-    public function testReduce()
+    public function testReduce(): void
     {
         $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
 
@@ -174,7 +174,7 @@ class SequenceTest extends TestCase
         }, ''));
     }
 
-    public function testReduceRight()
+    public function testReduceRight(): void
     {
         $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
 
@@ -183,7 +183,7 @@ class SequenceTest extends TestCase
         }, ''));
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $obj1     = new \stdClass();
         $obj1->id = 'foo';
@@ -218,7 +218,7 @@ class SequenceTest extends TestCase
         $sequence->getBy('id', 'qux');
     }
 
-    public function testIndexAfterShift()
+    public function testIndexAfterShift(): void
     {
         $obj1     = new \stdClass();
         $obj1->id = 'foo';
@@ -245,7 +245,7 @@ class SequenceTest extends TestCase
         $sequence->getBy('id', 'foo');
     }
 
-    public function testIndexAfterUnShift()
+    public function testIndexAfterUnShift(): void
     {
         $obj1     = new \stdClass();
         $obj1->id = 'foo';
@@ -277,7 +277,7 @@ class SequenceTest extends TestCase
         $this->assertSame($obj4, $sequence->getBy('id', 'qux'));
     }
 
-    public function testSort()
+    public function testSort(): void
     {
         $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
 
@@ -286,7 +286,7 @@ class SequenceTest extends TestCase
         $this->assertEquals(['1', '2', '3', '4', '5'], $sequence->toArray());
     }
 
-    public function testSortWithComparator()
+    public function testSortWithComparator(): void
     {
         $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
 
@@ -297,7 +297,7 @@ class SequenceTest extends TestCase
         $this->assertEquals(['5', '4', '3', '2', '1'], $sequence->toArray());
     }
 
-    public function testSorted()
+    public function testSorted(): void
     {
         $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
 
@@ -308,7 +308,7 @@ class SequenceTest extends TestCase
         $this->assertEquals(['4', '5', '3', '1', '2'], $sequence->toArray());
     }
 
-    public function testIterator()
+    public function testIterator(): void
     {
         $sequence = new Sequence();
 
@@ -317,7 +317,7 @@ class SequenceTest extends TestCase
         $this->assertSame([1, 2, 3], iterator_to_array($sequence));
     }
 
-    public function testSerialization()
+    public function testSerialization(): void
     {
         $sequence = new Sequence('int');
 
@@ -333,7 +333,7 @@ class SequenceTest extends TestCase
         $this->assertSame([1, 2, 3], $sequence->toArray());
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $sequence = new Sequence('int');
 
