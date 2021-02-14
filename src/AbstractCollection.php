@@ -6,13 +6,21 @@ use Palmtree\Collection\Exception\InvalidIndex;
 use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Validator\TypeValidator;
 
+/**
+ * @template TKey of array-key
+ * @template T
+ * @implements CollectionInterface<TKey,T>
+ */
 abstract class AbstractCollection implements CollectionInterface
 {
-    /** @var array */
+    /**
+     * @var array<string|int, mixed>
+     * @psalm-var array<TKey, T>
+     */
     protected $elements;
     /** @var TypeValidator */
     protected $validator;
-    /** @var Index[] */
+    /** @var array<string, Index> */
     protected $indexes = [];
 
     final public function __construct(?string $type = null)
@@ -82,12 +90,15 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function keys(): CollectionInterface
     {
-        return static::fromArray(array_keys($this->elements));
+        return Sequence::fromArray(array_keys($this->elements));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function values(): CollectionInterface
     {
-        return static::fromArray(array_values($this->elements), $this->validator->getType());
+        return Sequence::fromArray(array_values($this->elements), $this->validator->getType());
     }
 
     /**
@@ -267,6 +278,9 @@ abstract class AbstractCollection implements CollectionInterface
      * {@inheritDoc}
      *
      * @return static
+     * @psalm-return static<TKey, T>
+     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-suppress LessSpecificReturnStatement
      */
     public function sorted(?callable $comparator = null): CollectionInterface
     {
@@ -275,6 +289,8 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @psalm-return array<TKey, T>
      */
     public function toArray(): array
     {
@@ -282,9 +298,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @return mixed|null
+     * @return mixed
+     * @psalm-return T
      *
-     * @throws InvalidIndex
+     * @throws InvalidIndex|OutOfBoundsException
      */
     public function getBy(string $indexId, string $key)
     {
@@ -292,7 +309,13 @@ abstract class AbstractCollection implements CollectionInterface
             throw new InvalidIndex($indexId);
         }
 
-        return $this->get($this->indexes[$indexId]->get($key));
+        $key = $this->indexes[$indexId]->get($key);
+
+        if ($key === null) {
+            throw new OutOfBoundsException("Index '$indexId' does not contain key '$key");
+        }
+
+        return $this->get($key);
     }
 
     public function addIndex(string $id, callable $callback): self
@@ -327,6 +350,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      */
     public function offsetExists($offset): bool
     {
@@ -335,8 +359,10 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      *
      * @return mixed|null
+     * @psalm-return T
      */
     public function offsetGet($offset)
     {
@@ -345,6 +371,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      */
     public function offsetUnset($offset): void
     {
@@ -356,16 +383,27 @@ abstract class AbstractCollection implements CollectionInterface
         return $this->elements;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @psalm-return self<TKey,T>
+     */
     public static function fromJson(string $json, ?string $type = null): CollectionInterface
     {
         return static::fromArray(json_decode($json, true), $type);
     }
 
+    /**
+     * {@inheritDoc}
+     * @psalm-template K of array-key
+     * @psalm-template V
+     *
+     * @psalm-param iterable<K,V> $elements
+     * @return static
+     * @psalm-return static<TKey,T>
+     */
     public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
     {
-        $collection = new static($type);
-        $collection->add($elements);
-
-        return $collection;
+        return (new static($type))->add($elements);
     }
 }

@@ -61,7 +61,7 @@ class TypeValidationTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Map(1);
+        $map = new Map('foo');
     }
 
     public function testNoTypeChecking()

@@ -2,19 +2,30 @@
 
 namespace Palmtree\Collection;
 
+/**
+ * @template TKey of array-key
+ * @template T
+ * @extends IteratorAggregate<TKey, T>
+ * @extends ArrayAccess<TKey|null, T>
+ */
 interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
      * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      *
      * @return mixed
+     * @psalm-return T
      */
     public function get($key);
 
     /**
      * Adds a set of elements to the collection.
+     *
+     * @psalm-param iterable<TKey,T> $elements
+     * @psalm-return self<TKey,T>
      */
     public function add(iterable $elements): self;
 
@@ -22,6 +33,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element with the given key from the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      */
     public function remove($key): self;
 
@@ -29,6 +41,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element from the collection.
      *
      * @param mixed $element
+     * @psalm-param T $element
      */
     public function removeElement($element): self;
 
@@ -46,6 +59,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first element in the collection.
      *
      * @return mixed|null
+     * @psalm-return T|null
      */
     public function first();
 
@@ -53,6 +67,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the last element in the collection.
      *
      * @return mixed|null
+     * @psalm-return T|null
      */
     public function last();
 
@@ -60,6 +75,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first key in the collection.
      *
      * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function firstKey();
 
@@ -67,16 +83,21 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the last key in the collection.
      *
      * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function lastKey();
 
     /**
-     * Returns a new collection containing this collection's keys.
+     * Returns a Sequence containing this collection's keys.
+     *
+     * @psalm-return Sequence<TKey>
      */
     public function keys(): self;
 
     /**
-     * Returns a new collection containing this collection's values.
+     * Returns a Sequence containing this collection's values.
+     *
+     * @psalm-return Sequence<T>
      */
     public function values(): self;
 
@@ -84,6 +105,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given element is in the collection.
      *
      * @param mixed $element
+     * @psalm-param T $element
      */
     public function contains($element, bool $strict = true): bool;
 
@@ -91,6 +113,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given key exists in the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      */
     public function containsKey($key): bool;
 
@@ -118,6 +141,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first element that passes the predicate function.
      *
      * @return mixed
+     * @psalm-return T
      */
     public function find(callable $predicate);
 
@@ -145,11 +169,15 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Sorts the collection in-place, using an optional comparator function.
+     *
+     * @psalm-return CollectionInterface<TKey, T>
      */
     public function sort(?callable $comparator = null): self;
 
     /**
      * Sorts and returns a copy of the collection using an optional comparator function.
+     *
+     * @psalm-return CollectionInterface<TKey, T>
      */
     public function sorted(?callable $comparator = null): self;
 
@@ -165,11 +193,15 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns a new collection from an array or iterable.
+     *
+     * @psalm-return CollectionInterface<TKey, T>
      */
     public static function fromArray(iterable $elements, ?string $type = null): self;
 
     /**
      * Returns a new collection from a JSON string.
+     *
+     * @psalm-return CollectionInterface<TKey, T>
      */
     public static function fromJson(string $json, ?string $type = null): self;
 }

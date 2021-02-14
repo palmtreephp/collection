@@ -120,6 +120,7 @@ class SequenceTest extends TestCase
 
         $sequence->clear();
 
+        /** @psalm-suppress TypeDoesNotContainType */
         $this->assertEmpty($sequence);
     }
 

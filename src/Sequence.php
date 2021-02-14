@@ -3,13 +3,20 @@
 namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\BadMethodCallException;
+use Palmtree\Collection\Exception\InvalidTypeException;
 
+/**
+ * @template T
+ * @extends AbstractCollection<int,T>
+ */
 class Sequence extends AbstractCollection
 {
     /**
      * {@inheritDoc}
      *
      * @return self
+     * @psalm-return self<T>
+     * @throws InvalidTypeException
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -20,8 +27,11 @@ class Sequence extends AbstractCollection
      * Pushes one or more elements on to the end of the sequence.
      *
      * @param mixed ...$elements
+     * @psalm-param T ...$elements
      *
-     * @throws Exception\InvalidTypeException
+     * @psalm-return self<T>
+     *
+     * @throws InvalidTypeException
      */
     public function push(...$elements): self
     {
@@ -40,6 +50,7 @@ class Sequence extends AbstractCollection
      * Pops and returns the last element of the sequence, shortening the sequence by one element.
      *
      * @return mixed
+     * @psalm-return T
      *
      * @see array_pop
      */
@@ -56,6 +67,7 @@ class Sequence extends AbstractCollection
      * Shifts an element off the beginning of sequence and returns it.
      *
      * @return mixed
+     * @psalm-return T
      *
      * @see array_shift
      */
@@ -72,8 +84,9 @@ class Sequence extends AbstractCollection
      * Prepends one or more elements to the beginning of the sequence.
      *
      * @param mixed ...$elements
+     * @psalm-param T ...$elements
      *
-     * @throws Exception\InvalidTypeException
+     * @throws InvalidTypeException
      *
      * @see array_unshift
      */
@@ -83,6 +96,7 @@ class Sequence extends AbstractCollection
             $this->validator->validate($element);
         }
 
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         $result = array_unshift($this->elements, ...$elements);
 
         $this->reindex();
@@ -93,7 +107,7 @@ class Sequence extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @return self
+     * @psalm-return self<T>
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
@@ -128,10 +142,11 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * @param int|string|null $offset
-     * @param mixed           $value
+     * @param int|null $offset
+     * @param mixed $value
+     * @psalm-param T $value
      *
-     * @throws Exception\InvalidTypeException
+     * @throws InvalidTypeException
      */
     public function offsetSet($offset, $value): void
     {

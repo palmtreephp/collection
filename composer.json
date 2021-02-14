@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "psalm/phar": "^4.5"
     },
     "autoload": {
         "psr-4": {
@@ -24,6 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Palmtree\\Collection\\Test\\": "tests",
             "Palmtree\\Collection\\Test\\Fixture\\": "tests/fixtures"
         }
     },

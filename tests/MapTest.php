@@ -333,7 +333,7 @@ class MapTest extends TestCase
 
         $map = new Map();
 
-        $map->getBy('blah', 1);
+        $map->getBy('foo', 'bar');
     }
 
     public function testRemoveIndex()
