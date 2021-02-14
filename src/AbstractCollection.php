@@ -284,8 +284,6 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-return array<TKey, T>
      */
     public function toArray(): array
     {

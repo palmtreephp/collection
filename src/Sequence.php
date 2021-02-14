@@ -104,8 +104,6 @@ class Sequence extends AbstractCollection
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-return static<T>
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {

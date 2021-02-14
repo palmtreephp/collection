@@ -25,6 +25,8 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Adds a set of elements to the collection.
      *
      * @psalm-param iterable<TKey,T> $elements
+     *
+     * @return static
      * @psalm-return static<TKey,T>
      */
     public function add(iterable $elements): self;
@@ -47,11 +49,16 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Clears all elements from the collection.
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
      */
     public function clear(): self;
 
     /**
      * Returns the entire collection as an array.
+     *
+     * @psalm-return array<TKey,T>
      */
     public function all(): array;
 
@@ -121,11 +128,16 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns a new instance containing elements mapped from the given callback.
+     *
+     * @return static
      */
     public function map(callable $callback, ?string $type = null): self;
 
     /**
      * Returns a new instance containing elements in the collection filtered by a predicate.
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
      */
     public function filter(?callable $predicate = null): self;
 
@@ -172,6 +184,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Sorts the collection in-place, using an optional comparator function.
      *
+     * @return static
      * @psalm-return static<TKey, T>
      */
     public function sort(?callable $comparator = null): self;
@@ -191,6 +204,8 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns the collection as an array.
+     *
+     * @psalm-return array<TKey,T>
      */
     public function toArray(): array;
 

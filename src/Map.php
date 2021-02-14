@@ -46,8 +46,6 @@ class Map extends AbstractCollection
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-return static<string,T>
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
