@@ -5,15 +5,12 @@ namespace Palmtree\Collection;
 /**
  * @template TKey of array-key
  * @template T
- * @extends AbstractCollection<TKey,T>
+ * @extends AbstractCollection<string,T>
  */
 class Map extends AbstractCollection
 {
     /**
      * {@inheritDoc}
-     *
-     * @return self
-     * @psalm-return self<TKey,T>
      *
      * @throws Exception\InvalidTypeException
      */
@@ -28,8 +25,6 @@ class Map extends AbstractCollection
 
     /**
      * Adds a single element with the given key to the collection.
-     *
-     * @psalm-param TKey $key
      *
      * @param mixed $element
      * @psalm-param T $element
@@ -52,7 +47,7 @@ class Map extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @psalm-return self<TKey,T>
+     * @psalm-return static<string,T>
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
@@ -69,7 +64,6 @@ class Map extends AbstractCollection
 
     /**
      * @param string $offset
-     * @psalm-param TKey $offset
      * @param mixed  $value
      * @psalm-param T $value
      *

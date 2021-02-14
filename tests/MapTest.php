@@ -71,16 +71,18 @@ class MapTest extends TestCase
         $map->getBy('foo', 'bar');
     }
 
-    public function testHas()
+    public function testContains()
     {
         $map = new Map();
 
-        $map->add([1, 2, 3]);
+        $object = new \stdClass();
 
-        $this->assertTrue($map->contains(2));
+        $map->set('obj', $object);
+
+        $this->assertTrue($map->contains($object));
     }
 
-    public function testHasKey()
+    public function testContainsKey()
     {
         $map = new Map();
 

@@ -276,11 +276,6 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @return static
-     * @psalm-return static<TKey, T>
-     * @psalm-suppress MoreSpecificReturnType
-     * @psalm-suppress LessSpecificReturnStatement
      */
     public function sorted(?callable $comparator = null): CollectionInterface
     {
@@ -318,6 +313,10 @@ abstract class AbstractCollection implements CollectionInterface
         return $this->get($key);
     }
 
+    /**
+     * @return static
+     * @psalm-return static<TKey,T>
+     */
     public function addIndex(string $id, callable $callback): self
     {
         $index = new Index($callback);
@@ -385,8 +384,6 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-return self<TKey,T>
      */
     public static function fromJson(string $json, ?string $type = null): CollectionInterface
     {
@@ -395,12 +392,6 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     * @psalm-template K of array-key
-     * @psalm-template V
-     *
-     * @psalm-param iterable<K,V> $elements
-     * @return static
-     * @psalm-return static<TKey,T>
      */
     public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
     {

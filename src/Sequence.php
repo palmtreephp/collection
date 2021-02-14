@@ -14,8 +14,6 @@ class Sequence extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @return self
-     * @psalm-return self<T>
      * @throws InvalidTypeException
      */
     public function add(iterable $elements): CollectionInterface
@@ -29,7 +27,7 @@ class Sequence extends AbstractCollection
      * @param mixed ...$elements
      * @psalm-param T ...$elements
      *
-     * @psalm-return self<T>
+     * @psalm-return static<T>
      *
      * @throws InvalidTypeException
      */
@@ -107,7 +105,7 @@ class Sequence extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * @psalm-return self<T>
+     * @psalm-return static<T>
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
@@ -136,7 +134,7 @@ class Sequence extends AbstractCollection
 
         foreach ($this->elements as $key => $value) {
             foreach ($this->indexes as $index) {
-                $index->add($key, $value);
+                $index->add((string)$key, $value);
             }
         }
     }

@@ -25,7 +25,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Adds a set of elements to the collection.
      *
      * @psalm-param iterable<TKey,T> $elements
-     * @psalm-return self<TKey,T>
+     * @psalm-return static<TKey,T>
      */
     public function add(iterable $elements): self;
 
@@ -90,6 +90,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns a Sequence containing this collection's keys.
      *
+     * @return Sequence
      * @psalm-return Sequence<TKey>
      */
     public function keys(): self;
@@ -97,6 +98,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns a Sequence containing this collection's values.
      *
+     * @return Sequence
      * @psalm-return Sequence<T>
      */
     public function values(): self;
@@ -170,14 +172,15 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Sorts the collection in-place, using an optional comparator function.
      *
-     * @psalm-return CollectionInterface<TKey, T>
+     * @psalm-return static<TKey, T>
      */
     public function sort(?callable $comparator = null): self;
 
     /**
      * Sorts and returns a copy of the collection using an optional comparator function.
      *
-     * @psalm-return CollectionInterface<TKey, T>
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public function sorted(?callable $comparator = null): self;
 
@@ -194,14 +197,16 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     /**
      * Returns a new collection from an array or iterable.
      *
-     * @psalm-return CollectionInterface<TKey, T>
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public static function fromArray(iterable $elements, ?string $type = null): self;
 
     /**
      * Returns a new collection from a JSON string.
      *
-     * @psalm-return CollectionInterface<TKey, T>
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public static function fromJson(string $json, ?string $type = null): self;
 }
