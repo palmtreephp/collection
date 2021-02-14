@@ -139,7 +139,7 @@ class Sequence extends AbstractCollection
 
     /**
      * @param int|null $offset
-     * @param mixed $value
+     * @param mixed    $value
      * @psalm-param T $value
      *
      * @throws InvalidTypeException

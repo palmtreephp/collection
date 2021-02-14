@@ -113,6 +113,9 @@ class SequenceTest extends TestCase
         $this->assertSame([1, 2, 3], $sequence->all());
     }
 
+    /**
+     * @psalm-suppress TypeDoesNotContainType
+     */
     public function testClear(): void
     {
         $sequence = new Sequence();
@@ -120,7 +123,6 @@ class SequenceTest extends TestCase
 
         $sequence->clear();
 
-        /** @psalm-suppress TypeDoesNotContainType */
         $this->assertEmpty($sequence);
     }
 
