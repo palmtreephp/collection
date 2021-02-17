@@ -2,12 +2,18 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\BadMethodCallException;
+use Palmtree\Collection\Exception\InvalidTypeException;
+
+/**
+ * @template TKey as int
+ * @template T
+ * @extends AbstractCollection<TKey,T>
+ */
 class Sequence extends AbstractCollection
 {
     /**
      * {@inheritDoc}
-     *
-     * @return self
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -18,6 +24,14 @@ class Sequence extends AbstractCollection
      * Pushes one or more elements on to the end of the sequence.
      *
      * @param mixed ...$elements
+     * @psalm-param T ...$elements
+     *
+     * @psalm-return static<TKey, T>
+     *
+     * @psalm-suppress InvalidPropertyAssignmentValue
+
+     *
+     * @throws InvalidTypeException
      */
     public function push(...$elements): self
     {
@@ -27,6 +41,8 @@ class Sequence extends AbstractCollection
             $this->elements[] = $element;
         }
 
+        $this->reindex();
+
         return $this;
     }
 
@@ -34,30 +50,43 @@ class Sequence extends AbstractCollection
      * Pops and returns the last element of the sequence, shortening the sequence by one element.
      *
      * @return mixed
+     * @psalm-return T
      *
      * @see array_pop
      */
     public function pop()
     {
-        return array_pop($this->elements);
+        $popped = array_pop($this->elements);
+
+        $this->reindex();
+
+        return $popped;
     }
 
     /**
      * Shifts an element off the beginning of sequence and returns it.
      *
      * @return mixed
+     * @psalm-return T
      *
      * @see array_shift
      */
     public function shift()
     {
-        return array_shift($this->elements);
+        $shifted = array_shift($this->elements);
+
+        $this->reindex();
+
+        return $shifted;
     }
 
     /**
      * Prepends one or more elements to the beginning of the sequence.
      *
      * @param mixed ...$elements
+     * @psalm-param T ...$elements
+     *
+     * @throws InvalidTypeException
      *
      * @see array_unshift
      */
@@ -67,13 +96,18 @@ class Sequence extends AbstractCollection
             $this->validator->validate($element);
         }
 
-        return array_unshift($this->elements, ...$elements);
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
+        $result = array_unshift($this->elements, ...$elements);
+
+        $this->reindex();
+
+        return $result;
     }
 
     /**
      * {@inheritDoc}
      *
-     * @return self
+     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
@@ -85,21 +119,41 @@ class Sequence extends AbstractCollection
 
         usort($this->elements, $comparator);
 
+        $this->reindex();
+
         return $this;
+    }
+
+    private function reindex(): void
+    {
+        if (empty($this->indexes)) {
+            return;
+        }
+
+        foreach ($this->indexes as $index) {
+            $index->clear();
+        }
+
+        foreach ($this->elements as $key => $value) {
+            foreach ($this->indexes as $index) {
+                $index->add((string)$key, $value);
+            }
+        }
     }
 
     /**
      * @param int|null $offset
      * @param mixed    $value
+     * @psalm-param T $value
+     *
+     * @throws InvalidTypeException
      */
     public function offsetSet($offset, $value): void
     {
-        $this->validator->validate($value);
-
-        if ($offset === null) {
-            $this->elements[] = $value;
-        } else {
-            $this->elements[$offset] = $value;
+        if ($offset !== null) {
+            throw new BadMethodCallException("Cannot set element at offset $offset. Sequences must be sequential");
         }
+
+        $this->push($value);
     }
 }

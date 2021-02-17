@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class TypeValidationTest extends TestCase
 {
-    public function testInvalidObjectType()
+    public function testInvalidObjectType(): void
     {
         $this->expectException(InvalidTypeException::class);
 
@@ -20,21 +20,21 @@ class TypeValidationTest extends TestCase
         $sequence->push(new \stdClass());
     }
 
-    public function testValidObjectType()
+    public function testValidObjectType(): void
     {
         $map = new Map(\stdClass::class);
 
         $this->assertTrue($map->getValidator()->validate(new \stdClass()));
     }
 
-    public function testValidObjectInterfaceType()
+    public function testValidObjectInterfaceType(): void
     {
         $sequence = new Sequence(FooInterface::class);
 
         $this->assertTrue($sequence->getValidator()->validate(new Foo()));
     }
 
-    public function testValidScalarTypes()
+    public function testValidScalarTypes(): void
     {
         $map = new Map('string');
 
@@ -49,7 +49,7 @@ class TypeValidationTest extends TestCase
         $this->assertTrue($map->getValidator()->validate(true));
     }
 
-    public function testInvalidScalarType()
+    public function testInvalidScalarType(): void
     {
         $this->expectException(InvalidTypeException::class);
 
@@ -57,19 +57,18 @@ class TypeValidationTest extends TestCase
         $sequence->push(1);
     }
 
-    public function testInvalidTypeValue()
+    public function testInvalidTypeValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Map(1);
+        $map = new Map('foo');
     }
 
-    public function testTypeMap()
+    public function testNoTypeChecking(): void
     {
-        $map = new Map();
+        $sequence = new Sequence();
+        $sequence->push(1, true, 'Hello World');
 
-        $map->getValidator()->setTypeMap(['bool' => 'boolean']);
-
-        $this->assertSame(['bool' => 'boolean'], $map->getValidator()->getTypeMap());
+        $this->assertSame([1, true, 'Hello World'], $sequence->toArray());
     }
 }

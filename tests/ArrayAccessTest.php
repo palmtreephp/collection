@@ -2,13 +2,14 @@
 
 namespace Palmtree\Collection\Test;
 
+use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class ArrayAccessTest extends TestCase
 {
-    public function testOffsetExists()
+    public function testOffsetExists(): void
     {
         $map = new Map();
 
@@ -17,7 +18,7 @@ class ArrayAccessTest extends TestCase
         $this->assertTrue(isset($map['foo']));
     }
 
-    public function testOffsetGet()
+    public function testOffsetGet(): void
     {
         $map = new Map();
 
@@ -26,7 +27,7 @@ class ArrayAccessTest extends TestCase
         $this->assertEquals('Bar', $map['foo']);
     }
 
-    public function testOffsetSet()
+    public function testOffsetSet(): void
     {
         $map = new Map();
 
@@ -39,13 +40,17 @@ class ArrayAccessTest extends TestCase
         $sequence[] = 'Bar';
 
         $this->assertEquals('Bar', $sequence[0]);
-
-        $sequence[0] = 'Foo';
-
-        $this->assertEquals('Foo', $sequence[0]);
     }
 
-    public function testOffsetUnset()
+    public function testOffsetSetWithValueOnSequenceThrowsException(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+
+        $sequence    = new Sequence();
+        $sequence[0] = 'Foo';
+    }
+
+    public function testOffsetUnset(): void
     {
         $collection = new Map();
 
@@ -53,6 +58,6 @@ class ArrayAccessTest extends TestCase
 
         unset($collection['foo']);
 
-        $this->assertFalse($collection->hasKey('foo'));
+        $this->assertFalse($collection->containsKey('foo'));
     }
 }

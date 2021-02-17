@@ -2,7 +2,8 @@
 
 namespace Palmtree\Collection\Test;
 
-use Palmtree\Collection\Exception\InvalidMapIndex;
+use Palmtree\Collection\Exception\InvalidIndex;
+use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Map;
 use Palmtree\Collection\Test\Fixture\Foo;
 use Palmtree\Collection\Test\Fixture\FooInterface;
@@ -10,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class MapTest extends TestCase
 {
-    public function testSetGet()
+    public function testSetGet(): void
     {
         $map = new Map();
 
@@ -19,7 +20,7 @@ class MapTest extends TestCase
         $this->assertSame('Bar', $map->get('foo'));
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $map = new Map();
 
@@ -34,21 +35,21 @@ class MapTest extends TestCase
         $this->assertSame($data, $map->toArray());
     }
 
-    public function testRemoveElement()
+    public function testRemoveElement(): void
     {
         $map = new Map();
 
         $object = new \stdClass();
         $map->set('foo', $object);
 
-        $this->assertTrue($map->has($object));
+        $this->assertTrue($map->contains($object));
 
         $map->removeElement($object);
 
-        $this->assertFalse($map->has($object));
+        $this->assertFalse($map->contains($object));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $map = new Map(\stdClass::class);
 
@@ -63,20 +64,25 @@ class MapTest extends TestCase
 
         $map->remove('some_object');
 
-        $this->assertFalse($map->has('some_object'));
-        $this->assertNull($map->getBy('foo', 'bar'));
+        $this->assertFalse($map->contains('some_object'));
+
+        $this->expectException(OutOfBoundsException::class);
+
+        $map->getBy('foo', 'bar');
     }
 
-    public function testHas()
+    public function testContains(): void
     {
         $map = new Map();
 
-        $map->add([1, 2, 3]);
+        $object = new \stdClass();
 
-        $this->assertTrue($map->has(2));
+        $map->set('obj', $object);
+
+        $this->assertTrue($map->contains($object));
     }
 
-    public function testHasKey()
+    public function testContainsKey(): void
     {
         $map = new Map();
 
@@ -84,11 +90,11 @@ class MapTest extends TestCase
             ->set('foo', 'Bar')
             ->set('baz', null);
 
-        $this->assertTrue($map->hasKey('foo'));
-        $this->assertTrue($map->hasKey('baz'));
+        $this->assertTrue($map->containsKey('foo'));
+        $this->assertTrue($map->containsKey('baz'));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $map = new Map(\stdClass::class);
 
@@ -104,10 +110,12 @@ class MapTest extends TestCase
         $map->clear();
 
         $this->assertTrue($map->isEmpty());
-        $this->assertNull($map->getBy('foo', 'bar'));
+
+        $this->expectException(OutOfBoundsException::class);
+        $map->getBy('foo', 'bar');
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $map = new Map();
 
@@ -122,7 +130,7 @@ class MapTest extends TestCase
         $this->assertTrue($map->isEmpty());
     }
 
-    public function testFirstLast()
+    public function testFirstLast(): void
     {
         $map = new Map();
 
@@ -142,7 +150,7 @@ class MapTest extends TestCase
         $this->assertNotSame($objectTwo, $map->last());
     }
 
-    public function testFirstLastKeys()
+    public function testFirstLastKeys(): void
     {
         $map = new Map();
 
@@ -155,7 +163,7 @@ class MapTest extends TestCase
         $this->assertSame('baz', $map->lastKey());
     }
 
-    public function testKeys()
+    public function testKeys(): void
     {
         $map = new Map();
 
@@ -166,7 +174,7 @@ class MapTest extends TestCase
         $this->assertSame(['foo', 'baz'], $map->keys()->toArray());
     }
 
-    public function testValues()
+    public function testValues(): void
     {
         $map = new Map();
 
@@ -180,7 +188,7 @@ class MapTest extends TestCase
         $this->assertSame([$objectOne, $objectTwo], $map->values()->toArray());
     }
 
-    public function testIterator()
+    public function testIterator(): void
     {
         $map = new Map();
 
@@ -198,7 +206,7 @@ class MapTest extends TestCase
         $this->assertSame($expected, iterator_to_array($map));
     }
 
-    public function testSerialization()
+    public function testSerialization(): void
     {
         $map = new Map('int');
 
@@ -223,7 +231,7 @@ class MapTest extends TestCase
         $this->assertSame($expected, $map->toArray());
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         $map = new Map('int');
 
@@ -237,7 +245,7 @@ class MapTest extends TestCase
         });
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('foo'));
+        $this->assertFalse($filtered->containsKey('foo'));
 
         $map = new Map('bool');
 
@@ -249,10 +257,10 @@ class MapTest extends TestCase
         $filtered = $map->filter();
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('bar'));
+        $this->assertFalse($filtered->containsKey('bar'));
     }
 
-    public function testFilterWithKeys()
+    public function testFilterWithKeys(): void
     {
         $map = new Map('int');
 
@@ -266,10 +274,10 @@ class MapTest extends TestCase
         });
 
         $this->assertNotSame($map, $filtered);
-        $this->assertFalse($filtered->hasKey('foo'));
+        $this->assertFalse($filtered->containsKey('foo'));
     }
 
-    public function testMapWithKeys()
+    public function testMapWithKeys(): void
     {
         $map = new Map();
 
@@ -289,7 +297,7 @@ class MapTest extends TestCase
         $this->assertSame(4, $mapped['bar']);
     }
 
-    public function testSome()
+    public function testSome(): void
     {
         $map = new Map();
 
@@ -303,7 +311,7 @@ class MapTest extends TestCase
         }));
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $map = new Map(FooInterface::class);
 
@@ -321,18 +329,18 @@ class MapTest extends TestCase
         $this->assertSame($foo2, $map->getBy('bar', 'test2'));
     }
 
-    public function testInvalidIndex()
+    public function testInvalidIndex(): void
     {
-        $this->expectException(InvalidMapIndex::class);
+        $this->expectException(InvalidIndex::class);
 
         $map = new Map();
 
-        $map->getBy('blah', 1);
+        $map->getBy('foo', 'bar');
     }
 
-    public function testRemoveIndex()
+    public function testRemoveIndex(): void
     {
-        $this->expectException(InvalidMapIndex::class);
+        $this->expectException(InvalidIndex::class);
 
         $map = new Map();
 
@@ -346,7 +354,7 @@ class MapTest extends TestCase
         $map->getBy('foo', 'bar');
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $map = new Map('int');
 

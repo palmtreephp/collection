@@ -2,14 +2,26 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidIndex;
+use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Validator\TypeValidator;
 
+/**
+ * @template TKey of array-key
+ * @template T
+ * @implements CollectionInterface<TKey,T>
+ */
 abstract class AbstractCollection implements CollectionInterface
 {
-    /** @var array */
+    /**
+     * @var array<string|int, mixed>
+     * @psalm-var array<TKey, T>
+     */
     protected $elements;
     /** @var TypeValidator */
     protected $validator;
+    /** @var array<string, Index> */
+    protected $indexes = [];
 
     final public function __construct(?string $type = null)
     {
@@ -18,35 +30,50 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param string|int $key
-     *
-     * @return mixed|null
+     * {@inheritDoc}
      */
     public function get($key)
     {
-        return $this->hasKey($key) ? $this->elements[$key] : null;
+        if (!$this->containsKey($key)) {
+            throw new OutOfBoundsException("Element with key '$key' does not exist");
+        }
+
+        return $this->elements[$key];
     }
 
     /**
-     * @param mixed $element
+     * {@inheritDoc}
      */
-    public function has($element, bool $strict = true): bool
+    public function contains($element, bool $strict = true): bool
     {
         return \in_array($element, $this->elements, $strict);
     }
 
-    public function hasKey($key): bool
+    /**
+     * {@inheritDoc}
+     */
+    public function containsKey($key): bool
     {
         return isset($this->elements[$key]) || \array_key_exists($key, $this->elements);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function remove($key): CollectionInterface
     {
+        foreach ($this->indexes as $index) {
+            $index->remove((string)$key);
+        }
+
         unset($this->elements[$key]);
 
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function removeElement($element): CollectionInterface
     {
         $key = array_search($element, $this->elements, true);
@@ -58,33 +85,47 @@ abstract class AbstractCollection implements CollectionInterface
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function keys(): CollectionInterface
     {
-        return static::fromArray(array_keys($this->elements));
+        return Sequence::fromArray(array_keys($this->elements));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function values(): CollectionInterface
     {
-        return static::fromArray(array_values($this->elements), $this->validator->getType());
+        return Sequence::fromArray(array_values($this->elements), $this->validator->getType());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function clear(): CollectionInterface
     {
+        foreach ($this->indexes as $index) {
+            $index->clear();
+        }
+
         $this->elements = [];
 
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function all(): array
     {
         return $this->toArray();
     }
 
-    public function toArray(): array
-    {
-        return $this->elements;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function first()
     {
         foreach ($this->elements as $element) {
@@ -94,6 +135,9 @@ abstract class AbstractCollection implements CollectionInterface
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function last()
     {
         foreach (\array_slice($this->elements, -1) as $element) {
@@ -103,24 +147,32 @@ abstract class AbstractCollection implements CollectionInterface
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function firstKey()
     {
-        if (\PHP_VERSION_ID < 70300) {
-            foreach ($this->elements as $key => $noop) {
-                return $key;
-            }
+        if (\function_exists('array_key_first')) {
+            return array_key_first($this->elements);
         }
 
-        return array_key_first($this->elements);
+        foreach ($this->elements as $key => $noop) {
+            return $key;
+        }
+
+        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function lastKey()
     {
-        if (\PHP_VERSION_ID < 70300) {
-            return key(\array_slice($this->elements, -1, 1, true));
+        if (\function_exists('array_key_last')) {
+            return array_key_last($this->elements);
         }
 
-        return array_key_last($this->elements);
+        return key(\array_slice($this->elements, -1, 1, true));
     }
 
     /**
@@ -131,11 +183,17 @@ abstract class AbstractCollection implements CollectionInterface
         return \count($this->elements);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isEmpty(): bool
     {
         return empty($this->elements);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function filter(?callable $predicate = null): CollectionInterface
     {
         if (!$predicate) {
@@ -145,6 +203,9 @@ abstract class AbstractCollection implements CollectionInterface
         return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->getType());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function map(callable $callback, ?string $type = null): CollectionInterface
     {
         $map = [];
@@ -155,6 +216,9 @@ abstract class AbstractCollection implements CollectionInterface
         return static::fromArray($map, $type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function some(callable $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
@@ -166,6 +230,9 @@ abstract class AbstractCollection implements CollectionInterface
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function every(callable $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
@@ -178,7 +245,7 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @return mixed|null
+     * {@inheritDoc}
      */
     public function find(callable $predicate)
     {
@@ -191,14 +258,81 @@ abstract class AbstractCollection implements CollectionInterface
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function reduce(callable $callback, $initial = null)
     {
         return array_reduce($this->elements, $callback, $initial);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function reduceRight(callable $callback, $initial = null)
     {
         return array_reduce(array_reverse($this->elements), $callback, $initial);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sorted(?callable $comparator = null): CollectionInterface
+    {
+        return static::fromArray($this->elements, $this->validator->getType())->sort($comparator);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray(): array
+    {
+        return $this->elements;
+    }
+
+    /**
+     * @return mixed
+     * @psalm-return T
+     *
+     * @throws InvalidIndex|OutOfBoundsException
+     */
+    public function getBy(string $indexId, string $key)
+    {
+        if (!isset($this->indexes[$indexId])) {
+            throw new InvalidIndex($indexId);
+        }
+
+        $key = $this->indexes[$indexId]->get($key);
+
+        if ($key === null) {
+            throw new OutOfBoundsException("Index '$indexId' does not contain key '$key");
+        }
+
+        return $this->get($key);
+    }
+
+    /**
+     * @return static
+     * @psalm-return static<TKey,T>
+     */
+    public function addIndex(string $id, callable $callback): self
+    {
+        $index = new Index($callback);
+
+        foreach ($this->elements as $key => $element) {
+            $index->add($key, $element);
+        }
+
+        $this->indexes[$id] = $index;
+
+        return $this;
+    }
+
+    public function removeIndex(string $id): self
+    {
+        unset($this->indexes[$id]);
+
+        return $this;
     }
 
     public function getValidator(): TypeValidator
@@ -213,16 +347,19 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      */
     public function offsetExists($offset): bool
     {
-        return $this->hasKey($offset);
+        return $this->containsKey($offset);
     }
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      *
      * @return mixed|null
+     * @psalm-return T
      */
     public function offsetGet($offset)
     {
@@ -231,6 +368,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param string|int $offset
+     * @psalm-param TKey $offset
      */
     public function offsetUnset($offset): void
     {
@@ -242,16 +380,22 @@ abstract class AbstractCollection implements CollectionInterface
         return $this->elements;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function fromJson(string $json, ?string $type = null): CollectionInterface
     {
         return static::fromArray(json_decode($json, true), $type);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
+     */
     public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
     {
-        $collection = new static($type);
-        $collection->add($elements);
-
-        return $collection;
+        return (new static($type))->add($elements);
     }
 }

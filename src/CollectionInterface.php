@@ -2,19 +2,36 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidTypeException;
+
+/**
+ * @template TKey of array-key
+ * @template T
+ * @extends IteratorAggregate<TKey, T>
+ * @extends ArrayAccess<TKey|null, T>
+ */
 interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
      * Returns a single element with the given key from the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      *
      * @return mixed
+     * @psalm-return T
      */
     public function get($key);
 
     /**
      * Adds a set of elements to the collection.
+     *
+     * @psalm-param iterable<TKey,T> $elements
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
+     *
+     * @throws InvalidTypeException
      */
     public function add(iterable $elements): self;
 
@@ -22,6 +39,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element with the given key from the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      */
     public function remove($key): self;
 
@@ -29,16 +47,22 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Removes an element from the collection.
      *
      * @param mixed $element
+     * @psalm-param T $element
      */
     public function removeElement($element): self;
 
     /**
      * Clears all elements from the collection.
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
      */
     public function clear(): self;
 
     /**
      * Returns the entire collection as an array.
+     *
+     * @psalm-return array<TKey,T>
      */
     public function all(): array;
 
@@ -46,6 +70,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first element in the collection.
      *
      * @return mixed|null
+     * @psalm-return T|null
      */
     public function first();
 
@@ -53,6 +78,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the last element in the collection.
      *
      * @return mixed|null
+     * @psalm-return T|null
      */
     public function last();
 
@@ -60,6 +86,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first key in the collection.
      *
      * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function firstKey();
 
@@ -67,16 +94,23 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the last key in the collection.
      *
      * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function lastKey();
 
     /**
-     * Returns a new collection containing this collection's keys.
+     * Returns a Sequence containing this collection's keys.
+     *
+     * @return Sequence
+     * @psalm-return Sequence<int, TKey>
      */
     public function keys(): self;
 
     /**
-     * Returns a new collection containing this collection's values.
+     * Returns a Sequence containing this collection's values.
+     *
+     * @return Sequence
+     * @psalm-return Sequence<int, T>
      */
     public function values(): self;
 
@@ -84,23 +118,30 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns whether the given element is in the collection.
      *
      * @param mixed $element
+     * @psalm-param T $element
      */
-    public function has($element, bool $strict = true): bool;
+    public function contains($element, bool $strict = true): bool;
 
     /**
      * Returns whether the given key exists in the collection.
      *
      * @param string|int $key
+     * @psalm-param TKey $key
      */
-    public function hasKey($key): bool;
+    public function containsKey($key): bool;
 
     /**
      * Returns a new instance containing elements mapped from the given callback.
+     *
+     * @return static
      */
     public function map(callable $callback, ?string $type = null): self;
 
     /**
      * Returns a new instance containing elements in the collection filtered by a predicate.
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
      */
     public function filter(?callable $predicate = null): self;
 
@@ -118,6 +159,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first element that passes the predicate function.
      *
      * @return mixed
+     * @psalm-return T|null
      */
     public function find(callable $predicate);
 
@@ -145,8 +187,19 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Sorts the collection in-place, using an optional comparator function.
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public function sort(?callable $comparator = null): self;
+
+    /**
+     * Sorts and returns a copy of the collection using an optional comparator function.
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
+     */
+    public function sorted(?callable $comparator = null): self;
 
     /**
      * Returns whether the collection is empty.
@@ -155,16 +208,28 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns the collection as an array.
+     *
+     * @psalm-return array<TKey,T>
      */
     public function toArray(): array;
 
     /**
      * Returns a new collection from an array or iterable.
+     *
+     * @template K of array-key
+     * @template V
+     * @psalm-param iterable<K, V> $elements
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public static function fromArray(iterable $elements, ?string $type = null): self;
 
     /**
      * Returns a new collection from a JSON string.
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
      */
     public static function fromJson(string $json, ?string $type = null): self;
 }
