@@ -3,16 +3,14 @@
 namespace Palmtree\Collection;
 
 /**
- * @template TKey of array-key
+ * @template TKey as string
  * @template T
- * @extends AbstractCollection<string,T>
+ * @extends AbstractCollection<TKey,T>
  */
 class Map extends AbstractCollection
 {
     /**
      * {@inheritDoc}
-     *
-     * @throws Exception\InvalidTypeException
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -26,7 +24,7 @@ class Map extends AbstractCollection
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @param mixed $element
+     * @psalm-param TKey $key
      * @psalm-param T $element
      *
      * @throws Exception\InvalidTypeException
@@ -62,6 +60,7 @@ class Map extends AbstractCollection
 
     /**
      * @param string $offset
+     * @psalm-param TKey $offset
      * @param mixed  $value
      * @psalm-param T $value
      *

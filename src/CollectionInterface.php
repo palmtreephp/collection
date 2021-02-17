@@ -2,6 +2,8 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\InvalidTypeException;
+
 /**
  * @template TKey of array-key
  * @template T
@@ -28,6 +30,8 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      *
      * @return static
      * @psalm-return static<TKey,T>
+     *
+     * @throws InvalidTypeException
      */
     public function add(iterable $elements): self;
 
@@ -98,7 +102,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a Sequence containing this collection's keys.
      *
      * @return Sequence
-     * @psalm-return Sequence<TKey>
+     * @psalm-return Sequence<int, TKey>
      */
     public function keys(): self;
 
@@ -106,7 +110,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns a Sequence containing this collection's values.
      *
      * @return Sequence
-     * @psalm-return Sequence<T>
+     * @psalm-return Sequence<int, T>
      */
     public function values(): self;
 
@@ -155,7 +159,7 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
      * Returns the first element that passes the predicate function.
      *
      * @return mixed
-     * @psalm-return T
+     * @psalm-return T|null
      */
     public function find(callable $predicate);
 
@@ -211,6 +215,10 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
 
     /**
      * Returns a new collection from an array or iterable.
+     *
+     * @template K of array-key
+     * @template V
+     * @psalm-param iterable<K, V> $elements
      *
      * @return static
      * @psalm-return static<TKey, T>

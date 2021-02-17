@@ -390,6 +390,9 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
      */
     public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
     {

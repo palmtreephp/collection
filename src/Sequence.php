@@ -6,15 +6,14 @@ use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
+ * @template TKey as int
  * @template T
- * @extends AbstractCollection<int,T>
+ * @extends AbstractCollection<TKey,T>
  */
 class Sequence extends AbstractCollection
 {
     /**
      * {@inheritDoc}
-     *
-     * @throws InvalidTypeException
      */
     public function add(iterable $elements): CollectionInterface
     {
@@ -27,7 +26,10 @@ class Sequence extends AbstractCollection
      * @param mixed ...$elements
      * @psalm-param T ...$elements
      *
-     * @psalm-return static<T>
+     * @psalm-return static<TKey, T>
+     *
+     * @psalm-suppress InvalidPropertyAssignmentValue
+
      *
      * @throws InvalidTypeException
      */
@@ -104,6 +106,8 @@ class Sequence extends AbstractCollection
 
     /**
      * {@inheritDoc}
+     *
+     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
