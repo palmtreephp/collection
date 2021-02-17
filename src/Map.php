@@ -61,7 +61,8 @@ class Map extends AbstractCollection
     /**
      * @param string $offset
      * @psalm-param TKey $offset
-     * @param mixed  $value
+     *
+     * @param mixed $value
      * @psalm-param T $value
      *
      * @throws Exception\InvalidTypeException
