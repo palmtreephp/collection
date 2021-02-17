@@ -289,10 +289,10 @@ abstract class AbstractCollection implements CollectionInterface
             throw new InvalidIndex($indexId);
         }
 
-        $key = $this->indexes[$indexId]->get($key);
-
-        if ($key === null) {
-            throw new OutOfBoundsException("Index '$indexId' does not contain key '$key");
+        try {
+            $key = $this->indexes[$indexId]->get($key);
+        } catch (OutOfBoundsException $e) {
+            throw new OutOfBoundsException("Key '$key' does not exist within index '$indexId'");
         }
 
         return $this->get($key);

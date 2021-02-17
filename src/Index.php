@@ -2,6 +2,8 @@
 
 namespace Palmtree\Collection;
 
+use Palmtree\Collection\Exception\OutOfBoundsException;
+
 class Index
 {
     private \Closure $callback;
@@ -10,15 +12,24 @@ class Index
     public function __construct(callable $callback)
     {
         $this->callback = \Closure::fromCallable($callback);
-        $this->index = [];
+        $this->index    = [];
     }
 
     /**
-     * @return mixed|null
+     * @return mixed
      */
     public function get(string $key)
     {
-        return $this->index[$key] ?? null;
+        if (!$this->has($key)) {
+            throw new OutOfBoundsException("Key '$key' does not exist within index");
+        }
+
+        return $this->index[$key];
+    }
+
+    public function has(string $key): bool
+    {
+        return isset($this->index[$key]) || \array_key_exists($key, $this->index);
     }
 
     public function remove(string $key): self
@@ -40,9 +51,7 @@ class Index
      */
     public function add(string $key, $element): self
     {
-        $callback = $this->callback;
-
-        $this->index[$callback($element)] = $key;
+        $this->index[($this->callback)($element)] = $key;
 
         return $this;
     }

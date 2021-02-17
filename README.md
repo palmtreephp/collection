@@ -89,7 +89,7 @@ Can be one of `string`, `int`, `float`, `bool`, `array`, `object`:
 ```php
 $floats = new Sequence('float');
 
-$floats->push(3.4, 789,83);
+$floats->push(3.4, 789, 83);
 ```
 
 #### Custom Indexes
@@ -97,7 +97,7 @@ $floats->push(3.4, 789,83);
 Custom indexes may be added to a collection to enable `O(1)` (constant as per `isset`) lookups instead of `O(n)` (linear as per `in_array`):
 
 The `addIndex` method takes an index key and a callback. The callback takes a single element from the collection and must
-return a scalar value to be used as the index value.
+return an integer or string to be used as the index value.
 
 The example below shows how to add a custom ID index where the callback returns an object's ID value:
 
@@ -114,7 +114,6 @@ $objects
     ->set('key1', $object1)
     ->set('key2', $object2);
 
-// PHP >= 7.4
 $objects->addIndex('id', fn(\stdClass $object) => $object->id);
 
 $object1 = $objects->getBy('id', 'foo');
