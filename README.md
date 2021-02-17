@@ -8,9 +8,9 @@
 Maps and Sequences with optional type validation.
 
 ## Requirements
-* PHP >= 7.1
+* PHP >= 7.4
 
-For PHP 5.6 support use [v1.0](https://github.com/palmtreephp/collection/tree/v1.0.0)
+For PHP 7.1 support use [v3.0](https://github.com/palmtreephp/collection/tree/v3.0.0)
 
 ## Installation
 
@@ -116,11 +116,6 @@ $objects
 
 // PHP >= 7.4
 $objects->addIndex('id', fn(\stdClass $object) => $object->id);
-
-// PHP < 7.4
-$objects->addIndex('id', function(\stdClass $object) {
-   return $object->id;
-});
 
 $object1 = $objects->getBy('id', 'foo');
 $object2 = $objects->getBy('id', 'bar');

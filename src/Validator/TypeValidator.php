@@ -7,8 +7,7 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 
 class TypeValidator
 {
-    /** @var string|null */
-    private $type;
+    private ?string $type;
 
     private const VALID_PRIMITIVE_TYPES = [
         'boolean' => 'bool',

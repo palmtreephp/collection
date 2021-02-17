@@ -17,11 +17,10 @@ abstract class AbstractCollection implements CollectionInterface
      * @var array<string|int, mixed>
      * @psalm-var array<TKey, T>
      */
-    protected $elements;
-    /** @var TypeValidator */
-    protected $validator;
+    protected array $elements;
+    protected TypeValidator $validator;
     /** @var array<string, Index> */
-    protected $indexes = [];
+    protected array $indexes = [];
 
     final public function __construct(?string $type = null)
     {
@@ -152,15 +151,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function firstKey()
     {
-        if (\function_exists('array_key_first')) {
-            return array_key_first($this->elements);
-        }
-
-        foreach ($this->elements as $key => $noop) {
-            return $key;
-        }
-
-        return null;
+        return array_key_first($this->elements);
     }
 
     /**
@@ -168,11 +159,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function lastKey()
     {
-        if (\function_exists('array_key_last')) {
-            return array_key_last($this->elements);
-        }
-
-        return key(\array_slice($this->elements, -1, 1, true));
+        return array_key_last($this->elements);
     }
 
     /**

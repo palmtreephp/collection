@@ -4,15 +4,13 @@ namespace Palmtree\Collection;
 
 class Index
 {
-    /** @var callable */
-    private $callback;
-    /** @var array */
-    private $index;
+    private \Closure $callback;
+    private array $index;
 
     public function __construct(callable $callback)
     {
-        $this->callback = $callback;
-        $this->index    = [];
+        $this->callback = \Closure::fromCallable($callback);
+        $this->index = [];
     }
 
     /**
