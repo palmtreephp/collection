@@ -110,6 +110,7 @@ class Sequence extends AbstractCollection
     public function sort(?callable $comparator = null): CollectionInterface
     {
         if (!$comparator) {
+            /** @psalm-suppress InvalidPropertyAssignmentValue */
             sort($this->elements);
 
             return $this;

@@ -220,7 +220,7 @@ class MapTest extends TestCase
         /** @var Map $newMap */
         $newMap = unserialize($serialized);
 
-        $this->assertEquals('int', $newMap->getValidator()->type);
+        $this->assertEquals('int', $newMap->validator->type);
 
         $expected = [
             'foo' => 1,
@@ -347,6 +347,7 @@ class MapTest extends TestCase
         $map->set('bar', 'baz');
 
         $map->addIndex('foo', function () {
+            return '';
         });
 
         $map->removeIndex('foo');
@@ -367,7 +368,7 @@ class MapTest extends TestCase
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 
-        $mapFromJson = Map::fromJson($json, $map->getValidator()->type);
+        $mapFromJson = Map::fromJson($json, $map->validator->type);
 
         $this->assertEquals($map, $mapFromJson);
     }

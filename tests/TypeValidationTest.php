@@ -24,29 +24,29 @@ class TypeValidationTest extends TestCase
     {
         $map = new Map(\stdClass::class);
 
-        $this->assertTrue($map->getValidator()->validate(new \stdClass()));
+        $this->assertTrue($map->validator->validate(new \stdClass()));
     }
 
     public function testValidObjectInterfaceType(): void
     {
         $sequence = new Sequence(FooInterface::class);
 
-        $this->assertTrue($sequence->getValidator()->validate(new Foo()));
+        $this->assertTrue($sequence->validator->validate(new Foo()));
     }
 
     public function testValidScalarTypes(): void
     {
         $map = new Map('string');
 
-        $this->assertTrue($map->getValidator()->validate('Foo'));
+        $this->assertTrue($map->validator->validate('Foo'));
 
         $map = new Map('float');
 
-        $this->assertTrue($map->getValidator()->validate(0.1));
+        $this->assertTrue($map->validator->validate(0.1));
 
         $map = new Map('bool');
 
-        $this->assertTrue($map->getValidator()->validate(true));
+        $this->assertTrue($map->validator->validate(true));
     }
 
     public function testInvalidScalarType(): void

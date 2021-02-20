@@ -13,12 +13,13 @@ use Palmtree\Collection\Validator\TypeValidator;
  */
 abstract class AbstractCollection implements CollectionInterface
 {
+    public TypeValidator $validator;
+
     /**
      * @var array<string|int, mixed>
      * @psalm-var array<TKey, T>
      */
     protected array $elements;
-    protected TypeValidator $validator;
     /** @var array<string, Index> */
     protected array $indexes = [];
 
@@ -299,6 +300,8 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
+     * @psalm-param callable(T): string $callback
+     *
      * @return static
      * @psalm-return static<TKey,T>
      */
@@ -320,11 +323,6 @@ abstract class AbstractCollection implements CollectionInterface
         unset($this->indexes[$id]);
 
         return $this;
-    }
-
-    public function getValidator(): TypeValidator
-    {
-        return $this->validator;
     }
 
     public function getIterator(): \ArrayIterator

@@ -330,7 +330,7 @@ class SequenceTest extends TestCase
         /** @var Map $newCollection */
         $newCollection = unserialize($serialized);
 
-        $this->assertEquals('int', $newCollection->getValidator()->type);
+        $this->assertEquals('int', $newCollection->validator->type);
 
         $this->assertSame([1, 2, 3], $sequence->toArray());
     }
@@ -345,7 +345,7 @@ class SequenceTest extends TestCase
 
         $this->assertSame('[1,2,3]', $json);
 
-        $sequenceFromJson = Sequence::fromJson($json, $sequence->getValidator()->type);
+        $sequenceFromJson = Sequence::fromJson($json, $sequence->validator->type);
 
         $this->assertEquals($sequence, $sequenceFromJson);
     }

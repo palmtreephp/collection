@@ -4,21 +4,29 @@ namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\OutOfBoundsException;
 
+/**
+ * @template T
+ * @template TKey of array-key
+ * @template TElementKey
+ */
 class Index
 {
+    /** @psalm-var \Closure(T): TKey */
     private \Closure $callback;
-    private array $index;
+    /** @psalm-var array<TKey, TElementKey> */
+    private array $index = [];
 
+    /** @psalm-param callable(T): TKey $callback */
     public function __construct(callable $callback)
     {
         $this->callback = \Closure::fromCallable($callback);
-        $this->index    = [];
     }
 
     /**
-     * @return mixed
+     * @psalm-param TKey $key
+     * @psalm-return TElementKey
      */
-    public function get(string $key)
+    public function get(string $key): string
     {
         if (!$this->has($key)) {
             throw new OutOfBoundsException("Key '$key' does not exist within index");
@@ -27,11 +35,17 @@ class Index
         return $this->index[$key];
     }
 
+    /**
+     * @psalm-param TKey $key
+     */
     public function has(string $key): bool
     {
         return isset($this->index[$key]) || \array_key_exists($key, $this->index);
     }
 
+    /**
+     * @psalm-param TKey $key
+     */
     public function remove(string $key): self
     {
         unset($this->index[$key]);
@@ -47,7 +61,10 @@ class Index
     }
 
     /**
+     * @psalm-param TElementKey $key
+     *
      * @param mixed $element
+     * @psalm-param T $element
      */
     public function add(string $key, $element): self
     {
