@@ -104,15 +104,6 @@ class SequenceTest extends TestCase
         $this->assertNotSame($objectTwo, $sequence->last());
     }
 
-    public function testAll(): void
-    {
-        $sequence = new Sequence();
-
-        $sequence->push(1, 2, 3);
-
-        $this->assertSame([1, 2, 3], $sequence->all());
-    }
-
     /**
      * @psalm-suppress TypeDoesNotContainType
      */

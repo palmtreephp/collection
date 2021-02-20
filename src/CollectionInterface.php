@@ -60,13 +60,6 @@ interface CollectionInterface extends \ArrayAccess, \IteratorAggregate, \Countab
     public function clear(): self;
 
     /**
-     * Returns the entire collection as an array.
-     *
-     * @psalm-return array<TKey,T>
-     */
-    public function all(): array;
-
-    /**
      * Returns the first element in the collection.
      *
      * @return mixed|null

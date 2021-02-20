@@ -118,14 +118,6 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * {@inheritDoc}
      */
-    public function all(): array
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function first()
     {
         foreach ($this->elements as $element) {
