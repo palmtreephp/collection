@@ -305,7 +305,7 @@ class MapTest extends TestCase
         $map->set('foo', $foo);
         $map->set('foo2', $foo2);
 
-        $map->addIndex('bar', fn (Foo $element) => $element->getBar());
+        $map->addIndex('bar', fn (Foo $element) => $element->bar);
 
         $this->assertSame($foo, $map->getBy('bar', 'test'));
         $this->assertSame($foo2, $map->getBy('bar', 'test2'));
