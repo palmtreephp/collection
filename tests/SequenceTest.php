@@ -132,9 +132,7 @@ class SequenceTest extends TestCase
 
         $sequence->push(1, 2, 3);
 
-        $filtered = $sequence->filter(function ($element) {
-            return $element < 3;
-        });
+        $filtered = $sequence->filter(fn ($element) => $element < 3);
 
         $this->assertNotSame($sequence, $filtered);
         $this->assertFalse($filtered->contains(3));
@@ -151,9 +149,7 @@ class SequenceTest extends TestCase
         $sequence = new Sequence(\stdClass::class);
         $sequence->push($objectOne, $objectTwo);
 
-        $mapped = $sequence->map(function (\stdClass $object) {
-            return $object->foo;
-        }, 'string');
+        $mapped = $sequence->map(fn (\stdClass $object) => $object->foo, 'string');
 
         $this->assertSame(['Bar', 'Baz'], $mapped->toArray());
     }
@@ -162,27 +158,21 @@ class SequenceTest extends TestCase
     {
         $sequence = Sequence::fromArray([1, 30, 39, 29, 10, 13]);
 
-        $this->assertTrue($sequence->every(function ($value) {
-            return $value < 40;
-        }));
+        $this->assertTrue($sequence->every(fn ($value) => $value < 40));
     }
 
     public function testReduce(): void
     {
         $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
 
-        $this->assertSame('12345', $sequence->reduce(function ($prev, $cur) {
-            return $prev . $cur;
-        }, ''));
+        $this->assertSame('12345', $sequence->reduce(fn ($prev, $cur) => $prev . $cur, ''));
     }
 
     public function testReduceRight(): void
     {
         $sequence = Sequence::fromArray(['1', '2', '3', '4', '5']);
 
-        $this->assertSame('54321', $sequence->reduceRight(function ($prev, $cur) {
-            return $prev . $cur;
-        }, ''));
+        $this->assertSame('54321', $sequence->reduceRight(fn ($prev, $cur) => $prev . $cur, ''));
     }
 
     public function testIndex(): void
@@ -200,9 +190,7 @@ class SequenceTest extends TestCase
         $obj4->id = 'qux';
 
         $sequence = new Sequence(\stdClass::class);
-        $sequence->addIndex('id', function ($obj) {
-            return $obj->id;
-        });
+        $sequence->addIndex('id', fn ($obj) => $obj->id);
         $sequence->push($obj1, $obj2, $obj3, $obj4);
 
         $this->assertSame($obj1, $sequence->getBy('id', 'foo'));
@@ -232,9 +220,7 @@ class SequenceTest extends TestCase
         $obj3->id = 'baz';
 
         $sequence = new Sequence(\stdClass::class);
-        $sequence->addIndex('id', function ($obj) {
-            return $obj->id;
-        });
+        $sequence->addIndex('id', fn ($obj) => $obj->id);
 
         $sequence->push($obj1, $obj2, $obj3);
 
@@ -262,9 +248,7 @@ class SequenceTest extends TestCase
         $obj4->id = 'qux';
 
         $sequence = new Sequence(\stdClass::class);
-        $sequence->addIndex('id', function ($obj) {
-            return $obj->id;
-        });
+        $sequence->addIndex('id', fn ($obj) => $obj->id);
 
         $sequence->push($obj1, $obj2);
 
@@ -292,9 +276,7 @@ class SequenceTest extends TestCase
     {
         $sequence = Sequence::fromArray(['4', '5', '3', '1', '2']);
 
-        $sequence->sort(function ($a, $b) {
-            return $b <=> $a;
-        });
+        $sequence->sort(fn ($a, $b) => $b <=> $a);
 
         $this->assertEquals(['5', '4', '3', '2', '1'], $sequence->toArray());
     }

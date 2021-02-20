@@ -58,9 +58,7 @@ class MapTest extends TestCase
 
         $map->set('some_object', $object);
 
-        $map->addIndex('foo', function (\stdClass $element) {
-            return $element->foo;
-        });
+        $map->addIndex('foo', fn (\stdClass $element) => $element->foo);
 
         $map->remove('some_object');
 
@@ -101,9 +99,7 @@ class MapTest extends TestCase
         $object      = new \stdClass();
         $object->foo = 'bar';
 
-        $map->addIndex('foo', function (\stdClass $element) {
-            return $element->foo;
-        });
+        $map->addIndex('foo', fn (\stdClass $element) => $element->foo);
 
         $map->set('some_object', $object);
 
@@ -240,9 +236,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $map->filter(function ($element) {
-            return $element > 1;
-        });
+        $filtered = $map->filter(fn ($element) => $element > 1);
 
         $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->containsKey('foo'));
@@ -269,9 +263,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $map->filter(function ($element, $key) {
-            return $key !== 'foo';
-        });
+        $filtered = $map->filter(fn ($element, $key) => $key !== 'foo');
 
         $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->containsKey('foo'));
@@ -286,13 +278,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $mapped = $map->map(function ($element, $key) {
-            if ($key === 'bar') {
-                return 4;
-            }
-
-            return $element;
-        }, null);
+        $mapped = $map->map(fn ($element, $key) => $key === 'bar' ? 4 : $element);
 
         $this->assertSame(4, $mapped['bar']);
     }
@@ -306,9 +292,7 @@ class MapTest extends TestCase
             ->set('bar', true)
             ->set('baz', false);
 
-        $this->assertTrue($map->some(function ($element) {
-            return $element === true;
-        }));
+        $this->assertTrue($map->some(fn ($element) => $element === true));
     }
 
     public function testIndex(): void
@@ -321,9 +305,7 @@ class MapTest extends TestCase
         $map->set('foo', $foo);
         $map->set('foo2', $foo2);
 
-        $map->addIndex('bar', function (Foo $element) {
-            return $element->getBar();
-        });
+        $map->addIndex('bar', fn (Foo $element) => $element->getBar());
 
         $this->assertSame($foo, $map->getBy('bar', 'test'));
         $this->assertSame($foo2, $map->getBy('bar', 'test2'));
@@ -346,9 +328,7 @@ class MapTest extends TestCase
 
         $map->set('bar', 'baz');
 
-        $map->addIndex('foo', function () {
-            return '';
-        });
+        $map->addIndex('foo', fn () => '');
 
         $map->removeIndex('foo');
 
