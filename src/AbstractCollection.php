@@ -97,7 +97,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function values(): CollectionInterface
     {
-        return Sequence::fromArray(array_values($this->elements), $this->validator->getType());
+        return Sequence::fromArray(array_values($this->elements), $this->validator->type);
     }
 
     /**
@@ -184,10 +184,10 @@ abstract class AbstractCollection implements CollectionInterface
     public function filter(?callable $predicate = null): CollectionInterface
     {
         if (!$predicate) {
-            return static::fromArray(array_filter($this->elements), $this->validator->getType());
+            return static::fromArray(array_filter($this->elements), $this->validator->type);
         }
 
-        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->getType());
+        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->type);
     }
 
     /**
@@ -266,7 +266,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function sorted(?callable $comparator = null): CollectionInterface
     {
-        return static::fromArray($this->elements, $this->validator->getType())->sort($comparator);
+        return static::fromArray($this->elements, $this->validator->type)->sort($comparator);
     }
 
     /**

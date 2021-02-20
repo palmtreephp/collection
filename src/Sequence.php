@@ -106,8 +106,6 @@ class Sequence extends AbstractCollection
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
@@ -117,6 +115,7 @@ class Sequence extends AbstractCollection
             return $this;
         }
 
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         usort($this->elements, $comparator);
 
         $this->reindex();
