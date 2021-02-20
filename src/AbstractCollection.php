@@ -19,13 +19,12 @@ abstract class AbstractCollection implements CollectionInterface
      * @var array<string|int, mixed>
      * @psalm-var array<TKey, T>
      */
-    protected array $elements;
+    protected array $elements = [];
     /** @var array<string, Index> */
     protected array $indexes = [];
 
     final public function __construct(?string $type = null)
     {
-        $this->elements  = [];
         $this->validator = new TypeValidator($type);
     }
 
@@ -98,7 +97,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function values(): CollectionInterface
     {
-        return Sequence::fromArray(array_values($this->elements), $this->validator->type);
+        return Sequence::fromArray(array_values($this->elements), $this->validator->getType());
     }
 
     /**
@@ -177,10 +176,10 @@ abstract class AbstractCollection implements CollectionInterface
     public function filter(?callable $predicate = null): CollectionInterface
     {
         if (!$predicate) {
-            return static::fromArray(array_filter($this->elements), $this->validator->type);
+            return static::fromArray(array_filter($this->elements), $this->validator->getType());
         }
 
-        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->type);
+        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->getType());
     }
 
     /**
@@ -259,7 +258,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function sorted(?callable $comparator = null): CollectionInterface
     {
-        return static::fromArray($this->elements, $this->validator->type)->sort($comparator);
+        return static::fromArray($this->elements, $this->validator->getType())->sort($comparator);
     }
 
     /**
