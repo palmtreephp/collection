@@ -131,11 +131,9 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        foreach (\array_slice($this->elements, -1) as $element) {
-            return $element;
-        }
+        $lastKey = $this->lastKey();
 
-        return null;
+        return $lastKey === null ? null : $this->elements[$lastKey];
     }
 
     /**
