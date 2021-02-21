@@ -13,19 +13,18 @@ use Palmtree\Collection\Validator\TypeValidator;
  */
 abstract class AbstractCollection implements CollectionInterface
 {
+    public TypeValidator $validator;
+
     /**
      * @var array<string|int, mixed>
      * @psalm-var array<TKey, T>
      */
-    protected $elements;
-    /** @var TypeValidator */
-    protected $validator;
+    protected array $elements = [];
     /** @var array<string, Index> */
-    protected $indexes = [];
+    protected array $indexes = [];
 
     final public function __construct(?string $type = null)
     {
-        $this->elements  = [];
         $this->validator = new TypeValidator($type);
     }
 
@@ -118,14 +117,6 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * {@inheritDoc}
      */
-    public function all(): array
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function first()
     {
         foreach ($this->elements as $element) {
@@ -140,11 +131,9 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function last()
     {
-        foreach (\array_slice($this->elements, -1) as $element) {
-            return $element;
-        }
+        $lastKey = $this->lastKey();
 
-        return null;
+        return $lastKey === null ? null : $this->elements[$lastKey];
     }
 
     /**
@@ -152,15 +141,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function firstKey()
     {
-        if (\function_exists('array_key_first')) {
-            return array_key_first($this->elements);
-        }
-
-        foreach ($this->elements as $key => $noop) {
-            return $key;
-        }
-
-        return null;
+        return array_key_first($this->elements);
     }
 
     /**
@@ -168,11 +149,7 @@ abstract class AbstractCollection implements CollectionInterface
      */
     public function lastKey()
     {
-        if (\function_exists('array_key_last')) {
-            return array_key_last($this->elements);
-        }
-
-        return key(\array_slice($this->elements, -1, 1, true));
+        return array_key_last($this->elements);
     }
 
     /**
@@ -302,16 +279,18 @@ abstract class AbstractCollection implements CollectionInterface
             throw new InvalidIndex($indexId);
         }
 
-        $key = $this->indexes[$indexId]->get($key);
-
-        if ($key === null) {
-            throw new OutOfBoundsException("Index '$indexId' does not contain key '$key");
+        try {
+            $key = $this->indexes[$indexId]->get($key);
+        } catch (OutOfBoundsException $e) {
+            throw new OutOfBoundsException("Key '$key' does not exist within index '$indexId'");
         }
 
         return $this->get($key);
     }
 
     /**
+     * @psalm-param callable(T): string $callback
+     *
      * @return static
      * @psalm-return static<TKey,T>
      */
@@ -333,11 +312,6 @@ abstract class AbstractCollection implements CollectionInterface
         unset($this->indexes[$id]);
 
         return $this;
-    }
-
-    public function getValidator(): TypeValidator
-    {
-        return $this->validator;
     }
 
     public function getIterator(): \ArrayIterator

@@ -7,8 +7,7 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 
 class TypeValidator
 {
-    /** @var string|null */
-    private $type;
+    private ?string $type;
 
     private const VALID_PRIMITIVE_TYPES = [
         'boolean' => 'bool',
@@ -46,17 +45,17 @@ class TypeValidator
         throw new InvalidTypeException($this->type, $actualType === 'object' ? \get_class($element) : $actualType);
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
     public function isValidType(?string $type): bool
     {
         return $type === null ||
             class_exists($type) ||
             interface_exists($type) ||
             \in_array($type, self::VALID_PRIMITIVE_TYPES, true);
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
     }
 
     /**

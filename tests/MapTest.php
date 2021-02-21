@@ -58,9 +58,7 @@ class MapTest extends TestCase
 
         $map->set('some_object', $object);
 
-        $map->addIndex('foo', function (\stdClass $element) {
-            return $element->foo;
-        });
+        $map->addIndex('foo', fn (\stdClass $element) => $element->foo);
 
         $map->remove('some_object');
 
@@ -101,9 +99,7 @@ class MapTest extends TestCase
         $object      = new \stdClass();
         $object->foo = 'bar';
 
-        $map->addIndex('foo', function (\stdClass $element) {
-            return $element->foo;
-        });
+        $map->addIndex('foo', fn (\stdClass $element) => $element->foo);
 
         $map->set('some_object', $object);
 
@@ -148,6 +144,13 @@ class MapTest extends TestCase
 
         $this->assertSame($objectThree, $map->last());
         $this->assertNotSame($objectTwo, $map->last());
+    }
+
+    public function testFirstWithNoElementsReturnsNull(): void
+    {
+        $map = new Map();
+
+        $this->assertNull($map->first());
     }
 
     public function testFirstLastKeys(): void
@@ -220,7 +223,7 @@ class MapTest extends TestCase
         /** @var Map $newMap */
         $newMap = unserialize($serialized);
 
-        $this->assertEquals('int', $newMap->getValidator()->getType());
+        $this->assertEquals('int', $newMap->validator->getType());
 
         $expected = [
             'foo' => 1,
@@ -240,9 +243,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $map->filter(function ($element) {
-            return $element > 1;
-        });
+        $filtered = $map->filter(fn ($element) => $element > 1);
 
         $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->containsKey('foo'));
@@ -269,9 +270,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $filtered = $map->filter(function ($element, $key) {
-            return $key !== 'foo';
-        });
+        $filtered = $map->filter(fn ($element, $key) => $key !== 'foo');
 
         $this->assertNotSame($map, $filtered);
         $this->assertFalse($filtered->containsKey('foo'));
@@ -286,13 +285,7 @@ class MapTest extends TestCase
             ->set('bar', 2)
             ->set('baz', 3);
 
-        $mapped = $map->map(function ($element, $key) {
-            if ($key === 'bar') {
-                return 4;
-            }
-
-            return $element;
-        }, null);
+        $mapped = $map->map(fn ($element, $key) => $key === 'bar' ? 4 : $element);
 
         $this->assertSame(4, $mapped['bar']);
     }
@@ -306,9 +299,8 @@ class MapTest extends TestCase
             ->set('bar', true)
             ->set('baz', false);
 
-        $this->assertTrue($map->some(function ($element) {
-            return $element === true;
-        }));
+        $this->assertTrue($map->some(fn ($element) => $element === true));
+        $this->assertFalse($map->some(fn ($element) => $element === null));
     }
 
     public function testIndex(): void
@@ -321,9 +313,7 @@ class MapTest extends TestCase
         $map->set('foo', $foo);
         $map->set('foo2', $foo2);
 
-        $map->addIndex('bar', function (Foo $element) {
-            return $element->getBar();
-        });
+        $map->addIndex('bar', fn (Foo $element) => $element->bar);
 
         $this->assertSame($foo, $map->getBy('bar', 'test'));
         $this->assertSame($foo2, $map->getBy('bar', 'test2'));
@@ -346,8 +336,7 @@ class MapTest extends TestCase
 
         $map->set('bar', 'baz');
 
-        $map->addIndex('foo', function () {
-        });
+        $map->addIndex('foo', fn () => '');
 
         $map->removeIndex('foo');
 
@@ -367,8 +356,69 @@ class MapTest extends TestCase
 
         $this->assertSame('{"foo":1,"bar":2,"baz":3}', $json);
 
-        $mapFromJson = Map::fromJson($json, $map->getValidator()->getType());
+        $mapFromJson = Map::fromJson($json, $map->validator->getType());
 
         $this->assertEquals($map, $mapFromJson);
+    }
+
+    public function testSort(): void
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', 3)
+            ->set('bar', 1)
+            ->set('baz', 4)
+            ->set('qux', 2);
+
+        $map->sort();
+
+        $this->assertSame(['bar' => 1, 'qux' => 2, 'foo' => 3, 'baz' => 4], $map->toArray());
+    }
+
+    public function testSortWithComparator(): void
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', 3)
+            ->set('bar', 1)
+            ->set('baz', 4)
+            ->set('qux', 2);
+
+        $map->sort(fn ($a, $b) => $b <=> $a);
+
+        $this->assertSame(['baz' => 4, 'foo' => 3, 'qux' => 2, 'bar' => 1], $map->toArray());
+    }
+
+    public function testFind(): void
+    {
+        $map = new Map(FooInterface::class);
+
+        $foo  = new Foo('test');
+        $foo2 = new Foo('test2');
+        $foo3 = new Foo('test2');
+
+        $map->set('foo', $foo);
+        $map->set('foo2', $foo2);
+        $map->set('foo3', $foo3);
+
+        $this->assertSame($foo2, $map->find(fn (Foo $foo) => $foo->bar === 'test2'));
+        $this->assertNull($map->find(fn () => false));
+    }
+
+    public function testFindWithKey(): void
+    {
+        $map = new Map(FooInterface::class);
+
+        $foo  = new Foo('test');
+        $foo2 = new Foo('test2');
+        $foo3 = new Foo('test2');
+
+        $map->set('foo', $foo);
+        $map->set('foo2', $foo2);
+        $map->set('foo3', $foo3);
+
+        $this->assertSame($foo2, $map->find(fn (Foo $foo, string $key) => $key === 'foo2'));
     }
 }

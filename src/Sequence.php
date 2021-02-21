@@ -106,17 +106,17 @@ class Sequence extends AbstractCollection
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function sort(?callable $comparator = null): CollectionInterface
     {
         if (!$comparator) {
+            /** @psalm-suppress InvalidPropertyAssignmentValue */
             sort($this->elements);
 
             return $this;
         }
 
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         usort($this->elements, $comparator);
 
         $this->reindex();

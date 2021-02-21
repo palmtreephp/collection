@@ -25,6 +25,8 @@ class Map extends AbstractCollection
      * Adds a single element with the given key to the collection.
      *
      * @psalm-param TKey $key
+     *
+     * @param mixed $element
      * @psalm-param T $element
      *
      * @throws Exception\InvalidTypeException

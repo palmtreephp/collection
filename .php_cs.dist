@@ -4,6 +4,8 @@ use Palmtree\PhpCsFixerConfig\Config;
 
 $config = new Config();
 
+$config->setRules(array_merge($config->getRules(), ['phpdoc_to_comment' => false]));
+
 $config
     ->getFinder()
     ->in(__DIR__ . '/src')
