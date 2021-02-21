@@ -146,6 +146,13 @@ class MapTest extends TestCase
         $this->assertNotSame($objectTwo, $map->last());
     }
 
+    public function testFirstWithNoElementsReturnsNull(): void
+    {
+        $map = new Map();
+
+        $this->assertNull($map->first());
+    }
+
     public function testFirstLastKeys(): void
     {
         $map = new Map();
@@ -293,6 +300,7 @@ class MapTest extends TestCase
             ->set('baz', false);
 
         $this->assertTrue($map->some(fn ($element) => $element === true));
+        $this->assertFalse($map->some(fn ($element) => $element === null));
     }
 
     public function testIndex(): void
@@ -351,5 +359,66 @@ class MapTest extends TestCase
         $mapFromJson = Map::fromJson($json, $map->validator->getType());
 
         $this->assertEquals($map, $mapFromJson);
+    }
+
+    public function testSort(): void
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', 3)
+            ->set('bar', 1)
+            ->set('baz', 4)
+            ->set('qux', 2);
+
+        $map->sort();
+
+        $this->assertSame(['bar' => 1, 'qux' => 2, 'foo' => 3, 'baz' => 4], $map->toArray());
+    }
+
+    public function testSortWithComparator(): void
+    {
+        $map = new Map();
+
+        $map
+            ->set('foo', 3)
+            ->set('bar', 1)
+            ->set('baz', 4)
+            ->set('qux', 2);
+
+        $map->sort(fn ($a, $b) => $b <=> $a);
+
+        $this->assertSame(['baz' => 4, 'foo' => 3, 'qux' => 2, 'bar' => 1], $map->toArray());
+    }
+
+    public function testFind(): void
+    {
+        $map = new Map(FooInterface::class);
+
+        $foo  = new Foo('test');
+        $foo2 = new Foo('test2');
+        $foo3 = new Foo('test2');
+
+        $map->set('foo', $foo);
+        $map->set('foo2', $foo2);
+        $map->set('foo3', $foo3);
+
+        $this->assertSame($foo2, $map->find(fn (Foo $foo) => $foo->bar === 'test2'));
+        $this->assertNull($map->find(fn () => false));
+    }
+
+    public function testFindWithKey(): void
+    {
+        $map = new Map(FooInterface::class);
+
+        $foo  = new Foo('test');
+        $foo2 = new Foo('test2');
+        $foo3 = new Foo('test2');
+
+        $map->set('foo', $foo);
+        $map->set('foo2', $foo2);
+        $map->set('foo3', $foo3);
+
+        $this->assertSame($foo2, $map->find(fn (Foo $foo, string $key) => $key === 'foo2'));
     }
 }

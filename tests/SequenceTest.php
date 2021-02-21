@@ -150,6 +150,7 @@ class SequenceTest extends TestCase
         $sequence = Sequence::fromArray([1, 30, 39, 29, 10, 13]);
 
         $this->assertTrue($sequence->every(fn ($value) => $value < 40));
+        $this->assertFalse($sequence->every(fn ($value) => $value > 40));
     }
 
     public function testReduce(): void
