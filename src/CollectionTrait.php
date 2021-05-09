@@ -14,6 +14,11 @@ use Palmtree\Collection\Validator\TypeValidator;
 trait CollectionTrait
 {
     public TypeValidator $validator;
+    /**
+     * @var array<string, mixed>
+     * @psalm-var array<TKey, T>
+     */
+    private array $elements = [];
     /** @var array<string, Index> */
     private array $indexes = [];
 
@@ -21,6 +26,13 @@ trait CollectionTrait
     {
         $this->validator = new TypeValidator($type);
     }
+
+    /**
+     * @psalm-param iterable<TKey,T> $elements
+     *
+     * @return $this
+     */
+    abstract public function add(iterable $elements): self;
 
     /**
      * Returns a single element with the given key from the collection.

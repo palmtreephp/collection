@@ -15,24 +15,21 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
     use CollectionTrait;
 
     /**
-     * @var array<int, mixed>
-     * @psalm-var array<TKey, T>
-     */
-    private array $elements = [];
-
-    /**
      * Adds a set of elements to the collection.
      *
-     * @psalm-param array<TKey, T> $elements
+     * @psalm-param iterable<TKey, T> $elements
      *
-     * @return static
-     * @psalm-return static<TKey, T>
+     * @return $this
      *
      * @throws InvalidTypeException
      */
     public function add(iterable $elements): self
     {
-        return $this->push(...$elements);
+        foreach ($elements as $element) {
+            $this->push($element);
+        }
+
+        return $this;
     }
 
     /**

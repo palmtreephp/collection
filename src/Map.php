@@ -14,18 +14,11 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     use CollectionTrait;
 
     /**
-     * @var array<string, mixed>
-     * @psalm-var array<TKey, T>
-     */
-    private array $elements = [];
-
-    /**
      * Adds a set of elements to the collection.
      *
      * @psalm-param iterable<TKey,T> $elements
      *
-     * @return static
-     * @psalm-return static<TKey,T>
+     * @return $this
      *
      * @throws InvalidTypeException
      */
