@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Palmtree\Collection\Validator;
 
@@ -65,7 +65,7 @@ class TypeValidator
     {
         if (!$this->isValidType($type)) {
             $validTypes = implode(', ', self::VALID_PRIMITIVE_TYPES);
-            throw new InvalidArgumentException("Invalid type '$type'. Must be either null, one of $validTypes, or a FQCN or interface");
+            throw new InvalidArgumentException("Invalid type '$type'. Must be null, one of $validTypes, or a fully-qualified class name or interface");
         }
 
         $this->type = $type;

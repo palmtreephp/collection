@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Palmtree\Collection;
 
@@ -6,16 +6,31 @@ use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
- * @template TKey as int
+ * @template TKey of array-key
  * @template T
- * @extends AbstractCollection<TKey,T>
  */
-class Sequence extends AbstractCollection
+class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
+    /** @use CollectionTrait<TKey, T> */
+    use CollectionTrait;
+
     /**
-     * {@inheritDoc}
+     * @var array<int, mixed>
+     * @psalm-var array<TKey, T>
      */
-    public function add(iterable $elements): CollectionInterface
+    private array $elements = [];
+
+    /**
+     * Adds a set of elements to the collection.
+     *
+     * @psalm-param array<TKey, T> $elements
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
+     *
+     * @throws InvalidTypeException
+     */
+    public function add(iterable $elements): self
     {
         return $this->push(...$elements);
     }
@@ -29,7 +44,6 @@ class Sequence extends AbstractCollection
      * @psalm-return static<TKey, T>
      *
      * @psalm-suppress InvalidPropertyAssignmentValue
-
      *
      * @throws InvalidTypeException
      */
@@ -105,9 +119,12 @@ class Sequence extends AbstractCollection
     }
 
     /**
-     * {@inheritDoc}
+     * Sorts the collection in-place, using an optional comparator function.
+     *
+     * @return static
+     * @psalm-return static<int, T>
      */
-    public function sort(?callable $comparator = null): CollectionInterface
+    public function sort(?callable $comparator = null): self
     {
         if (!$comparator) {
             /** @psalm-suppress InvalidPropertyAssignmentValue */
@@ -155,5 +172,35 @@ class Sequence extends AbstractCollection
         }
 
         $this->push($value);
+    }
+
+    /**
+     * Returns a new collection from an array or iterable.
+     *
+     * @template K as int
+     * @template V
+     * @psalm-param array<K, V> $elements
+     *
+     * @return static
+     * @psalm-return static<K, V>
+     *
+     * @throws InvalidTypeException
+     */
+    public static function fromArray(array $elements, ?string $type = null): self
+    {
+        return (new static($type))->add($elements);
+    }
+
+    /**
+     * Returns a new collection from a JSON string.
+     *
+     * @return static
+     * @psalm-return static<int, T>
+     *
+     * @throws InvalidTypeException
+     */
+    public static function fromJson(string $json, ?string $type = null): self
+    {
+        return static::fromArray(json_decode($json, true), $type);
     }
 }

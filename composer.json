@@ -29,9 +29,5 @@
             "Palmtree\\Collection\\Test\\": "tests",
             "Palmtree\\Collection\\Test\\Fixture\\": "tests/fixtures"
         }
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit",
-        "fix": "vendor/bin/php-cs-fixer fix --diff"
     }
 }
