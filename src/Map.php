@@ -57,8 +57,7 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     /**
      * Sorts the collection in-place, using an optional comparator function.
      *
-     * @return static
-     * @psalm-return static<TKey, T>
+     * @return $this
      */
     public function sort(?callable $comparator = null): self
     {

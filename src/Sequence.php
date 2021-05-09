@@ -118,8 +118,7 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
     /**
      * Sorts the collection in-place, using an optional comparator function.
      *
-     * @return static
-     * @psalm-return static<int, T>
+     * @return $this
      */
     public function sort(?callable $comparator = null): self
     {

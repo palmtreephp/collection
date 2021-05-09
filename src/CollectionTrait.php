@@ -34,6 +34,9 @@ trait CollectionTrait
      */
     abstract public function add(iterable $elements): self;
 
+    /** @return $this */
+    abstract public function sort(?callable $comparator = null): self;
+
     /**
      * Returns a single element with the given key from the collection.
      *
