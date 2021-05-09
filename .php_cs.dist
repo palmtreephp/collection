@@ -5,6 +5,7 @@ use Palmtree\PhpCsFixerConfig\Config;
 $config = new Config();
 
 $config
+    ->setCacheFile(__DIR__ . '/var/.php_cs.cache')
     ->setRules(array_merge($config->getRules(), [
         'phpdoc_to_comment'          => false,
         'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],

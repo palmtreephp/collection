@@ -3,25 +3,19 @@
 namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\InvalidIndex;
+use Palmtree\Collection\Exception\InvalidTypeException;
 use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Validator\TypeValidator;
 
 /**
  * @template TKey of array-key
  * @template T
- * @implements CollectionInterface<TKey,T>
  */
-abstract class AbstractCollection implements CollectionInterface
+trait CollectionTrait
 {
     public TypeValidator $validator;
-
-    /**
-     * @var array<string|int, mixed>
-     * @psalm-var array<TKey, T>
-     */
-    protected array $elements = [];
     /** @var array<string, Index> */
-    protected array $indexes = [];
+    private array $indexes = [];
 
     final public function __construct(?string $type = null)
     {
@@ -29,7 +23,13 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a single element with the given key from the collection.
+     *
+     * @param string|int $key
+     * @psalm-param TKey $key
+     *
+     * @return mixed
+     * @psalm-return T
      */
     public function get($key)
     {
@@ -41,7 +41,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether the given element is in the collection.
+     *
+     * @param mixed $element
+     * @psalm-param T $element
      */
     public function contains($element, bool $strict = true): bool
     {
@@ -49,7 +52,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether the given key exists in the collection.
+     *
+     * @param string|int $key
+     * @psalm-param TKey $key
      */
     public function containsKey($key): bool
     {
@@ -57,9 +63,14 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Removes an element with the given key from the collection.
+     *
+     * @param string|int $key
+     * @psalm-param TKey $key
+     *
+     * @return $this
      */
-    public function remove($key): CollectionInterface
+    public function remove($key): self
     {
         foreach ($this->indexes as $index) {
             $index->remove((string)$key);
@@ -71,9 +82,14 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Removes an element from the collection.
+     *
+     * @param mixed $element
+     * @psalm-param T $element
+     *
+     * @return $this
      */
-    public function removeElement($element): CollectionInterface
+    public function removeElement($element): self
     {
         $key = array_search($element, $this->elements, true);
 
@@ -85,37 +101,46 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a Sequence containing this collection's keys.
+     *
+     * @psalm-return Sequence<int, TKey>
+     *
+     * @throws InvalidTypeException
      */
-    public function keys(): CollectionInterface
+    public function keys(): Sequence
     {
         return Sequence::fromArray(array_keys($this->elements));
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a Sequence containing this collection's values.
+     *
+     * @psalm-return Sequence<int, T>
+     *
+     * @throws InvalidTypeException
      */
-    public function values(): CollectionInterface
+    public function values(): Sequence
     {
         return Sequence::fromArray(array_values($this->elements), $this->validator->getType());
     }
 
     /**
-     * {@inheritDoc}
+     * Clears all elements from the collection.
      */
-    public function clear(): CollectionInterface
+    public function clear(): void
     {
         foreach ($this->indexes as $index) {
             $index->clear();
         }
 
         $this->elements = [];
-
-        return $this;
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the first element in the collection.
+     *
+     * @return mixed|null
+     * @psalm-return T|null
      */
     public function first()
     {
@@ -127,7 +152,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the last element in the collection.
+     *
+     * @return mixed|null
+     * @psalm-return T|null
      */
     public function last()
     {
@@ -137,7 +165,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the first key in the collection.
+     *
+     * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function firstKey()
     {
@@ -145,7 +176,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the last key in the collection.
+     *
+     * @return string|int|null
+     * @psalm-return TKey|null
      */
     public function lastKey()
     {
@@ -161,7 +195,7 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether the collection is empty.
      */
     public function isEmpty(): bool
     {
@@ -169,32 +203,37 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a new instance containing elements in the collection filtered by a predicate.
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
      */
-    public function filter(?callable $predicate = null): CollectionInterface
+    public function filter(?callable $predicate = null): self
     {
-        if (!$predicate) {
-            return static::fromArray(array_filter($this->elements), $this->validator->getType());
+        if ($predicate !== null) {
+            $values = array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH);
+        } else {
+            $values = array_filter($this->elements);
         }
 
-        return static::fromArray(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH), $this->validator->getType());
+        return (new static($this->validator->getType()))->add($values);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a new instance containing elements mapped from the given callback.
      */
-    public function map(callable $callback, ?string $type = null): CollectionInterface
+    public function map(callable $callback, ?string $type = null): self
     {
         $map = [];
         foreach ($this->elements as $key => $value) {
             $map[$key] = $callback($value, $key);
         }
 
-        return static::fromArray($map, $type);
+        return (new static($type))->add($map);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether at least one element passes the predicate function.
      */
     public function some(callable $predicate): bool
     {
@@ -208,7 +247,7 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns whether all elements pass the predicate function.
      */
     public function every(callable $predicate): bool
     {
@@ -222,7 +261,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the first element that passes the predicate function.
+     *
+     * @return mixed
+     * @psalm-return T|null
      */
     public function find(callable $predicate)
     {
@@ -236,7 +278,13 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Reduces the collection a single value.
+     *
+     * @param mixed $initial
+     *
+     * @return mixed
+     *
+     * @see array_reduce()
      */
     public function reduce(callable $callback, $initial = null)
     {
@@ -244,7 +292,13 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Reduces the collection a single value, iterating from right to left.
+     *
+     * @param mixed $initial
+     *
+     * @return mixed
+     *
+     * @see array_reduce()
      */
     public function reduceRight(callable $callback, $initial = null)
     {
@@ -252,15 +306,23 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Sorts and returns a copy of the collection using an optional comparator function.
+     *
+     * @return static
+     * @psalm-return static<TKey, T>
      */
-    public function sorted(?callable $comparator = null): CollectionInterface
+    public function sorted(?callable $comparator = null): self
     {
-        return static::fromArray($this->elements, $this->validator->getType())->sort($comparator);
+        $copy = (new static($this->validator->getType()))->add($this->elements);
+        $copy->sort($comparator);
+
+        return $copy;
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the collection as an array.
+     *
+     * @psalm-return array<TKey,T>
      */
     public function toArray(): array
     {
@@ -291,8 +353,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @psalm-param callable(T): string $callback
      *
-     * @return static
-     * @psalm-return static<TKey,T>
+     * @return $this
      */
     public function addIndex(string $id, callable $callback): self
     {
@@ -307,6 +368,9 @@ abstract class AbstractCollection implements CollectionInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function removeIndex(string $id): self
     {
         unset($this->indexes[$id]);
@@ -352,24 +416,5 @@ abstract class AbstractCollection implements CollectionInterface
     public function jsonSerialize(): array
     {
         return $this->elements;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function fromJson(string $json, ?string $type = null): CollectionInterface
-    {
-        return static::fromArray(json_decode($json, true), $type);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
-     */
-    public static function fromArray(iterable $elements, ?string $type = null): CollectionInterface
-    {
-        return (new static($type))->add($elements);
     }
 }
