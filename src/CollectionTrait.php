@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Palmtree\Collection;
 
@@ -8,7 +10,7 @@ use Palmtree\Collection\Exception\OutOfBoundsException;
 use Palmtree\Collection\Validator\TypeValidator;
 
 /**
- * @template TKey of array-key
+ * @template TKey as array-key
  * @template T
  */
 trait CollectionTrait
@@ -43,7 +45,6 @@ trait CollectionTrait
      * @param string|int $key
      * @psalm-param TKey $key
      *
-     * @return mixed
      * @psalm-return T
      */
     public function get($key)
@@ -58,7 +59,6 @@ trait CollectionTrait
     /**
      * Returns whether the given element is in the collection.
      *
-     * @param mixed $element
      * @psalm-param T $element
      */
     public function contains($element, bool $strict = true): bool
@@ -99,7 +99,6 @@ trait CollectionTrait
     /**
      * Removes an element from the collection.
      *
-     * @param mixed $element
      * @psalm-param T $element
      *
      * @return $this
@@ -118,7 +117,7 @@ trait CollectionTrait
     /**
      * Returns a Sequence containing this collection's keys.
      *
-     * @psalm-return Sequence<int, TKey>
+     * @psalm-return Sequence<TKey>
      *
      * @throws InvalidTypeException
      */
@@ -130,7 +129,7 @@ trait CollectionTrait
     /**
      * Returns a Sequence containing this collection's values.
      *
-     * @psalm-return Sequence<int, T>
+     * @psalm-return Sequence<T>
      *
      * @throws InvalidTypeException
      */
@@ -221,7 +220,7 @@ trait CollectionTrait
      * Returns a new instance containing elements in the collection filtered by a predicate.
      *
      * @return static
-     * @psalm-return static<TKey,T>
+     * @psalm-return static<T>
      */
     public function filter(?callable $predicate = null): self
     {
@@ -278,7 +277,6 @@ trait CollectionTrait
     /**
      * Returns the first element that passes the predicate function.
      *
-     * @return mixed
      * @psalm-return T|null
      */
     public function find(callable $predicate)
@@ -295,10 +293,6 @@ trait CollectionTrait
     /**
      * Reduces the collection a single value.
      *
-     * @param mixed $initial
-     *
-     * @return mixed
-     *
      * @see array_reduce()
      */
     public function reduce(callable $callback, $initial = null)
@@ -308,10 +302,6 @@ trait CollectionTrait
 
     /**
      * Reduces the collection a single value, iterating from right to left.
-     *
-     * @param mixed $initial
-     *
-     * @return mixed
      *
      * @see array_reduce()
      */
@@ -324,7 +314,7 @@ trait CollectionTrait
      * Sorts and returns a copy of the collection using an optional comparator function.
      *
      * @return static
-     * @psalm-return static<TKey, T>
+     * @psalm-return static<T>
      */
     public function sorted(?callable $comparator = null): self
     {
@@ -345,7 +335,6 @@ trait CollectionTrait
     }
 
     /**
-     * @return mixed
      * @psalm-return T
      *
      * @throws InvalidIndex|OutOfBoundsException

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Palmtree\Collection;
 
@@ -63,7 +65,6 @@ class Index
     /**
      * @psalm-param TElementKey $key
      *
-     * @param mixed $element
      * @psalm-param T $element
      */
     public function add(string $key, $element): self

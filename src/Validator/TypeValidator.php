@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Palmtree\Collection\Validator;
 
@@ -25,8 +27,6 @@ class TypeValidator
 
     /**
      * Returns true if the given element is a valid type.
-     *
-     * @param mixed $element
      *
      * @throws InvalidTypeException If the given element is not a valid type.
      */

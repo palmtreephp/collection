@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Palmtree\Collection;
 
@@ -6,18 +8,17 @@ use Palmtree\Collection\Exception\BadMethodCallException;
 use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
- * @template TKey of array-key
  * @template T
  */
 class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
-    /** @use CollectionTrait<TKey, T> */
+    /** @use CollectionTrait<int, T> */
     use CollectionTrait;
 
     /**
      * Adds a set of elements to the collection.
      *
-     * @psalm-param iterable<TKey, T> $elements
+     * @psalm-param iterable<int, T> $elements
      *
      * @return $this
      *
@@ -38,7 +39,7 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
      * @param mixed ...$elements
      * @psalm-param T ...$elements
      *
-     * @psalm-return static<TKey, T>
+     * @psalm-return $this
      *
      * @psalm-suppress InvalidPropertyAssignmentValue
      *
@@ -60,7 +61,6 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
     /**
      * Pops and returns the last element of the sequence, shortening the sequence by one element.
      *
-     * @return mixed
      * @psalm-return T
      *
      * @see array_pop
@@ -77,7 +77,6 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
     /**
      * Shifts an element off the beginning of sequence and returns it.
      *
-     * @return mixed
      * @psalm-return T
      *
      * @see array_shift
@@ -156,7 +155,6 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
 
     /**
      * @param int|null $offset
-     * @param mixed    $value
      * @psalm-param T $value
      *
      * @throws InvalidTypeException
@@ -173,12 +171,11 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
     /**
      * Returns a new collection from an array or iterable.
      *
-     * @template K as int
      * @template V
-     * @psalm-param array<K, V> $elements
+     * @psalm-param list<V> $elements
      *
      * @return static
-     * @psalm-return static<K, V>
+     * @psalm-return static<V>
      *
      * @throws InvalidTypeException
      */
@@ -191,7 +188,6 @@ class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSer
      * Returns a new collection from a JSON string.
      *
      * @return static
-     * @psalm-return static<int, T>
      *
      * @throws InvalidTypeException
      */

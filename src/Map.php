@@ -1,22 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Palmtree\Collection;
 
 use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
- * @template TKey of array-key
  * @template T
  */
 class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
-    /** @use CollectionTrait<TKey, T> */
+    /** @use CollectionTrait<string, T> */
     use CollectionTrait;
 
     /**
      * Adds a set of elements to the collection.
      *
-     * @psalm-param iterable<TKey,T> $elements
+     * @psalm-param iterable<string,T> $elements
      *
      * @return $this
      *
@@ -34,9 +35,6 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     /**
      * Adds a single element with the given key to the collection.
      *
-     * @psalm-param TKey $key
-     *
-     * @param mixed $element
      * @psalm-param T $element
      *
      * @throws Exception\InvalidTypeException
@@ -73,9 +71,7 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     }
 
     /**
-     * @psalm-param TKey $offset
-     *
-     * @param mixed $value
+     * @param string $offset
      * @psalm-param T $value
      *
      * @throws InvalidTypeException
@@ -88,16 +84,15 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     /**
      * Returns a new collection from an array or iterable.
      *
-     * @template K as string
      * @template V
-     * @psalm-param iterable<K, V> $elements
+     * @psalm-param array<string, V> $elements
      *
      * @return static
-     * @psalm-return static<K, V>
+     * @psalm-return static<V>
      *
      * @throws InvalidTypeException
      */
-    public static function fromArray(iterable $elements, ?string $type = null): self
+    public static function fromArray(array $elements, ?string $type = null): self
     {
         return (new static($type))->add($elements);
     }
