@@ -375,7 +375,7 @@ trait CollectionTrait
         $index = new Index($callback);
 
         foreach ($this->elements as $key => $element) {
-            $index->add($key, $element);
+            $index->add((string)$key, $element);
         }
 
         $this->indexes[$id] = $index;
