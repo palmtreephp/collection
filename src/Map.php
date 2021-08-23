@@ -26,7 +26,8 @@ class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializ
     public function add(iterable $elements): self
     {
         foreach ($elements as $key => $element) {
-            $this->set($key, $element);
+            // PHP converts numeric keys to integers, so we need to explicitly cast them to strings
+            $this->set((string)$key, $element);
         }
 
         return $this;
