@@ -9,6 +9,8 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
  * @template T
+ * @template-implements \IteratorAggregate<int, T>
+ * @template-implements \ArrayAccess<int, T>
  */
 class Sequence implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {

@@ -382,6 +382,9 @@ trait CollectionTrait
         return $this;
     }
 
+    /**
+     * @return \ArrayIterator<TKey, T>
+     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);

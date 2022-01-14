@@ -8,6 +8,8 @@ use Palmtree\Collection\Exception\InvalidTypeException;
 
 /**
  * @template T
+ * @template-implements \IteratorAggregate<string, T>
+ * @template-implements \ArrayAccess<string, T>
  */
 class Map implements \ArrayAccess, \IteratorAggregate, \Countable, \JsonSerializable
 {
