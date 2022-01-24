@@ -27,8 +27,8 @@ class MapTest extends TestCase
         $map = new Map();
 
         $data = [
-            'foo'  => 'Bar',
-            'baz'  => 'Bez',
+            'foo' => 'Bar',
+            'baz' => 'Bez',
             'bing' => 'Bah',
         ];
 
@@ -55,7 +55,7 @@ class MapTest extends TestCase
     {
         $map = new Map(\stdClass::class);
 
-        $object      = new \stdClass();
+        $object = new \stdClass();
         $object->foo = 'bar';
 
         $map->set('some_object', $object);
@@ -98,7 +98,7 @@ class MapTest extends TestCase
     {
         $map = new Map(\stdClass::class);
 
-        $object      = new \stdClass();
+        $object = new \stdClass();
         $object->foo = 'bar';
 
         $map->addIndex('foo', fn (\stdClass $element) => $element->foo);
@@ -132,8 +132,8 @@ class MapTest extends TestCase
     {
         $map = new Map();
 
-        $objectOne   = new \stdClass();
-        $objectTwo   = new \stdClass();
+        $objectOne = new \stdClass();
+        $objectTwo = new \stdClass();
         $objectThree = new \stdClass();
 
         $map
@@ -203,8 +203,8 @@ class MapTest extends TestCase
             ->set('three', 3);
 
         $expected = [
-            'one'   => 1,
-            'two'   => 2,
+            'one' => 1,
+            'two' => 2,
             'three' => 3,
         ];
 
@@ -309,7 +309,7 @@ class MapTest extends TestCase
     {
         $map = new Map(FooInterface::class);
 
-        $foo  = new Foo('test');
+        $foo = new Foo('test');
         $foo2 = new Foo('test2');
 
         $map->set('foo', $foo);
@@ -397,7 +397,7 @@ class MapTest extends TestCase
     {
         $map = new Map(FooInterface::class);
 
-        $foo  = new Foo('test');
+        $foo = new Foo('test');
         $foo2 = new Foo('test2');
         $foo3 = new Foo('test2');
 
@@ -413,7 +413,7 @@ class MapTest extends TestCase
     {
         $map = new Map(FooInterface::class);
 
-        $foo  = new Foo('test');
+        $foo = new Foo('test');
         $foo2 = new Foo('test2');
         $foo3 = new Foo('test2');
 

@@ -93,8 +93,8 @@ class SequenceTest extends TestCase
     {
         $sequence = new Sequence();
 
-        $objectOne   = new \stdClass();
-        $objectTwo   = new \stdClass();
+        $objectOne = new \stdClass();
+        $objectTwo = new \stdClass();
         $objectThree = new \stdClass();
 
         $sequence->push($objectOne, $objectTwo, $objectThree);
@@ -133,10 +133,10 @@ class SequenceTest extends TestCase
 
     public function testMap(): void
     {
-        $objectOne      = new \stdClass();
+        $objectOne = new \stdClass();
         $objectOne->foo = 'Bar';
 
-        $objectTwo      = new \stdClass();
+        $objectTwo = new \stdClass();
         $objectTwo->foo = 'Baz';
 
         $sequence = new Sequence(\stdClass::class);
@@ -171,16 +171,16 @@ class SequenceTest extends TestCase
 
     public function testIndex(): void
     {
-        $obj1     = new \stdClass();
+        $obj1 = new \stdClass();
         $obj1->id = 'foo';
 
-        $obj2     = new \stdClass();
+        $obj2 = new \stdClass();
         $obj2->id = 'bar';
 
-        $obj3     = new \stdClass();
+        $obj3 = new \stdClass();
         $obj3->id = 'baz';
 
-        $obj4     = new \stdClass();
+        $obj4 = new \stdClass();
         $obj4->id = 'qux';
 
         $sequence = new Sequence(\stdClass::class);
@@ -204,13 +204,13 @@ class SequenceTest extends TestCase
 
     public function testIndexAfterShift(): void
     {
-        $obj1     = new \stdClass();
+        $obj1 = new \stdClass();
         $obj1->id = 'foo';
 
-        $obj2     = new \stdClass();
+        $obj2 = new \stdClass();
         $obj2->id = 'bar';
 
-        $obj3     = new \stdClass();
+        $obj3 = new \stdClass();
         $obj3->id = 'baz';
 
         $sequence = new Sequence(\stdClass::class);
@@ -229,16 +229,16 @@ class SequenceTest extends TestCase
 
     public function testIndexAfterUnShift(): void
     {
-        $obj1     = new \stdClass();
+        $obj1 = new \stdClass();
         $obj1->id = 'foo';
 
-        $obj2     = new \stdClass();
+        $obj2 = new \stdClass();
         $obj2->id = 'bar';
 
-        $obj3     = new \stdClass();
+        $obj3 = new \stdClass();
         $obj3->id = 'baz';
 
-        $obj4     = new \stdClass();
+        $obj4 = new \stdClass();
         $obj4->id = 'qux';
 
         $sequence = new Sequence(\stdClass::class);

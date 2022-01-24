@@ -14,10 +14,10 @@ class TypeValidator
     private const VALID_PRIMITIVE_TYPES = [
         'boolean' => 'bool',
         'integer' => 'int',
-        'double'  => 'float',
-        'string'  => 'string',
-        'array'   => 'array',
-        'object'  => 'object',
+        'double' => 'float',
+        'string' => 'string',
+        'array' => 'array',
+        'object' => 'object',
     ];
 
     public function __construct(?string $type = null)

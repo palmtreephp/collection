@@ -10,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // Objects of the same class
 $objects = new Map(\stdClass::class);
 
-$element       = new \stdClass();
+$element = new \stdClass();
 $element->data = 'Hello, World!';
 
 $objects->set('key1', $element);
@@ -18,7 +18,7 @@ $objects->set('key1', $element);
 // Throws an InvalidArgumentException
 //$objects->set('wont_work', ['Noop']);
 
-$element2      = new \stdClass();
+$element2 = new \stdClass();
 $element->data = 'Hello, again!';
 
 $objects->set('key2', $element2);

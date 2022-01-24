@@ -8,10 +8,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $objects = new Map(\stdClass::class);
 
-$object1     = new \stdClass();
+$object1 = new \stdClass();
 $object1->id = 'foo';
 
-$object2     = new \stdClass();
+$object2 = new \stdClass();
 $object2->id = 'bar';
 
 $objects

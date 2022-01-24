@@ -48,7 +48,7 @@ class ArrayAccessTest extends TestCase
     {
         $this->expectException(BadMethodCallException::class);
 
-        $sequence    = new Sequence();
+        $sequence = new Sequence();
         $sequence[0] = 'Foo';
     }
 
