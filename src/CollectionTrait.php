@@ -355,6 +355,18 @@ trait CollectionTrait
     }
 
     /**
+     * @throws InvalidIndex
+     */
+    public function indexContains(string $indexId, string $key): bool
+    {
+        if (!isset($this->indexes[$indexId])) {
+            throw new InvalidIndex($indexId);
+        }
+
+        return $this->indexes[$indexId]->has($key);
+    }
+
+    /**
      * @psalm-param callable(T): string $callback
      *
      * @return $this
