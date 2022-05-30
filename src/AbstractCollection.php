@@ -335,6 +335,7 @@ abstract class AbstractCollection implements CollectionInterface
      * @return mixed|null
      * @psalm-return T
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
