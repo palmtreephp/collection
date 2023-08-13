@@ -1,5 +1,5 @@
 {
-    "name": "palmtree/easy-collection",
+    "name": "palmtree/collection",
     "description": "Immutable collections which provide commonly used functionality missing from arrays",
     "type": "library",
     "license": "MIT",
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Palmtree\\EasyCollection\\": "src"
+            "Palmtree\\Collection\\": "src"
         },
         "files": [
             "functions.php"
@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Palmtree\\EasyCollection\\Test\\": "tests"
+            "Palmtree\\Collection\\Test\\": "tests"
         }
     },
     "scripts": {

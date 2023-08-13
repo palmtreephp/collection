@@ -1,6 +1,6 @@
 <?php
 
-namespace Palmtree\EasyCollection;
+namespace Palmtree\Collection;
 
 /**
  * @template TKey of array-key

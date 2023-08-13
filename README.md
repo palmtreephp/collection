@@ -22,7 +22,7 @@ composer require palmtree/easy-collection
 Collections can be used just like arrays for the most part. They implement [`ArrayAccess`](https://www.php.net/manual/en/class.arrayaccess), [`Traversable`](https://www.php.net/manual/en/class.traversable) and [`Countable`](https://www.php.net/manual/en/class.countable):
 
 ```php
-use function Palmtree\EasyCollection\c;
+use function Palmtree\Collection\c;
 
 $collection = c(['foo' => 'bar', 'baz' => 'qux']);
 
@@ -45,7 +45,7 @@ $quxCollection = $collection->filter(fn ($v) => $v === 'qux');
 ```
 
 ```php
-use function Palmtree\EasyCollection\c;
+use function Palmtree\Collection\c;
 
 $collection = c([1, 9, 5, 3, 7, 10])
     ->sort()

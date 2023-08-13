@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Palmtree\EasyCollection\Test;
+namespace Palmtree\Collection\Test;
 
-use function Palmtree\EasyCollection\c;
+use function Palmtree\Collection\c;
 
-use Palmtree\EasyCollection\Collection;
+use Palmtree\Collection\Collection;
 use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
