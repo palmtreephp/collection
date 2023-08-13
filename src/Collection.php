@@ -128,7 +128,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing the current collection's keys.
      *
-     * @return Collection<int, TKey>
+     * @return Collection<non-negative-int, TKey>
      */
     public function keys(): self
     {
@@ -138,7 +138,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing the current collection's values.
      *
-     * @return Collection<int, T>
+     * @return Collection<non-negative-int, T>
      */
     public function values(): self
     {
@@ -275,7 +275,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @psalm-suppress PossiblyNullArgument
      */
-    public function filter(?callable $predicate = null): self
+    public function filter(callable $predicate = null): self
     {
         return new self(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH));
     }
@@ -549,7 +549,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         array_walk_recursive(
             $this->elements,
             /** @param T $a */
-            function (mixed $a) use (&$result) {
+            function (mixed $a) use (&$result): void {
                 \assert(\is_array($result));
                 $result[] = $a;
             }
