@@ -1,7 +1,8 @@
-# :palm_tree: Easy Collection
+# :palm_tree: Palmtree Collection
 
-[![License](https://img.shields.io/github/license/palmtreephp/easy-collection)](LICENSE)
-[![Build](https://img.shields.io/github/workflow/status/palmtreephp/easy-collection/Build.svg)](https://github.com/palmtreephp/easy-collection/actions/workflows/build.yml)
+[![License](http://img.shields.io/packagist/l/palmtree/collection.svg)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/palmtreephp/collection/build.yaml?branch=master)](https://github.com/palmtreephp/collection/actions/workflows/build.yaml)
+[![Packagist Version](https://img.shields.io/packagist/v/palmtree/collection)](https://packagist.org/packages/palmtree/collection)
 
 Immutable collections which provide commonly used functionality missing from arrays.
 
@@ -14,7 +15,7 @@ Immutable collections which provide commonly used functionality missing from arr
 Use composer to add the package to your dependencies:
 
 ```bash
-composer require palmtree/easy-collection
+composer require palmtree/collection
 ```
 
 ## Usage
