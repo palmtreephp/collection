@@ -16,13 +16,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          coverage: none
+          tools: cs2pr
 
       - name: Declare variables
         id: vars
-        run: |
-          echo ::set-output name=composer_cache_dir::$(composer config cache-dir)
+        run: echo "composer_cache_dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache composer downloads
+      - name: Cache composer
         uses: actions/cache@v3
         with:
           path: ${{ steps.vars.outputs.composer_cache_dir }}
@@ -37,11 +38,11 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-ansi
 
       - name: PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff
+        run: php vendor/bin/php-cs-fixer fix -vvv --dry-run --using-cache=no --format=checkstyle | cs2pr
         if: matrix.php-versions == 8.1
 
       - name: Psalm
-        run: ./vendor/bin/psalm --config=psalm.xml --no-cache
+        run: php vendor/bin/psalm --no-cache --show-info=false --stats --output-format=github --threads=$(nproc)
 
       - name: PHPUnit
-        run: ./vendor/bin/phpunit -v
+        run: php vendor/bin/phpunit -v --do-not-cache-result
