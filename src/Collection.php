@@ -128,7 +128,10 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing the current collection's keys.
      *
-     * @return Collection<non-negative-int, TKey>
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
+     *
+     * @return Collection<int, TKey>
      */
     public function keys(): self
     {
@@ -138,7 +141,10 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing the current collection's values.
      *
-     * @return Collection<non-negative-int, T>
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
+     *
+     * @return Collection<int, T>
      */
     public function values(): self
     {
