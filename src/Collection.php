@@ -10,8 +10,6 @@ namespace Palmtree\Collection;
  *
  * @template-implements \IteratorAggregate<TKey,T>
  * @template-implements \ArrayAccess<TKey,T>
- *
- * @psalm-consistent-constructor
  */
 class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonSerializable
 {
@@ -40,7 +38,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public static function create(iterable $elements = []): self
     {
-        return new static($elements);
+        return new self($elements);
     }
 
     /**
@@ -59,7 +57,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      * Sets the given element to the given key in the collection.
      *
      * @param TKey $key
-     * @param T    $element
+     * @param T $element
      *
      * @return Collection<TKey, T>
      */
@@ -80,7 +78,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     public function add(mixed ...$element): self
     {
         foreach ($element as $el) {
-            /** @psalm-suppress InvalidPropertyAssignmentValue */
             $this->elements[] = $el;
         }
 
@@ -128,9 +125,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing the current collection's keys.
      *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
-     *
      * @return Collection<int, TKey>
      */
     public function keys(): self
@@ -140,9 +134,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
     /**
      * Returns a new collection containing the current collection's values.
-     *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
      *
      * @return Collection<int, T>
      */
@@ -238,9 +229,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Applies the given callback function to each element in the collection.
      *
-     * @psalm-param callable(T, TKey=, int=):bool $callback
+     * @param \Closure(T, TKey, int): (bool|void) $callback
      */
-    public function each(callable $callback): self
+    public function each(\Closure $callback): self
     {
         $loopIndex = 0;
         foreach ($this->elements as $key => $element) {
@@ -257,14 +248,14 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns the first matching element which passes the predicate function.
      *
-     * @param callable(T, TKey=):bool $predicate
+     * @param \Closure(T, TKey): bool $predicate
      *
      * @return T|null
      */
-    public function find(callable $predicate): mixed
+    public function find(\Closure $predicate): mixed
     {
-        foreach ($this->elements as $element) {
-            if ($predicate($element)) {
+        foreach ($this->elements as $key => $element) {
+            if ($predicate($element, $key)) {
                 return $element;
             }
         }
@@ -275,27 +266,26 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns a new collection containing all elements which pass the predicate function.
      *
-     * @param ?callable(T, TKey=):bool $predicate
+     * @param ?\Closure(T, TKey): bool $predicate
      *
      * @return Collection<TKey,T>
-     *
-     * @psalm-suppress PossiblyNullArgument
      */
-    public function filter(callable $predicate = null): self
+    public function filter(?\Closure $predicate = null): self
     {
-        return new self(array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH));
+        $result = array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH);
+        return new self($result);
     }
 
     /**
      * Returns a new collection whose values are mapped by the callback function.
      *
-     * @param callable(T, TKey=):U $callback
+     * @param \Closure(T, TKey): U $callback
      *
      * @return Collection<TKey, U>
      *
      * @template U
      */
-    public function map(callable $callback): self
+    public function map(\Closure $callback): self
     {
         $mapped = [];
 
@@ -309,9 +299,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Reduces the collection a single value.
      *
-     * @param callable(mixed, T):mixed $callback
+     * @param \Closure(mixed, T): mixed $callback
      */
-    public function reduce(callable $callback, mixed $initial = null): mixed
+    public function reduce(\Closure $callback, mixed $initial = null): mixed
     {
         return array_reduce($this->elements, $callback, $initial);
     }
@@ -319,9 +309,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns whether at least one element passes the predicate function.
      *
-     * @param callable(T, TKey=):bool $predicate
+     * @param \Closure(T, TKey): bool $predicate
      */
-    public function some(callable $predicate): bool
+    public function some(\Closure $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
             if ($predicate($value, $key)) {
@@ -335,9 +325,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns whether all elements pass the predicate function.
      *
-     * @param callable(T, TKey=):bool $predicate
+     * @param \Closure(T, TKey): bool $predicate
      */
-    public function every(callable $predicate): bool
+    public function every(\Closure $predicate): bool
     {
         foreach ($this->elements as $key => $value) {
             if (!$predicate($value, $key)) {
@@ -374,11 +364,11 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      * @see https://www.php.net/manual/en/function.asort.php
      * @see https://www.php.net/manual/en/function.uasort.php
      *
-     * @param callable(T,T):int $comparator
+     * @param \Closure(T,T): int $comparator
      *
      * @return Collection<TKey,T>
      */
-    public function usort(callable $comparator): self
+    public function usort(\Closure $comparator): self
     {
         $copy = $this->toArray();
 
@@ -444,16 +434,12 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
-     * @template U
-     *
-     * @return Collection<TKey, U>
-     *
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedArrayAccess
+     * @return Collection<TKey, mixed>
      */
     public function pluck(string $field): self
     {
         $plucked = [];
+
         foreach ($this->elements as $key => $value) {
             if (\is_array($value) || $value instanceof \ArrayAccess) {
                 $newValue = $value[$field];
@@ -526,9 +512,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return new self(array_unique($this->elements));
     }
 
-    /**
-     * @psalm-suppress MixedArgumentTypeCoercion
-     */
     public function implode(string $separator = ','): string
     {
         return implode($separator, array_values($this->elements));
@@ -541,7 +524,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
     public function flip(): self
     {
-        /** @psalm-suppress PossiblyInvalidArgument */
         return new self(array_flip($this->elements));
     }
 
@@ -558,10 +540,10 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             function (mixed $a) use (&$result): void {
                 \assert(\is_array($result));
                 $result[] = $a;
-            }
+            },
         );
 
-        /** @var array<int, T> $result */
+        /* @var array<int, T> $result */
 
         return new self($result);
     }
@@ -576,36 +558,21 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return $this->elements;
     }
 
-    /**
-     * @return \Traversable<TKey,T>
-     */
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->elements);
     }
 
-    /**
-     * @param TKey $offset
-     */
     public function offsetExists($offset): bool
     {
         return $this->containsKey($offset);
     }
 
-    /**
-     * @param TKey $offset
-     *
-     * @return T
-     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
 
-    /**
-     * @param TKey|null $offset
-     * @param T         $value
-     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (!isset($offset)) {
@@ -614,17 +581,18 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             return;
         }
 
+        /** @var TKey $offset */
         $this->set($offset, $value);
     }
 
-    /**
-     * @param TKey $offset
-     */
     public function offsetUnset(mixed $offset): void
     {
         $this->remove($offset);
     }
 
+    /**
+     * @return array<TKey,T>
+     */
     public function jsonSerialize(): array
     {
         return $this->elements;
