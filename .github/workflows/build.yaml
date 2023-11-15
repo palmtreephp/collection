@@ -39,10 +39,10 @@ jobs:
 
       - name: PHP-CS-Fixer
         run: php vendor/bin/php-cs-fixer fix -vvv --dry-run --using-cache=no --format=checkstyle | cs2pr
-        if: matrix.php-versions == 8.1
+        if: matrix.php-versions == 8.2
 
-      - name: Psalm
-        run: php vendor/bin/psalm --no-cache --show-info=false --stats --output-format=github --threads=$(nproc)
+      - name: Static Analysis
+        run: php vendor/bin/phpstan analyse
 
-      - name: PHPUnit
+      - name: Tests
         run: php vendor/bin/phpunit -v --do-not-cache-result
