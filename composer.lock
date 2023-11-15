@@ -25,7 +25,7 @@
                 "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.a3",
+                "phpstan/phpstan": "^1.3",
                 "phpstan/phpstan-strict-rules": "^1.1",
                 "symfony/phpunit-bridge": "^5"
             },
@@ -505,16 +505,16 @@
         },
         {
             "name": "palmtree/php-cs-fixer-config",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/palmtreephp/php-cs-fixer-config.git",
-                "reference": "cd69d1f18d2197161b24ec13c625f0d93b34a484"
+                "reference": "d5f6f0d4bfd9046515334f1854e165e43a84e19f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/palmtreephp/php-cs-fixer-config/zipball/cd69d1f18d2197161b24ec13c625f0d93b34a484",
-                "reference": "cd69d1f18d2197161b24ec13c625f0d93b34a484",
+                "url": "https://api.github.com/repos/palmtreephp/php-cs-fixer-config/zipball/d5f6f0d4bfd9046515334f1854e165e43a84e19f",
+                "reference": "d5f6f0d4bfd9046515334f1854e165e43a84e19f",
                 "shasum": ""
             },
             "require": {
@@ -541,9 +541,9 @@
             "description": "PHP CS Fixer config for Palmtree components",
             "support": {
                 "issues": "https://github.com/palmtreephp/php-cs-fixer-config/issues",
-                "source": "https://github.com/palmtreephp/php-cs-fixer-config/tree/v2.1.0"
+                "source": "https://github.com/palmtreephp/php-cs-fixer-config/tree/v2.1.1"
             },
-            "time": "2023-11-15T10:41:07+00:00"
+            "time": "2023-11-15T14:30:19+00:00"
         },
         {
             "name": "phar-io/manifest",

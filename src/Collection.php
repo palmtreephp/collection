@@ -57,7 +57,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      * Sets the given element to the given key in the collection.
      *
      * @param TKey $key
-     * @param T $element
+     * @param T    $element
      *
      * @return Collection<TKey, T>
      */
@@ -273,6 +273,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     public function filter(?\Closure $predicate = null): self
     {
         $result = array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH);
+
         return new self($result);
     }
 
