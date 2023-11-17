@@ -4,8 +4,3 @@ parameters:
     paths:
         - src/
         - functions.php
-    ignoreErrors:
-        -
-            # See https://github.com/phpstan/phpstan-src/pull/2740
-            message: '#^Parameter \#2 \$callback of function array_filter expects callable\(T, TKey\)\: mixed, \(Closure\(T, TKey\)\: bool\)\|null given\.$#'
-            path: src/Collection.php
