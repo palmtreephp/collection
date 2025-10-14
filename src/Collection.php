@@ -569,11 +569,17 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return $this->containsKey($offset);
     }
 
+    /**
+     * @return T
+     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
 
+    /**
+     * @param T $value
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (!isset($offset)) {
