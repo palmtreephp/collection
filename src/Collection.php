@@ -539,7 +539,6 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             $this->elements,
             /** @param T $a */
             function (mixed $a) use (&$result): void {
-                \assert(\is_array($result));
                 $result[] = $a;
             },
         );
