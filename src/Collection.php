@@ -419,11 +419,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function isList(): bool
     {
-        if (\PHP_VERSION_ID >= 80100) {
-            return array_is_list($this->elements);
-        }
-
-        return $this->isEmpty() || $this->elements === array_values($this->elements);
+        return array_is_list($this->elements);
     }
 
     /**
