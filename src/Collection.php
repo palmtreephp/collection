@@ -230,6 +230,8 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      * Applies the given callback function to each element in the collection.
      *
      * @param \Closure(T, TKey, int): (bool|void) $callback
+     *
+     * @return $this
      */
     public function each(\Closure $callback): self
     {
@@ -433,17 +435,18 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return Collection<TKey, mixed>
      */
-    public function pluck(string $field): self
+    public function pluck(string|int $field): self
     {
         $plucked = [];
 
         foreach ($this->elements as $key => $value) {
             if (\is_array($value) || $value instanceof \ArrayAccess) {
+                /** @var \ArrayAccess<array-key, mixed>|array<array-key, mixed> $value */
                 $newValue = $value[$field];
             } elseif (\is_object($value)) {
                 $newValue = $value->$field;
             } else {
-                throw new \LogicException('Collection values must be either arrays or objects');
+                throw new \LogicException('Collection values must be either arrays or objects when using pluck()');
             }
 
             $plucked[$key] = $newValue;
@@ -514,11 +517,17 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return implode($separator, array_values($this->elements));
     }
 
+    /**
+     * @return self<TKey, T>
+     */
     public function reverse(bool $preserveKeys = false): self
     {
         return new self(array_reverse($this->elements, $preserveKeys));
     }
 
+    /**
+     * @return self<array-key, TKey>
+     */
     public function flip(): self
     {
         return new self(array_flip($this->elements));
