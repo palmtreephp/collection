@@ -563,6 +563,16 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return $this->elements;
     }
 
+    /**
+     * Returns the collection as a native array with sequential numeric keys.
+     *
+     * @return list<T>
+     */
+    public function toList(): array
+    {
+        return array_values($this->elements);
+    }
+
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->elements);
