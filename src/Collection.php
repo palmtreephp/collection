@@ -258,6 +258,18 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
+     * Returns the key of the first element which passes the predicate function.
+     *
+     * @param \Closure(T, TKey): bool $predicate
+     *
+     * @return TKey|null
+     */
+    public function findKey(\Closure $predicate): int|string|null
+    {
+        return array_find_key($this->elements, $predicate);
+    }
+
+    /**
      * Returns a new collection containing all elements which pass the predicate function.
      *
      * @param ?\Closure(T, TKey): bool $predicate

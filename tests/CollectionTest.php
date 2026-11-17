@@ -241,6 +241,14 @@ class CollectionTest extends TestCase
         $this->assertNull($collection->find(static fn ($o) => $o->foo === 'qux'));
     }
 
+    public function testFindKey(): void
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+
+        $this->assertSame('b', $collection->findKey(static fn (int $v) => $v > 1));
+        $this->assertNull($collection->findKey(static fn (int $v) => $v > 3));
+    }
+
     public function testFilter(): void
     {
         $obj1 = new \stdClass();
