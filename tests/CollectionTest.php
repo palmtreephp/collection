@@ -620,6 +620,25 @@ class CollectionTest extends TestCase
         $this->assertSame('foo bar baz', $collection->implode(' '));
     }
 
+    public function testImplodeThrowsOnNonStringableValue(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        (new Collection([new \stdClass()]))->implode();
+    }
+
+    public function testImplodeWithStringableAndNull(): void
+    {
+        $stringable = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+        };
+
+        $this->assertSame('foo,,1', (new Collection([$stringable, null, 1]))->implode());
+    }
+
     public function testReverse(): void
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
@@ -635,6 +654,13 @@ class CollectionTest extends TestCase
         $collection = new Collection([1 => 'foo', 2 => 'bar', 3 => 'baz']);
 
         $this->assertSame(['foo' => 1, 'bar' => 2, 'baz' => 3], $collection->flip()->toArray());
+    }
+
+    public function testFlipThrowsOnNonKeyValue(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        (void)(new Collection([1.5]))->flip();
     }
 
     public function testFlatten(): void

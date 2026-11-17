@@ -544,9 +544,24 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return new static($result);
     }
 
+    /**
+     * Joins the elements into a string.
+     *
+     * @throws \LogicException if an element cannot be converted to a string
+     */
     public function implode(string $separator = ','): string
     {
-        return implode($separator, array_values($this->elements));
+        $strings = [];
+
+        foreach ($this->elements as $element) {
+            if ($element !== null && !\is_scalar($element) && !$element instanceof \Stringable) {
+                throw new \LogicException('Collection values must be scalars, null or Stringable when using implode()');
+            }
+
+            $strings[] = (string)$element;
+        }
+
+        return implode($separator, $strings);
     }
 
     /**
@@ -559,12 +574,26 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
+     * Returns a new collection with keys and values swapped.
+     *
      * @return self<array-key, TKey>
+     *
+     * @throws \LogicException if an element is not an int or string
      */
     #[\NoDiscard]
     public function flip(): self
     {
-        return new static(array_flip($this->elements));
+        $flipped = [];
+
+        foreach ($this->elements as $key => $element) {
+            if (!\is_int($element) && !\is_string($element)) {
+                throw new \LogicException('Collection values must be ints or strings when using flip()');
+            }
+
+            $flipped[$element] = $key;
+        }
+
+        return new static($flipped);
     }
 
     /**
