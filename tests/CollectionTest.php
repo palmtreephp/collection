@@ -475,7 +475,7 @@ class CollectionTest extends TestCase
         $collection = new Collection(['foo', 'bar', 'baz']);
 
         $this->expectException('LogicException');
-        $collection->pluck('id');
+        (void)$collection->pluck('id');
     }
 
     public function testSlice(): void
@@ -637,6 +637,25 @@ class CollectionTest extends TestCase
 
         $this->assertSame([$obj1], (new Collection([$obj1, $obj2]))->unique()->toArray());
         $this->assertSame([$obj1, $obj2], (new Collection([$obj1, $obj2]))->unique(true)->toArray());
+    }
+
+    public function testDiscardingTransformResultWarns(): void
+    {
+        $messages = [];
+        set_error_handler(static function (int $errno, string $message) use (&$messages): bool {
+            $messages[] = $message;
+
+            return true;
+        });
+
+        try {
+            (new Collection([1, 2]))->filter();
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertCount(1, $messages);
+        $this->assertStringContainsString('filter()', $messages[0]);
     }
 
     public function testMethodsReturnSubclassInstances(): void

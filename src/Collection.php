@@ -137,6 +137,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<int, TKey>
      */
+    #[\NoDiscard]
     public function keys(): self
     {
         return new static(array_keys($this->elements));
@@ -147,6 +148,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<int, T>
      */
+    #[\NoDiscard]
     public function values(): self
     {
         return new static(array_values($this->elements));
@@ -264,6 +266,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey,T>
      */
+    #[\NoDiscard]
     public function filter(?\Closure $predicate = null): self
     {
         $result = array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH);
@@ -280,6 +283,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @template U
      */
+    #[\NoDiscard]
     public function map(\Closure $callback): self
     {
         $mapped = [];
@@ -331,6 +335,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey,T>
      */
+    #[\NoDiscard]
     public function sort(int $flags = \SORT_REGULAR): self
     {
         $copy = $this->toArray();
@@ -351,6 +356,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey,T>
      */
+    #[\NoDiscard]
     public function usort(\Closure $comparator): self
     {
         $copy = $this->toArray();
@@ -367,6 +373,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey,T>
      */
+    #[\NoDiscard]
     public function ksort(int $flags = \SORT_REGULAR): self
     {
         $copy = $this->toArray();
@@ -415,6 +422,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return Collection<TKey, mixed>
      */
+    #[\NoDiscard]
     public function pluck(string|int $field): self
     {
         $plucked = [];
@@ -438,6 +446,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return Collection<TKey, T>
      */
+    #[\NoDiscard]
     public function slice(int $offset, ?int $length = null, bool $preserveKeys = false): self
     {
         return new static(\array_slice($this->elements, $offset, $length, $preserveKeys));
@@ -451,6 +460,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey, T>
      */
+    #[\NoDiscard]
     public function diff(iterable ...$iterables): self
     {
         $others = self::mergeValues($iterables);
@@ -466,6 +476,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey, T>
      */
+    #[\NoDiscard]
     public function intersect(iterable ...$iterables): self
     {
         $others = array_map(static fn (iterable $iterable): array => self::mergeValues([$iterable]), $iterables);
@@ -487,6 +498,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @return Collection<TKey, T>
      */
+    #[\NoDiscard]
     public function unique(bool $strict = false): self
     {
         $result = [];
@@ -507,6 +519,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return self<TKey, T>
      */
+    #[\NoDiscard]
     public function reverse(bool $preserveKeys = false): self
     {
         return new static(array_reverse($this->elements, $preserveKeys));
@@ -515,6 +528,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return self<array-key, TKey>
      */
+    #[\NoDiscard]
     public function flip(): self
     {
         return new static(array_flip($this->elements));
@@ -523,6 +537,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return Collection<int, T>
      */
+    #[\NoDiscard]
     public function flatten(): self
     {
         $result = [];
