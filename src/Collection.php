@@ -545,22 +545,15 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
-     * @return Collection<int, T>
+     * Returns a new list of every leaf value, recursing into nested arrays and collections.
+     *
+     * @return Collection<int, mixed>
      */
     #[\NoDiscard]
     public function flatten(): self
     {
         $result = [];
-
-        array_walk_recursive(
-            $this->elements,
-            /** @param T $a */
-            static function (mixed $a) use (&$result): void {
-                $result[] = $a;
-            },
-        );
-
-        /* @var array<int, T> $result */
+        self::flattenInto($this->elements, $result);
 
         return new static($result);
     }
@@ -636,6 +629,21 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     private static function isKey(mixed $offset): bool
     {
         return \is_int($offset) || \is_string($offset);
+    }
+
+    /**
+     * @param iterable<mixed> $values
+     * @param list<mixed>     $result
+     */
+    private static function flattenInto(iterable $values, array &$result): void
+    {
+        foreach ($values as $value) {
+            if (\is_array($value) || $value instanceof self) {
+                self::flattenInto($value, $result);
+            } else {
+                $result[] = $value;
+            }
+        }
     }
 
     /**

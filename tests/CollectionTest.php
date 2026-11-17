@@ -587,6 +587,13 @@ class CollectionTest extends TestCase
         $this->assertSame([1, 2, 3, 4, 5, 6], $collection->flatten()->toArray());
     }
 
+    public function testFlattenNestedCollections(): void
+    {
+        $collection = new Collection([1, new Collection([2, [3, new Collection(['a' => 4])]])]);
+
+        $this->assertSame([1, 2, 3, 4], $collection->flatten()->toArray());
+    }
+
     public function testGetThrowsOnMissingKey(): void
     {
         $this->expectException(\OutOfBoundsException::class);
