@@ -8,7 +8,7 @@ Immutable collections which provide commonly used functionality missing from arr
 
 ## Requirements
 
-* PHP >= 8.1
+* PHP >= 8.3
 
 ## Installation
 
