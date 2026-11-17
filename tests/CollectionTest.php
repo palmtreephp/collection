@@ -86,9 +86,30 @@ class CollectionTest extends TestCase
         $this->assertFalse($collection->contains($obj1));
         $this->assertTrue($collection->contains($obj2));
         $this->assertSame($removed, $obj1);
+    }
 
-        $removed = $collection->remove('noop');
-        $this->assertNull($removed);
+    public function testRemoveThrowsOnMissingKey(): void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+
+        (new Collection(['foo' => 'bar']))->remove('baz');
+    }
+
+    public function testRemoveReturnsNullValue(): void
+    {
+        $collection = new Collection(['foo' => null]);
+
+        $this->assertNull($collection->remove('foo'));
+        $this->assertFalse($collection->containsKey('foo'));
+    }
+
+    public function testArrayAccessUnsetMissingKeyIsNoop(): void
+    {
+        $collection = new Collection(['foo' => 'bar']);
+
+        unset($collection['baz']);
+
+        $this->assertSame(['foo' => 'bar'], $collection->toArray());
     }
 
     public function testKeys(): void

@@ -99,15 +99,13 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      *
      * @param TKey $key
      *
-     * @return T|null
+     * @return T
+     *
+     * @throws \OutOfBoundsException if the key does not exist
      */
-    public function remove(int|string $key)
+    public function remove(int|string $key): mixed
     {
-        if (!$this->containsKey($key)) {
-            return null;
-        }
-
-        $removed = $this->elements[$key];
+        $removed = $this->get($key);
 
         unset($this->elements[$key]);
 
@@ -616,7 +614,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     #[\Override]
     public function offsetUnset(mixed $offset): void
     {
-        if (self::isKey($offset)) {
+        if (self::isKey($offset) && $this->containsKey($offset)) {
             $this->remove($offset);
         }
     }
