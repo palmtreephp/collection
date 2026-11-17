@@ -287,6 +287,13 @@ class CollectionTest extends TestCase
         $this->assertSame(60, $collection->reduce(static fn ($val, $acc) => $val + $acc));
     }
 
+    public function testReducePassesKey(): void
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2]);
+
+        $this->assertSame('a1b2', $collection->reduce(static fn (string $carry, int $value, string $key) => $carry . $key . $value, ''));
+    }
+
     public function testContains(): void
     {
         $obj1 = new \stdClass();

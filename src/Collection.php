@@ -294,13 +294,24 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
-     * Reduces the collection a single value.
+     * Reduces the collection to a single value.
      *
-     * @param \Closure(mixed, T): mixed $callback
+     * @template TCarry
+     *
+     * @param \Closure(TCarry, T, TKey): TCarry $callback
+     * @param TCarry                            $initial
+     *
+     * @return TCarry
      */
     public function reduce(\Closure $callback, mixed $initial = null): mixed
     {
-        return array_reduce($this->elements, $callback, $initial);
+        $carry = $initial;
+
+        foreach ($this->elements as $key => $element) {
+            $carry = $callback($carry, $element, $key);
+        }
+
+        return $carry;
     }
 
     /**
