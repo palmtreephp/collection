@@ -430,7 +430,12 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
+     * Returns a new collection of the given field's value from each element.
+     *
      * @return Collection<TKey, mixed>
+     *
+     * @throws \LogicException       if an element is not an array or object
+     * @throws \OutOfBoundsException if an element does not have the field
      */
     #[\NoDiscard]
     public function pluck(string|int $field): self
@@ -438,16 +443,22 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         $plucked = [];
 
         foreach ($this->elements as $key => $value) {
-            if (\is_array($value) || $value instanceof \ArrayAccess) {
-                /** @var \ArrayAccess<array-key, mixed>|array<array-key, mixed> $value */
-                $newValue = $value[$field];
+            if (\is_array($value)) {
+                $exists = \array_key_exists($field, $value);
+                $plucked[$key] = $value[$field] ?? null;
+            } elseif ($value instanceof \ArrayAccess) {
+                $exists = $value->offsetExists($field);
+                $plucked[$key] = $exists ? $value->offsetGet($field) : null;
             } elseif (\is_object($value)) {
-                $newValue = $value->$field;
+                $exists = isset($value->$field) || property_exists($value, (string)$field);
+                $plucked[$key] = $exists ? $value->$field : null;
             } else {
                 throw new \LogicException('Collection values must be either arrays or objects when using pluck()');
             }
 
-            $plucked[$key] = $newValue;
+            if (!$exists) {
+                throw new \OutOfBoundsException(\sprintf('Element with key "%s" has no field "%s"', $key, $field));
+            }
         }
 
         return new static($plucked);

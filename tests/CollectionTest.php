@@ -506,6 +506,32 @@ class CollectionTest extends TestCase
         (void)$collection->pluck('id');
     }
 
+    public function testPluckThrowsOnMissingArrayKey(): void
+    {
+        $collection = new Collection([['id' => 1], ['name' => 'foo']]);
+
+        $this->expectException(\OutOfBoundsException::class);
+        (void)$collection->pluck('id');
+    }
+
+    public function testPluckThrowsOnMissingProperty(): void
+    {
+        $collection = new Collection([new \stdClass()]);
+
+        $this->expectException(\OutOfBoundsException::class);
+        (void)$collection->pluck('id');
+    }
+
+    public function testPluckReturnsNullValues(): void
+    {
+        $obj = new \stdClass();
+        $obj->id = null;
+
+        $collection = new Collection([['id' => null], $obj, new Collection(['id' => null])]);
+
+        $this->assertSame([null, null, null], $collection->pluck('id')->toArray());
+    }
+
     public function testSlice(): void
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
