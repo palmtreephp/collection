@@ -39,7 +39,7 @@ jobs:
 
       - name: PHP-CS-Fixer
         run: php vendor/bin/php-cs-fixer fix -vvv --dry-run --using-cache=no --format=checkstyle | cs2pr
-        if: matrix.php-versions == 8.4
+        if: matrix.php-versions == 8.3
 
       - name: Static Analysis
         run: php vendor/bin/phpstan analyse
