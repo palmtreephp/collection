@@ -176,7 +176,7 @@ class CollectionTest extends TestCase
         /** @var Collection<int, int> $newCollection */
         $newCollection = new Collection();
 
-        $collection->each(fn ($value) => $newCollection->add($value * 2));
+        $collection->each(static fn ($value) => $newCollection->add($value * 2));
 
         $this->assertSame([4, 8, 16, 32], $newCollection->toArray());
 
@@ -193,7 +193,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([2, 4, 8, 16]);
         $newCollection = new Collection();
-        $collection->each(function ($value) use ($newCollection) {
+        $collection->each(static function ($value) use ($newCollection) {
             if ($value === 8) {
                 return false;
             }
@@ -216,8 +216,8 @@ class CollectionTest extends TestCase
 
         $collection = new Collection([$obj1, $obj2, $obj3]);
 
-        $this->assertSame($obj2, $collection->find(fn ($o) => $o->foo === 'bar'));
-        $this->assertNull($collection->find(fn ($o) => $o->foo === 'qux'));
+        $this->assertSame($obj2, $collection->find(static fn ($o) => $o->foo === 'bar'));
+        $this->assertNull($collection->find(static fn ($o) => $o->foo === 'qux'));
     }
 
     public function testFilter(): void
@@ -230,7 +230,7 @@ class CollectionTest extends TestCase
         $obj2->foo = 'bar';
         $obj3->foo = 'bar';
 
-        $collection = (new Collection([$obj1, $obj2, $obj3]))->filter(fn ($o) => $o->foo === 'bar');
+        $collection = (new Collection([$obj1, $obj2, $obj3]))->filter(static fn ($o) => $o->foo === 'bar');
 
         $this->assertFalse($collection->contains($obj1));
         $this->assertTrue($collection->contains($obj2));
@@ -254,7 +254,7 @@ class CollectionTest extends TestCase
         $obj2->foo = 'bar';
         $obj3->foo = 'bar';
 
-        $collection = (new Collection([$obj1, $obj2, $obj3]))->map(fn ($o) => $o->foo);
+        $collection = (new Collection([$obj1, $obj2, $obj3]))->map(static fn ($o) => $o->foo);
 
         $this->assertSame(['noop', 'bar', 'bar'], $collection->toArray());
     }
@@ -263,7 +263,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([10, 20, 30]);
 
-        $this->assertSame(60, $collection->reduce(fn ($val, $acc) => $val + $acc));
+        $this->assertSame(60, $collection->reduce(static fn ($val, $acc) => $val + $acc));
     }
 
     public function testContains(): void
@@ -316,16 +316,16 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
 
-        $this->assertTrue($collection->some(fn ($v) => $v === 'bar'));
-        $this->assertFalse($collection->some(fn ($v) => $v === 'qux'));
+        $this->assertTrue($collection->some(static fn ($v) => $v === 'bar'));
+        $this->assertFalse($collection->some(static fn ($v) => $v === 'qux'));
     }
 
     public function testEvery(): void
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
 
-        $this->assertTrue($collection->every(fn ($v) => $v !== 'qux'));
-        $this->assertFalse($collection->every(fn ($v) => $v === 'qux'));
+        $this->assertTrue($collection->every(static fn ($v) => $v !== 'qux'));
+        $this->assertFalse($collection->every(static fn ($v) => $v === 'qux'));
     }
 
     public function testSort(): void
@@ -352,7 +352,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([3, 1, 2, 9, 7]);
 
-        $sorted = $collection->usort(fn ($a, $b) => $b <=> $a)->values();
+        $sorted = $collection->usort(static fn ($a, $b) => $b <=> $a)->values();
 
         $this->assertSame([9, 7, 3, 2, 1], $sorted->toArray());
     }
@@ -361,7 +361,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(['foo' => 3, 'bar' => 1, 'baz' => 2]);
 
-        $sorted = $collection->usort(fn ($a, $b) => $a <=> $b);
+        $sorted = $collection->usort(static fn ($a, $b) => $a <=> $b);
 
         $this->assertSame(['bar' => 1, 'baz' => 2, 'foo' => 3], $sorted->toArray());
     }
@@ -644,7 +644,7 @@ class CollectionTest extends TestCase
         $collection = new SubCollection(['foo', 'bar']);
 
         $this->assertInstanceOf(SubCollection::class, $collection->filter());
-        $this->assertInstanceOf(SubCollection::class, $collection->map(fn ($v) => $v));
+        $this->assertInstanceOf(SubCollection::class, $collection->map(static fn ($v) => $v));
         $this->assertInstanceOf(SubCollection::class, SubCollection::create());
     }
 }

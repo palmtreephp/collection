@@ -485,7 +485,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     {
         $others = self::mergeValues($iterables);
 
-        return $this->filter(fn (mixed $element): bool => !\in_array($element, $others, true));
+        return $this->filter(static fn (mixed $element): bool => !\in_array($element, $others, true));
     }
 
     /**
@@ -498,9 +498,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function intersect(iterable ...$iterables): self
     {
-        $others = array_map(fn (iterable $iterable): array => self::mergeValues([$iterable]), $iterables);
+        $others = array_map(static fn (iterable $iterable): array => self::mergeValues([$iterable]), $iterables);
 
-        return $this->filter(function (mixed $element) use ($others): bool {
+        return $this->filter(static function (mixed $element) use ($others): bool {
             foreach ($others as $values) {
                 if (!\in_array($element, $values, true)) {
                     return false;
@@ -560,7 +560,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         array_walk_recursive(
             $this->elements,
             /** @param T $a */
-            function (mixed $a) use (&$result): void {
+            static function (mixed $a) use (&$result): void {
                 $result[] = $a;
             },
         );
