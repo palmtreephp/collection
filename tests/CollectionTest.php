@@ -592,6 +592,13 @@ class CollectionTest extends TestCase
         $this->assertSame([1 => 'foo'], $collection->toArray());
     }
 
+    public function testSliceWithoutLength(): void
+    {
+        $collection = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertSame(['bar', 'baz'], $collection->slice(1)->toArray());
+    }
+
     public function testDiffWithObjectsAndArrays(): void
     {
         $obj1 = new \stdClass();

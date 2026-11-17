@@ -466,7 +466,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return Collection<TKey, T>
      */
-    public function slice(int $offset, ?int $length, bool $preserveKeys = false): self
+    public function slice(int $offset, ?int $length = null, bool $preserveKeys = false): self
     {
         return new static(\array_slice($this->elements, $offset, $length, $preserveKeys));
     }
