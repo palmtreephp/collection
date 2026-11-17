@@ -559,6 +559,27 @@ class CollectionTest extends TestCase
         $this->assertSame([1, 2, 3, 4, 5, 6], $collection->flatten()->toArray());
     }
 
+    public function testGetThrowsOnMissingKey(): void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+
+        (new Collection(['foo' => 'bar']))->get('baz');
+    }
+
+    public function testArrayAccessGetThrowsOnMissingKey(): void
+    {
+        $collection = new Collection();
+
+        $this->expectException(\OutOfBoundsException::class);
+
+        $collection['foo'];
+    }
+
+    public function testGetReturnsNullValue(): void
+    {
+        $this->assertNull((new Collection(['foo' => null]))->get('foo'));
+    }
+
     public function testDiffWithObjectsAndArrays(): void
     {
         $obj1 = new \stdClass();

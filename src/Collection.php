@@ -47,9 +47,15 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      * @param TKey $key
      *
      * @return T
+     *
+     * @throws \OutOfBoundsException if the key does not exist
      */
     public function get(int|string $key): mixed
     {
+        if (!$this->containsKey($key)) {
+            throw new \OutOfBoundsException(\sprintf('Key "%s" does not exist in the collection', $key));
+        }
+
         return $this->elements[$key];
     }
 
