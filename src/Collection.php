@@ -179,13 +179,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function first(): mixed
     {
-        $firstKey = $this->firstKey();
-
-        if ($firstKey === null) {
-            return null;
-        }
-
-        return $this->elements[$firstKey];
+        return array_first($this->elements);
     }
 
     /**
@@ -195,13 +189,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function last(): mixed
     {
-        $lastKey = $this->lastKey();
-
-        if ($lastKey === null) {
-            return null;
-        }
-
-        return $this->elements[$lastKey];
+        return array_last($this->elements);
     }
 
     /**
@@ -266,13 +254,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function find(\Closure $predicate): mixed
     {
-        foreach ($this->elements as $key => $element) {
-            if ($predicate($element, $key)) {
-                return $element;
-            }
-        }
-
-        return null;
+        return array_find($this->elements, $predicate);
     }
 
     /**
@@ -326,13 +308,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function some(\Closure $predicate): bool
     {
-        foreach ($this->elements as $key => $value) {
-            if ($predicate($value, $key)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->elements, $predicate);
     }
 
     /**
@@ -342,13 +318,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function every(\Closure $predicate): bool
     {
-        foreach ($this->elements as $key => $value) {
-            if (!$predicate($value, $key)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($this->elements, $predicate);
     }
 
     /**
