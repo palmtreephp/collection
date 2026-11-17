@@ -10,6 +10,8 @@ namespace Palmtree\Collection;
  *
  * @template-implements \IteratorAggregate<TKey,T>
  * @template-implements \ArrayAccess<TKey,T>
+ *
+ * @phpstan-consistent-constructor
  */
 class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonSerializable
 {
@@ -38,7 +40,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public static function create(iterable $elements = []): self
     {
-        return new self($elements);
+        return new static($elements);
     }
 
     /**
@@ -135,7 +137,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function keys(): self
     {
-        return new self(array_keys($this->elements));
+        return new static(array_keys($this->elements));
     }
 
     /**
@@ -145,7 +147,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function values(): self
     {
-        return new self(array_values($this->elements));
+        return new static(array_values($this->elements));
     }
 
     /**
@@ -282,7 +284,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     {
         $result = array_filter($this->elements, $predicate, \ARRAY_FILTER_USE_BOTH);
 
-        return new self($result);
+        return new static($result);
     }
 
     /**
@@ -302,7 +304,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             $mapped[$key] = $callback($element, $key);
         }
 
-        return new self($mapped);
+        return new static($mapped);
     }
 
     /**
@@ -363,7 +365,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
         asort($copy, $flags);
 
-        return new self($copy);
+        return new static($copy);
     }
 
     /**
@@ -383,7 +385,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
         uasort($copy, $comparator);
 
-        return new self($copy);
+        return new static($copy);
     }
 
     /**
@@ -399,7 +401,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
         ksort($copy, $flags);
 
-        return new self($copy);
+        return new static($copy);
     }
 
     /**
@@ -458,7 +460,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             $plucked[$key] = $newValue;
         }
 
-        return new self($plucked);
+        return new static($plucked);
     }
 
     /**
@@ -466,7 +468,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function slice(int $offset, ?int $length, bool $preserveKeys = false): self
     {
-        return new self(\array_slice($this->elements, $offset, $length, $preserveKeys));
+        return new static(\array_slice($this->elements, $offset, $length, $preserveKeys));
     }
 
     /**
@@ -522,7 +524,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
             }
         }
 
-        return new self($result);
+        return new static($result);
     }
 
     public function implode(string $separator = ','): string
@@ -535,7 +537,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function reverse(bool $preserveKeys = false): self
     {
-        return new self(array_reverse($this->elements, $preserveKeys));
+        return new static(array_reverse($this->elements, $preserveKeys));
     }
 
     /**
@@ -543,7 +545,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
      */
     public function flip(): self
     {
-        return new self(array_flip($this->elements));
+        return new static(array_flip($this->elements));
     }
 
     /**
@@ -563,7 +565,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
         /* @var array<int, T> $result */
 
-        return new self($result);
+        return new static($result);
     }
 
     /**

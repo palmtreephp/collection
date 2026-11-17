@@ -631,4 +631,23 @@ class CollectionTest extends TestCase
         $this->assertSame([$obj1], (new Collection([$obj1, $obj2]))->unique()->toArray());
         $this->assertSame([$obj1, $obj2], (new Collection([$obj1, $obj2]))->unique(true)->toArray());
     }
+
+    public function testMethodsReturnSubclassInstances(): void
+    {
+        $collection = new SubCollection(['foo', 'bar']);
+
+        $this->assertInstanceOf(SubCollection::class, $collection->filter());
+        $this->assertInstanceOf(SubCollection::class, $collection->map(fn ($v) => $v));
+        $this->assertInstanceOf(SubCollection::class, SubCollection::create());
+    }
+}
+
+/**
+ * @template TKey of array-key
+ * @template T
+ *
+ * @extends Collection<TKey, T>
+ */
+class SubCollection extends Collection
+{
 }
