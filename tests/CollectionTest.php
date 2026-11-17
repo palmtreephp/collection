@@ -558,4 +558,44 @@ class CollectionTest extends TestCase
         $collection = new Collection([1, 2, [3, 4, [5, 6]]]);
         $this->assertSame([1, 2, 3, 4, 5, 6], $collection->flatten()->toArray());
     }
+
+    public function testDiffWithObjectsAndArrays(): void
+    {
+        $obj1 = new \stdClass();
+        $obj2 = new \stdClass();
+
+        $this->assertSame([1 => $obj2], (new Collection([$obj1, $obj2]))->diff([$obj1])->toArray());
+        $this->assertSame([1 => [2]], (new Collection([[1], [2]]))->diff([[1]])->toArray());
+    }
+
+    public function testDiffIsStrict(): void
+    {
+        $this->assertSame([1 => 1], (new Collection(['1', 1]))->diff(['1'])->toArray());
+    }
+
+    public function testIntersectWithMultipleIterables(): void
+    {
+        $collection = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertSame([1 => 'bar'], $collection->intersect(['bar', 'baz'], new Collection(['foo', 'bar']))->toArray());
+    }
+
+    public function testIntersectWithObjects(): void
+    {
+        $obj1 = new \stdClass();
+        $obj2 = new \stdClass();
+
+        $this->assertSame([1 => $obj2], (new Collection([$obj1, $obj2]))->intersect([$obj2])->toArray());
+    }
+
+    public function testUniqueWithObjects(): void
+    {
+        $obj1 = new \stdClass();
+        $obj1->id = 1;
+        $obj2 = new \stdClass();
+        $obj2->id = 1;
+
+        $this->assertSame([$obj1], (new Collection([$obj1, $obj2]))->unique()->toArray());
+        $this->assertSame([$obj1, $obj2], (new Collection([$obj1, $obj2]))->unique(true)->toArray());
+    }
 }

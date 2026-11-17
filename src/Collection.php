@@ -464,52 +464,59 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     }
 
     /**
+     * Returns a new collection containing the elements not present in any of the given iterables.
+     * Elements are compared strictly (===).
+     *
      * @param iterable<array-key, T> ...$iterables
      *
      * @return Collection<TKey, T>
      */
     public function diff(iterable ...$iterables): self
     {
-        $arrays = [];
-        foreach ($iterables as $iterable) {
-            $arrays[] = [...$iterable];
-        }
+        $others = self::mergeValues($iterables);
 
-        return new self(array_diff($this->elements, ...$arrays));
+        return $this->filter(fn (mixed $element): bool => !\in_array($element, $others, true));
     }
 
     /**
+     * Returns a new collection containing the elements present in every one of the given iterables.
+     * Elements are compared strictly (===).
+     *
      * @param iterable<array-key, T> ...$iterables
      *
      * @return Collection<TKey, T>
      */
     public function intersect(iterable ...$iterables): self
     {
-        $arrays = [];
-        foreach ($iterables as $iterable) {
-            $arrays[] = [...$iterable];
-        }
+        $others = array_map(fn (iterable $iterable): array => self::mergeValues([$iterable]), $iterables);
 
-        return new self(array_intersect($this->elements, ...$arrays));
+        return $this->filter(function (mixed $element) use ($others): bool {
+            foreach ($others as $values) {
+                if (!\in_array($element, $values, true)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
     }
 
     /**
+     * Returns a new collection with duplicate elements removed, keeping the first occurrence of each.
+     * Elements are compared loosely (==) by default, or strictly (===) when $strict is true.
+     *
      * @return Collection<TKey, T>
      */
     public function unique(bool $strict = false): self
     {
-        if ($strict) {
-            $result = [];
-            foreach ($this->elements as $key => $value) {
-                if (!\in_array($value, $result, true)) {
-                    $result[$key] = $value;
-                }
+        $result = [];
+        foreach ($this->elements as $key => $value) {
+            if (!\in_array($value, $result, $strict)) {
+                $result[$key] = $value;
             }
-
-            return new self($result);
         }
 
-        return new self(array_unique($this->elements));
+        return new self($result);
     }
 
     public function implode(string $separator = ','): string
@@ -609,6 +616,23 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     public function offsetUnset(mixed $offset): void
     {
         $this->remove($offset);
+    }
+
+    /**
+     * @param array<iterable<array-key, T>> $iterables
+     *
+     * @return list<T>
+     */
+    private static function mergeValues(array $iterables): array
+    {
+        $values = [];
+        foreach ($iterables as $iterable) {
+            foreach ($iterable as $value) {
+                $values[] = $value;
+            }
+        }
+
+        return $values;
     }
 
     /**
