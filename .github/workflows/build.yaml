@@ -44,4 +44,4 @@ jobs:
         run: php vendor/bin/phpstan analyse
 
       - name: Tests
-        run: php vendor/bin/phpunit -v --do-not-cache-result
+        run: php vendor/bin/phpunit --do-not-record-test-run-history
