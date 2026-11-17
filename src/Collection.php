@@ -414,6 +414,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * Returns the number of elements in the collection.
      */
+    #[\Override]
     public function count(): int
     {
         return \count($this->elements);
@@ -575,11 +576,13 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return array_values($this->elements);
     }
 
+    #[\Override]
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->elements);
     }
 
+    #[\Override]
     public function offsetExists(mixed $offset): bool
     {
         return self::isKey($offset) && $this->containsKey($offset);
@@ -588,6 +591,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return T
      */
+    #[\Override]
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
@@ -596,6 +600,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @param T $value
      */
+    #[\Override]
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if (!isset($offset)) {
@@ -608,6 +613,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         $this->set($offset, $value);
     }
 
+    #[\Override]
     public function offsetUnset(mixed $offset): void
     {
         if (self::isKey($offset)) {
@@ -643,6 +649,7 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     /**
      * @return array<TKey,T>
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return $this->elements;
