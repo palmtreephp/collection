@@ -1,13 +1,16 @@
 name: Build
 
-on: push
+on:
+  push:
+    branches: [ master ]
+  pull_request:
 
 jobs:
   run:
     runs-on: 'ubuntu-24.04'
     strategy:
       matrix:
-        php-versions: [ '8.1', '8.2', '8.3', '8.4' ]
+        php-versions: [ '8.5' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,22 +30,21 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.vars.outputs.composer_cache_dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php${{ matrix.php-versions }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            ${{ runner.os }}-php${{ matrix.php-versions }}-composer-
 
       - name: Lint PHP
-        run: find -L src -type f -name '*.php' -print0 | xargs -0 -n 500 -P $(nproc) php -l
+        run: find -L src tests functions.php -type f -name '*.php' -print0 | xargs -0 -n 500 -P $(nproc) php -l
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi
 
       - name: PHP-CS-Fixer
         run: php vendor/bin/php-cs-fixer fix -vvv --dry-run --using-cache=no --format=checkstyle | cs2pr
-        if: matrix.php-versions == 8.4
 
       - name: Static Analysis
         run: php vendor/bin/phpstan analyse
 
       - name: Tests
-        run: php vendor/bin/phpunit -v --do-not-cache-result
+        run: php vendor/bin/phpunit --do-not-record-test-run-history

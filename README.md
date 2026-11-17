@@ -8,7 +8,7 @@ Immutable collections which provide commonly used functionality missing from arr
 
 ## Requirements
 
-* PHP >= 8.1
+* PHP >= 8.5
 
 ## Installation
 
@@ -50,8 +50,8 @@ use function Palmtree\Collection\c;
 
 $collection = c([1, 9, 5, 3, 7, 10])
     ->sort()
-    ->filter(fn ($i) $i < 10)
-    ->values()
+    ->filter(fn ($i) => $i < 10)
+    ->values();
 
 // returns true as every element remaining in the collection is odd
 $isAllOdd = $collection->every(fn ($i) => $i % 2 !== 0);

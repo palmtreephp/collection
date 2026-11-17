@@ -86,9 +86,30 @@ class CollectionTest extends TestCase
         $this->assertFalse($collection->contains($obj1));
         $this->assertTrue($collection->contains($obj2));
         $this->assertSame($removed, $obj1);
+    }
 
-        $removed = $collection->remove('noop');
-        $this->assertNull($removed);
+    public function testRemoveThrowsOnMissingKey(): void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+
+        (new Collection(['foo' => 'bar']))->remove('baz');
+    }
+
+    public function testRemoveReturnsNullValue(): void
+    {
+        $collection = new Collection(['foo' => null, 'bar' => 'baz']);
+
+        $this->assertNull($collection->remove('foo'));
+        $this->assertFalse($collection->containsKey('foo'));
+    }
+
+    public function testArrayAccessUnsetMissingKeyIsNoop(): void
+    {
+        $collection = new Collection(['foo' => 'bar']);
+
+        unset($collection['baz']);
+
+        $this->assertSame(['foo' => 'bar'], $collection->toArray());
     }
 
     public function testKeys(): void
@@ -176,7 +197,9 @@ class CollectionTest extends TestCase
         /** @var Collection<int, int> $newCollection */
         $newCollection = new Collection();
 
-        $collection->each(fn ($value) => $newCollection->add($value * 2));
+        $collection->each(static function (int $value) use ($newCollection): void {
+            $newCollection->add($value * 2);
+        });
 
         $this->assertSame([4, 8, 16, 32], $newCollection->toArray());
 
@@ -193,7 +216,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([2, 4, 8, 16]);
         $newCollection = new Collection();
-        $collection->each(function ($value) use ($newCollection) {
+        $collection->each(static function ($value) use ($newCollection) {
             if ($value === 8) {
                 return false;
             }
@@ -216,8 +239,16 @@ class CollectionTest extends TestCase
 
         $collection = new Collection([$obj1, $obj2, $obj3]);
 
-        $this->assertSame($obj2, $collection->find(fn ($o) => $o->foo === 'bar'));
-        $this->assertNull($collection->find(fn ($o) => $o->foo === 'qux'));
+        $this->assertSame($obj2, $collection->find(static fn ($o) => $o->foo === 'bar'));
+        $this->assertNull($collection->find(static fn ($o) => $o->foo === 'qux'));
+    }
+
+    public function testFindKey(): void
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+
+        $this->assertSame('b', $collection->findKey(static fn (int $v) => $v > 1));
+        $this->assertNull($collection->findKey(static fn (int $v) => $v > 3));
     }
 
     public function testFilter(): void
@@ -230,7 +261,7 @@ class CollectionTest extends TestCase
         $obj2->foo = 'bar';
         $obj3->foo = 'bar';
 
-        $collection = (new Collection([$obj1, $obj2, $obj3]))->filter(fn ($o) => $o->foo === 'bar');
+        $collection = (new Collection([$obj1, $obj2, $obj3]))->filter(static fn ($o) => $o->foo === 'bar');
 
         $this->assertFalse($collection->contains($obj1));
         $this->assertTrue($collection->contains($obj2));
@@ -254,7 +285,7 @@ class CollectionTest extends TestCase
         $obj2->foo = 'bar';
         $obj3->foo = 'bar';
 
-        $collection = (new Collection([$obj1, $obj2, $obj3]))->map(fn ($o) => $o->foo);
+        $collection = (new Collection([$obj1, $obj2, $obj3]))->map(static fn ($o) => $o->foo);
 
         $this->assertSame(['noop', 'bar', 'bar'], $collection->toArray());
     }
@@ -263,7 +294,14 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([10, 20, 30]);
 
-        $this->assertSame(60, $collection->reduce(fn ($val, $acc) => $val + $acc));
+        $this->assertSame(60, $collection->reduce(static fn ($val, $acc) => $val + $acc));
+    }
+
+    public function testReducePassesKey(): void
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2]);
+
+        $this->assertSame('a1b2', $collection->reduce(static fn (string $carry, int $value, string $key) => $carry . $key . $value, ''));
     }
 
     public function testContains(): void
@@ -316,16 +354,16 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
 
-        $this->assertTrue($collection->some(fn ($v) => $v === 'bar'));
-        $this->assertFalse($collection->some(fn ($v) => $v === 'qux'));
+        $this->assertTrue($collection->some(static fn ($v) => $v === 'bar'));
+        $this->assertFalse($collection->some(static fn ($v) => $v === 'qux'));
     }
 
     public function testEvery(): void
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
 
-        $this->assertTrue($collection->every(fn ($v) => $v !== 'qux'));
-        $this->assertFalse($collection->every(fn ($v) => $v === 'qux'));
+        $this->assertTrue($collection->every(static fn ($v) => $v !== 'qux'));
+        $this->assertFalse($collection->every(static fn ($v) => $v === 'qux'));
     }
 
     public function testSort(): void
@@ -352,7 +390,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([3, 1, 2, 9, 7]);
 
-        $sorted = $collection->usort(fn ($a, $b) => $b <=> $a)->values();
+        $sorted = $collection->usort(static fn ($a, $b) => $b <=> $a)->values();
 
         $this->assertSame([9, 7, 3, 2, 1], $sorted->toArray());
     }
@@ -361,7 +399,7 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(['foo' => 3, 'bar' => 1, 'baz' => 2]);
 
-        $sorted = $collection->usort(fn ($a, $b) => $a <=> $b);
+        $sorted = $collection->usort(static fn ($a, $b) => $a <=> $b);
 
         $this->assertSame(['bar' => 1, 'baz' => 2, 'foo' => 3], $sorted->toArray());
     }
@@ -397,13 +435,14 @@ class CollectionTest extends TestCase
 
     public function testArrayAccess(): void
     {
+        /** @var Collection<string, string> $collection */
         $collection = new Collection();
         $collection['foo'] = 'bar';
         $collection['baz'] = 'qux';
 
         $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], $collection->toArray());
 
-        $this->assertTrue(isset($collection['foo']));
+        $this->assertTrue($collection->containsKey('foo'));
 
         unset($collection['foo']);
 
@@ -411,6 +450,7 @@ class CollectionTest extends TestCase
 
         $this->assertSame('qux', $collection['baz']);
 
+        /** @var Collection<int, string> $collection */
         $collection = new Collection();
         $collection[] = 'foo';
         $collection[] = 'bar';
@@ -423,6 +463,28 @@ class CollectionTest extends TestCase
         $collection = new Collection(['foo', 'bar', 'baz']);
 
         $this->assertSame(['foo', 'bar', 'baz'], iterator_to_array($collection));
+    }
+
+    public function testCreate(): void
+    {
+        $collection = Collection::create(['foo' => 'bar']);
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertSame(['foo' => 'bar'], $collection->toArray());
+    }
+
+    public function testToList(): void
+    {
+        $collection = new Collection(['a' => 'foo', 'b' => 'bar']);
+
+        $this->assertSame(['foo', 'bar'], $collection->toList());
+        $this->assertSame(['a' => 'foo', 'b' => 'bar'], $collection->toArray());
+    }
+
+    public function testJsonSerialize(): void
+    {
+        $this->assertSame('{"a":1,"b":2}', json_encode(new Collection(['a' => 1, 'b' => 2])));
+        $this->assertSame('[1,2]', json_encode(new Collection([1, 2])));
     }
 
     public function testShortHandFunction(): void
@@ -475,7 +537,33 @@ class CollectionTest extends TestCase
         $collection = new Collection(['foo', 'bar', 'baz']);
 
         $this->expectException('LogicException');
-        $collection->pluck('id');
+        (void)$collection->pluck('id');
+    }
+
+    public function testPluckThrowsOnMissingArrayKey(): void
+    {
+        $collection = new Collection([['id' => 1], ['name' => 'foo']]);
+
+        $this->expectException(\OutOfBoundsException::class);
+        (void)$collection->pluck('id');
+    }
+
+    public function testPluckThrowsOnMissingProperty(): void
+    {
+        $collection = new Collection([new \stdClass()]);
+
+        $this->expectException(\OutOfBoundsException::class);
+        (void)$collection->pluck('id');
+    }
+
+    public function testPluckReturnsNullValues(): void
+    {
+        $obj = new \stdClass();
+        $obj->id = null;
+
+        $collection = new Collection([['id' => null], $obj, new Collection(['id' => null])]);
+
+        $this->assertSame([null, null, null], $collection->pluck('id')->toArray());
     }
 
     public function testSlice(): void
@@ -536,6 +624,25 @@ class CollectionTest extends TestCase
         $this->assertSame('foo bar baz', $collection->implode(' '));
     }
 
+    public function testImplodeThrowsOnNonStringableValue(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        (new Collection([new \stdClass()]))->implode();
+    }
+
+    public function testImplodeWithStringableAndNull(): void
+    {
+        $stringable = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+        };
+
+        $this->assertSame('foo,,1', (new Collection([$stringable, null, 1]))->implode());
+    }
+
     public function testReverse(): void
     {
         $collection = new Collection(['foo', 'bar', 'baz']);
@@ -553,9 +660,145 @@ class CollectionTest extends TestCase
         $this->assertSame(['foo' => 1, 'bar' => 2, 'baz' => 3], $collection->flip()->toArray());
     }
 
+    public function testFlipThrowsOnNonKeyValue(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        (void)(new Collection([1.5]))->flip();
+    }
+
     public function testFlatten(): void
     {
         $collection = new Collection([1, 2, [3, 4, [5, 6]]]);
         $this->assertSame([1, 2, 3, 4, 5, 6], $collection->flatten()->toArray());
     }
+
+    public function testFlattenNestedCollections(): void
+    {
+        $collection = new Collection([1, new Collection([2, [3, new Collection(['a' => 4])]])]);
+
+        $this->assertSame([1, 2, 3, 4], $collection->flatten()->toArray());
+    }
+
+    public function testGetThrowsOnMissingKey(): void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+
+        (new Collection(['foo' => 'bar']))->get('baz');
+    }
+
+    public function testArrayAccessGetThrowsOnMissingKey(): void
+    {
+        /** @var Collection<string, string> $collection */
+        $collection = new Collection();
+
+        $this->expectException(\OutOfBoundsException::class);
+
+        $value = $collection['foo'];
+    }
+
+    public function testGetReturnsNullValue(): void
+    {
+        $this->assertNull((new Collection(['foo' => null, 'bar' => 'baz']))->get('foo'));
+    }
+
+    public function testArrayAccessWithNonKeyOffsets(): void
+    {
+        $collection = new Collection([1 => 'foo']);
+
+        // These offsets are deliberately outside TKey to test how PHP's loose offsets are handled.
+        $this->assertFalse(isset($collection[true])); // @phpstan-ignore isset.offset, method.alreadyNarrowedType
+        $this->assertFalse(isset($collection[1.0])); // @phpstan-ignore isset.offset, method.alreadyNarrowedType
+
+        unset($collection[true]); // @phpstan-ignore unset.offset
+
+        $this->assertSame([1 => 'foo'], $collection->toArray());
+    }
+
+    public function testSliceWithoutLength(): void
+    {
+        $collection = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertSame(['bar', 'baz'], $collection->slice(1)->toArray());
+    }
+
+    public function testDiffWithObjectsAndArrays(): void
+    {
+        $obj1 = new \stdClass();
+        $obj2 = new \stdClass();
+
+        $this->assertSame([1 => $obj2], (new Collection([$obj1, $obj2]))->diff([$obj1])->toArray());
+        $this->assertSame([1 => [2]], (new Collection([[1], [2]]))->diff([[1]])->toArray());
+    }
+
+    public function testDiffIsStrict(): void
+    {
+        $this->assertSame([1 => 1], (new Collection(['1', 1]))->diff(['1'])->toArray());
+    }
+
+    public function testIntersectWithMultipleIterables(): void
+    {
+        $collection = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertSame([1 => 'bar'], $collection->intersect(['bar', 'baz'], new Collection(['foo', 'bar']))->toArray());
+    }
+
+    public function testIntersectWithObjects(): void
+    {
+        $obj1 = new \stdClass();
+        $obj2 = new \stdClass();
+
+        $this->assertSame([1 => $obj2], (new Collection([$obj1, $obj2]))->intersect([$obj2])->toArray());
+    }
+
+    public function testUniqueWithObjects(): void
+    {
+        $obj1 = new \stdClass();
+        $obj1->id = 1;
+        $obj2 = new \stdClass();
+        $obj2->id = 1;
+
+        $this->assertSame([$obj1], (new Collection([$obj1, $obj2]))->unique()->toArray());
+        $this->assertSame([$obj1, $obj2], (new Collection([$obj1, $obj2]))->unique(true)->toArray());
+    }
+
+    public function testDiscardingTransformResultWarns(): void
+    {
+        $messages = [];
+        set_error_handler(static function (int $errno, string $message) use (&$messages): bool {
+            $messages[] = $message;
+
+            return true;
+        });
+
+        try {
+            // A dynamic call hides the discarded result from PHPStan, but PHP still checks #[\NoDiscard].
+            $method = 'filter';
+            (new Collection([1, 2]))->$method();
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertCount(1, $messages);
+        $this->assertStringContainsString('filter()', $messages[0]);
+    }
+
+    public function testMethodsReturnSubclassInstances(): void
+    {
+        $collection = new SubCollection(['foo', 'bar']);
+
+        $this->assertInstanceOf(SubCollection::class, $collection->filter());
+        $this->assertInstanceOf(SubCollection::class, $collection->map(static fn ($v) => $v));
+        $this->assertInstanceOf(SubCollection::class, SubCollection::create());
+    }
+}
+
+/**
+ * @template TKey of array-key
+ * @template T
+ *
+ * @extends Collection<TKey, T>
+ */
+class SubCollection extends Collection
+{
 }
