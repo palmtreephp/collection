@@ -86,7 +86,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     public function add(mixed ...$element): self
     {
         foreach ($element as $el) {
-            $this->elements[] = $el;
+            // Appending assigns an int key. TKey can't be constrained per method, so this is
+            // only type-safe for int-keyed collections.
+            $this->elements[] = $el; // @phpstan-ignore assign.propertyType
         }
 
         return $this;
