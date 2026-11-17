@@ -461,6 +461,28 @@ class CollectionTest extends TestCase
         $this->assertSame(['foo', 'bar', 'baz'], iterator_to_array($collection));
     }
 
+    public function testCreate(): void
+    {
+        $collection = Collection::create(['foo' => 'bar']);
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertSame(['foo' => 'bar'], $collection->toArray());
+    }
+
+    public function testToList(): void
+    {
+        $collection = new Collection(['a' => 'foo', 'b' => 'bar']);
+
+        $this->assertSame(['foo', 'bar'], $collection->toList());
+        $this->assertSame(['a' => 'foo', 'b' => 'bar'], $collection->toArray());
+    }
+
+    public function testJsonSerialize(): void
+    {
+        $this->assertSame('{"a":1,"b":2}', json_encode(new Collection(['a' => 1, 'b' => 2])));
+        $this->assertSame('[1,2]', json_encode(new Collection([1, 2])));
+    }
+
     public function testShortHandFunction(): void
     {
         $collection = c(['foo' => 'bar', 'baz' => 'qux']);
