@@ -97,7 +97,7 @@ class CollectionTest extends TestCase
 
     public function testRemoveReturnsNullValue(): void
     {
-        $collection = new Collection(['foo' => null]);
+        $collection = new Collection(['foo' => null, 'bar' => 'baz']);
 
         $this->assertNull($collection->remove('foo'));
         $this->assertFalse($collection->containsKey('foo'));
@@ -197,7 +197,9 @@ class CollectionTest extends TestCase
         /** @var Collection<int, int> $newCollection */
         $newCollection = new Collection();
 
-        $collection->each(static fn ($value) => $newCollection->add($value * 2));
+        $collection->each(static function (int $value) use ($newCollection): void {
+            $newCollection->add($value * 2);
+        });
 
         $this->assertSame([4, 8, 16, 32], $newCollection->toArray());
 
@@ -433,13 +435,14 @@ class CollectionTest extends TestCase
 
     public function testArrayAccess(): void
     {
+        /** @var Collection<string, string> $collection */
         $collection = new Collection();
         $collection['foo'] = 'bar';
         $collection['baz'] = 'qux';
 
         $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], $collection->toArray());
 
-        $this->assertTrue(isset($collection['foo']));
+        $this->assertTrue($collection->containsKey('foo'));
 
         unset($collection['foo']);
 
@@ -447,6 +450,7 @@ class CollectionTest extends TestCase
 
         $this->assertSame('qux', $collection['baz']);
 
+        /** @var Collection<int, string> $collection */
         $collection = new Collection();
         $collection[] = 'foo';
         $collection[] = 'bar';
@@ -685,26 +689,28 @@ class CollectionTest extends TestCase
 
     public function testArrayAccessGetThrowsOnMissingKey(): void
     {
+        /** @var Collection<string, string> $collection */
         $collection = new Collection();
 
         $this->expectException(\OutOfBoundsException::class);
 
-        $collection['foo'];
+        $value = $collection['foo'];
     }
 
     public function testGetReturnsNullValue(): void
     {
-        $this->assertNull((new Collection(['foo' => null]))->get('foo'));
+        $this->assertNull((new Collection(['foo' => null, 'bar' => 'baz']))->get('foo'));
     }
 
     public function testArrayAccessWithNonKeyOffsets(): void
     {
         $collection = new Collection([1 => 'foo']);
 
-        $this->assertFalse(isset($collection[true]));
-        $this->assertFalse(isset($collection[1.0]));
+        // These offsets are deliberately outside TKey to test how PHP's loose offsets are handled.
+        $this->assertFalse(isset($collection[true])); // @phpstan-ignore isset.offset, method.alreadyNarrowedType
+        $this->assertFalse(isset($collection[1.0])); // @phpstan-ignore isset.offset, method.alreadyNarrowedType
 
-        unset($collection[true]);
+        unset($collection[true]); // @phpstan-ignore unset.offset
 
         $this->assertSame([1 => 'foo'], $collection->toArray());
     }
@@ -766,7 +772,9 @@ class CollectionTest extends TestCase
         });
 
         try {
-            (new Collection([1, 2]))->filter();
+            // A dynamic call hides the discarded result from PHPStan, but PHP still checks #[\NoDiscard].
+            $method = 'filter';
+            (new Collection([1, 2]))->$method();
         } finally {
             restore_error_handler();
         }

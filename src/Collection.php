@@ -361,7 +361,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
     {
         $copy = $this->toArray();
 
-        asort($copy, $flags);
+        // asort() handles values of any type with the default SORT_REGULAR flag, so only the
+        // other flags rely on T being castable to string or float.
+        asort($copy, $flags); // @phpstan-ignore argument.type
 
         return new static($copy);
     }
