@@ -591,9 +591,9 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
         return new \ArrayIterator($this->elements);
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey($offset);
+        return self::isKey($offset) && $this->containsKey($offset);
     }
 
     /**
@@ -621,7 +621,17 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess, \JsonS
 
     public function offsetUnset(mixed $offset): void
     {
-        $this->remove($offset);
+        if (self::isKey($offset)) {
+            $this->remove($offset);
+        }
+    }
+
+    /**
+     * PHP passes offsets of any type to the ArrayAccess methods, e.g. isset($collection[true]).
+     */
+    private static function isKey(mixed $offset): bool
+    {
+        return \is_int($offset) || \is_string($offset);
     }
 
     /**

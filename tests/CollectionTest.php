@@ -580,6 +580,18 @@ class CollectionTest extends TestCase
         $this->assertNull((new Collection(['foo' => null]))->get('foo'));
     }
 
+    public function testArrayAccessWithNonKeyOffsets(): void
+    {
+        $collection = new Collection([1 => 'foo']);
+
+        $this->assertFalse(isset($collection[true]));
+        $this->assertFalse(isset($collection[1.0]));
+
+        unset($collection[true]);
+
+        $this->assertSame([1 => 'foo'], $collection->toArray());
+    }
+
     public function testDiffWithObjectsAndArrays(): void
     {
         $obj1 = new \stdClass();
